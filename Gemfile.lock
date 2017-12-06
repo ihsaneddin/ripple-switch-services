@@ -37,6 +37,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
+    active_model_serializers (0.10.7)
+      actionpack (>= 4.1, < 6)
+      activemodel (>= 4.1, < 6)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (5.1.4)
       activesupport (= 5.1.4)
       globalid (>= 0.3.6)
@@ -56,6 +61,8 @@ GEM
     airbrussh (1.3.0)
       sshkit (>= 1.6.1, != 1.7.0)
     arel (8.0.0)
+    attr_encrypted (3.0.3)
+      encryptor (~> 3.0.0)
     attr_required (1.0.1)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
@@ -106,8 +113,11 @@ GEM
       mimemagic (>= 0.3.0)
     carrierwave_backgrounder (0.4.2)
       carrierwave (~> 0.5)
+    case_transform (0.2)
+      activesupport
     childprocess (0.8.0)
       ffi (~> 1.0, >= 1.0.11)
+    chunky_png (1.3.8)
     code_analyzer (0.4.8)
       sexp_processor
     coercible (1.0.0)
@@ -133,6 +143,12 @@ GEM
       railties (>= 4.1.0, < 5.2)
       responders
       warden (~> 1.2.3)
+    devise-two-factor (3.0.2)
+      activesupport (< 5.2)
+      attr_encrypted (>= 1.3, < 4, != 2)
+      devise (~> 4.0)
+      railties (< 5.2)
+      rotp (~> 2.0)
     devise_token_auth (0.1.42)
       devise (> 3.5.2, <= 4.3)
       rails (< 6)
@@ -140,6 +156,7 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     doorkeeper (4.2.6)
       railties (>= 4.2)
+    encryptor (3.0.0)
     equalizer (0.0.11)
     erubi (1.7.0)
     erubis (2.7.0)
@@ -155,6 +172,8 @@ GEM
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
     ffi (1.9.18)
+    figaro (1.1.1)
+      thor (~> 0.14)
     fission (0.5.0)
       CFPropertyList (~> 2.2)
     fog (1.42.0)
@@ -253,7 +272,7 @@ GEM
       fog-core (>= 1.40)
       fog-json (>= 1.0)
       ipaddress (>= 0.8)
-    fog-ovirt (0.1.1)
+    fog-ovirt (0.1.2)
       fog-core (~> 1.45)
       fog-json
       fog-xml (~> 0.1.1)
@@ -313,10 +332,13 @@ GEM
       activerecord (>= 4.0.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    grape (1.0.1)
+    grape (0.19.1)
       activesupport
       builder
-      mustermann-grape (~> 1.0.0)
+      hashie (>= 2.1.0)
+      multi_json (>= 1.3.2)
+      multi_xml (>= 0.5.2)
+      mustermann-grape (~> 0.4.0)
       rack (>= 1.3.0)
       rack-accept
       virtus (>= 1.0.0)
@@ -342,7 +364,12 @@ GEM
     ice_nine (0.11.2)
     inflecto (0.0.2)
     ipaddress (0.8.3)
+    jquery-rails (4.3.1)
+      rails-dom-testing (>= 1, < 3)
+      railties (>= 4.2.0)
+      thor (>= 0.14, < 2.0)
     json (2.1.0)
+    jsonapi-renderer (0.2.0)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.1.1)
@@ -362,6 +389,7 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.4.1)
       launchy (~> 2.2)
+    libv8 (3.16.14.19)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -381,10 +409,12 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.10.3)
     multi_json (1.12.2)
+    multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.1)
-    mustermann-grape (1.0.0)
-      mustermann (~> 1.0.0)
+    mustermann (0.4.0)
+      tool (~> 0.2)
+    mustermann-grape (0.4.0)
+      mustermann (= 0.4.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.2.0)
@@ -396,6 +426,10 @@ GEM
     paranoia (2.4.0)
       activerecord (>= 4.0, < 5.2)
     pg (0.21.0)
+    pg_search (2.1.1)
+      activerecord (>= 4.2)
+      activesupport (>= 4.2)
+      arel (>= 6)
     public_suffix (3.0.1)
     puma (3.11.0)
     rack (2.0.3)
@@ -452,7 +486,7 @@ GEM
     rbovirt (0.1.4)
       nokogiri
       rest-client (> 1.7.0)
-    rbvmomi (1.11.3)
+    rbvmomi (1.11.4)
       builder (~> 3.0)
       json (>= 1.8)
       nokogiri (~> 1.5)
@@ -479,6 +513,8 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-store (1.3.0)
       redis (>= 2.2)
+    ref (2.0.0)
+    remotipart (1.3.1)
     require_all (1.4.0)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
@@ -488,6 +524,9 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rolify (5.1.0)
+    rotp (2.1.2)
+    rqrcode (0.10.1)
+      chunky_png (~> 1.0)
     ruby-progressbar (1.9.0)
     ruby-units (2.2.0)
     ruby_dep (1.5.0)
@@ -529,16 +568,20 @@ GEM
     sshkit (1.15.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
+      ref
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
+    tool (0.2.3)
     trollop (2.1.2)
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.3)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
-    uglifier (3.2.0)
+    uglifier (4.0.1)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
@@ -572,6 +615,8 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  active_model_serializers (~> 0.10.0)
+  attr_encrypted
   bcrypt (~> 3.1.7)
   byebug
   cancancan
@@ -588,17 +633,20 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   date_validator
   devise
+  devise-two-factor
   devise_token_auth
   doorkeeper
   fastest-csv
+  figaro
   fog
   friendly_id
-  grape
+  grape (= 0.19.1)
   grape-cancan
   grape-entity
   grape-kaminari
   grape-swagger
   grape_on_rails_routes
+  jquery-rails
   kaminari
   kaminari-grape
   letter_opener
@@ -606,6 +654,7 @@ DEPENDENCIES
   mini_magick
   paranoia (~> 2.2)
   pg
+  pg_search
   puma (~> 3.7)
   rack-cors
   rack-oauth2
@@ -615,8 +664,10 @@ DEPENDENCIES
   redis-namespace
   redis-rack-cache
   redis-rails
+  remotipart
   ripple_lib_rpc_ruby!
   rolify
+  rqrcode
   ruby-units
   sass-rails (~> 5.0)
   selenium-webdriver
@@ -624,6 +675,7 @@ DEPENDENCIES
   sidekiq
   spring
   spring-watcher-listen (~> 2.0.0)
+  therubyracer
   turbolinks (~> 5)
   tzinfo-data
   uglifier (>= 1.3.0)

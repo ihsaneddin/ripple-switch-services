@@ -1,0 +1,15 @@
+<%= yield_content_for :page_title, "Dashboard" %>
+
+
+<%= box_panel do |outer_template, options|%>
+  <%= _content_for(outer_template, :box_panel_header) do %>
+    <%= content_tag :h3, "Form", class: "box-title" %>
+    <%= box_panel_links remove: true, collapse: true %>
+  <%- end %>
+  <%= _content_for(outer_template, :box_panel_body) do %>
+    
+  <%- end %>
+  <%= _content_for(outer_template, :box_panel_footer) do %>
+  
+  <%- end %>
+<%- end %>

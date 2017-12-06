@@ -1,0 +1,31 @@
+<%= yield_content_for(:title, "Sign In") %>
+
+<%= content_tag :p, "Sign in to start your session", class: 'login-box-msg' %>
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  
+  <%= form_group resource, :login, options={ strict: false} do %>
+    <%= f.text_field :login, class: 'form-control', placeholder: 'Login name' %>
+    <%= content_tag :span, '', class: 'glyphicon glyphicon-envelope form-control-feedback' %>
+  <%- end %>
+
+  <%= form_group resource, :password, options={ strict: false } do %>
+    <%= f.password_field :password, class: 'form-control', placeholder: 'Password' %>
+    <%= content_tag :span, '', class: 'glyphicon glyphicon-lock form-control-feedback' %>
+  <%- end %>
+
+  <%= content_tag :div, class: 'row' do %>
+    <%= content_tag :div, class: 'col-xs-8' do %>
+      <% if devise_mapping.rememberable? -%>
+        <%= content_tag :div, class: 'checkbox icheck' do %>
+          <%= content_tag :label do %>
+            <%= f.check_box :remember_me %> Remember Me
+          <%- end %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    <%= content_tag :div, class: 'col-xs-4' do %>
+      <%= f.submit "Sign In", class: 'btn btn-primary btn-block btn-flat' %>
+    <%- end %>
+  <%- end %>
+
+<%- end %>

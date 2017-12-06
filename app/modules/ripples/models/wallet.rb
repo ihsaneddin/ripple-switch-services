@@ -1,0 +1,54 @@
+require 'rqrcode'
+
+module Ripples
+  module Models
+    class Wallet < ::ApplicationRecord
+      
+      before_validation :generate_address, on: :create
+      before_validation :set_sequence, on: :create
+
+      attr_encrypted :address, key: ENV['ENCRYPT_SECRET_KEY']
+      attr_encrypted :secret, key: ENV['ENCRYPT_SECRET_KEY']
+
+      include PgSearch
+      pg_search_scope :search_by_label, :against => [:label]
+
+      belongs_to :account, class_name: "Users::Models::Account"
+
+      validates :label, uniqueness: { scope: :account_id }, unless: Proc.new { |w| w.deleted_at.blank? }
+
+      class << self
+
+        def filter(params={})
+          res = cached_collection.where(nil)
+          if params[:label]
+            res = res.search_by_label(params[:label])
+          end
+          res
+        end
+
+      end
+
+      def set_sequence
+        self.sequence= self.class.where(account: self.account).count
+      end
+
+      def generate_address
+        resp = $rippleOfflineClient.wallet_propose
+        if resp.raw.present?
+          self.address= resp.raw.address
+          self.secret= resp.raw.secret
+        end
+      end
+
+      def ripple_client
+        @ripple_client ||= Ripple.client.new(endpoint: ENV['RIPPLED_SERVER'], client_account: self.decrypted_address, client_secret: self.decrypted_secret)
+      end
+
+      def qr_code
+        @qr_code||= RQRCode::QRCode.new( self.address, :size => 4, :level => :h )
+      end
+
+    end
+  end
+end

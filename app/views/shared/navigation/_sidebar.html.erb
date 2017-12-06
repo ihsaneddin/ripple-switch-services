@@ -1,0 +1,7 @@
+<%= content_tag :aside, class: 'main-sidebar' do %>
+  <%= content_tag :section, class: 'sidebar' do %>
+    <%= yield(:before_sidebar_links) %>
+    <%= yield %>
+    <%= yield(:after_sidebar_links) %>
+  <%- end %>
+<%- end %>

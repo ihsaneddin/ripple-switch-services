@@ -1,0 +1,40 @@
+
+<style>
+ table { table-layout: fixed; }
+ table th, table td {  word-wrap: break-word; }
+</style>
+
+<%= content_tag :div, class: "modal #{modal_params[:class]}", id: "#{modal_params[:id]}" do %>
+  
+  <%= content_tag :div, class: "modal-dialog" do %>
+    <%= content_tag :div, class: 'modal-content' do %>
+      <!-- if modal use header start here -->
+      <%= content_tag :div, class: 'modal-header' do %>
+        <%= content_tag :button, "×", class: "close", data: { dismiss: "modal" }, aria: { label: "Close" } %>
+        <%= content_tag :h4, "#{modal_params[:title]}", class: "modal-title" %>
+        <%- end %>
+      <!-- end of modal header -->
+      
+      <%= content_tag :div, class: "modal-body" do %>
+        <!-- if modal use form -->
+        <%= yield %>
+        <!-- end of modal body -->
+      <%- end %>
+
+      <% if modal_params[:use_footer] %>
+        <%= content_tag :div, class: 'modal-footer' do %>
+        <!-- if modal use default buttons footer start here -->
+          <%= content_tag :p, class: 'text-center' do %>
+            <% if modal_params[:use_submit_footer_buttons] %>
+              <%= content_tag :button, "#{modal_params[:submit_button_text]}", class: "submit-modal-form btn #{modal_params[:submit_button_style] || 'btn-default'}" %>
+              <%= content_tag :button, "#{modal_params[:cancel_button_text]}", class: "btn #{modal_params[:cancel_button_style] || 'btn-default'}", data: { dismiss: "modal" } %>
+            <%- end %>
+          <%- end %>
+        <%- end %>
+        <!-- end of modal footer -->
+      <%- end %>
+
+    <%- end %>
+  <%- end %>
+
+<%- end %>

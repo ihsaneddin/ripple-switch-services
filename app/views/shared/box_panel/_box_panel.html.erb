@@ -1,0 +1,30 @@
+<%= yield %><!-- # main yield, required -->
+
+<!-- start box panel div -->
+<%= content_tag :div, class: "box #{local_assigns[:style]}" do %>
+  <% if local_assigns[:use_header] %>
+    <%= content_tag :div, class: "box-header #{local_assigns[:header_style]}" do %>
+      <%= local_assigns[:header] %><!-- # display box_panel_header variable if provided -->
+      <%= yield("box_panel_header_#{local_assigns[:suffix]}".to_sym) %> <!-- # display block box_panel_header content if provided -->
+    <%- end %>
+  <%- end %>
+  
+  <%= content_tag :div, class: "box-body #{local_assigns[:body_style]}" do %>
+    <%= yield("box_panel_body_#{local_assigns[:suffix]}".to_sym) %>
+  <%- end %>
+
+  <% if local_assigns[:loading] %>
+    <%= content_tag :div, content_tag(:i, "", class: "fa fa-refresh fa-spin").html_safe, class: "overlay" %>
+  <%- end %>
+
+  <% if local_assigns[:use_footer] %>
+    
+    <%= content_tag :div, class: "box-footer" do %>
+      <%= local_assigns[:footer]%> <!--# display box_panel_footer variable if provided -->
+      <%= yield("box_panel_footer_#{local_assigns[:suffix]}".to_sym) %> <!-- # display block box_panel_footer if provided -->
+    <%- end %>
+
+  <% end %>
+  <!-- end of box panel div -->
+
+<%- end %>

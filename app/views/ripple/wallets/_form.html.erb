@@ -1,0 +1,8 @@
+
+<%= form_group wallet, :label, { label_class: "col-sm-2" } do %>
+  <%= f.text_field :label, class: 'form-control', placeholder: 'Optional label, example : mywallet, hotwallet, etc' %>
+  <%= content_tag :span, "Labels are not wallet addresses. Leave blank if unsure.", class: "help-block" %>
+<%- end %>
+
+
+  

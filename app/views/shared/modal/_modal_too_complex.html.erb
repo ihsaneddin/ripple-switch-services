@@ -1,0 +1,44 @@
+<%= content_tag :div, class: "modal #{modal_params[:modal_class]}", id: "#{modal_params[:modal_id]}" do %>
+  
+  <%= content_tag :div, class: "modal-dialog" do %>
+    
+    <!-- if modal use header start here -->
+    <% if modal_params[:use_header] %>
+      <%= content_tag :button, "×", class: "close", data: { dismiss: "modal" }, aria: { label: "Close" } %>
+      <%= content_tag :h4, "#{modal_params[:title]}", class: "modal-header" %>
+    <%- end %>
+    <!-- end of modal header -->
+    
+    <%= content_tag :div, class: "modal-body" do %>
+      <!-- if modal use form -->
+      <% if modal_params[:use_form] %>
+        <%= form_for modal_params[:resource], url: modal_params[:form_url], html: { class: "form form-horizontal" }, remote: true do %>
+
+          <%= yield %>
+
+          <!-- current modal params inputs -->
+          <%= modal_input_paras %>
+          <!-- end of current modal params inputs -->
+
+        <%- end %>
+      <% else %>
+
+        <%= yield %>
+      
+      <%- end %>
+      <!-- end of modal body -->
+    <%- end %>
+
+    <% if modal_params[:use_footer] %>
+      <!-- if modal use default buttons footer start here -->
+      <% if modal_params[:use_submit_footer_buttons] %>
+        <%= content_tag :button, "#{modal_params[:cancel_button_text]}", class: "btn #{modal_params[:cancel_button_style] || 'btn-default'} pull-left", data: { dismiss: "modal" } %>
+        <%= content_tag :button, "#{modal_params[:submit_button_text]}", class: "submit-modal-form btn #{modal_params[:submit_button_style] || 'btn-primary' }" %>
+      <%- end %>
+      <%= modal_params[:footer].html_safe %>
+      <!-- end of modal footer -->
+    <%- end %>
+
+  <%- end %>
+
+<%- end %>

@@ -14,6 +14,7 @@ gem 'rails', '~> 5.1.3'
 
 # Use postgres as the database for Active Record
 gem 'pg'
+gem 'pg_search'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
@@ -23,10 +24,15 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+gem 'therubyracer', platforms: :ruby
 
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
+
+# Use jquery as the JavaScript library
+gem 'jquery-rails'
+gem 'remotipart'
+
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -47,7 +53,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'rack-cors', :require => 'rack/cors'
 
 # lightweight api stack GRAPE
-gem 'grape'
+gem 'grape', '0.19.1'
 gem 'grape_on_rails_routes'
 gem 'grape-entity'
 gem 'grape-swagger'
@@ -138,6 +144,15 @@ gem 'rolify'#, '~> 1.2'
 gem 'devise_token_auth' 
 gem 'doorkeeper'
 gem "rack-oauth2"#, "~> 1.0.5"
+gem 'devise-two-factor'
 
 # ripple rpc custom lib
 gem 'ripple_lib_rpc_ruby', git: 'https://github.com/ihsaneddin/ripple-lib-rpc-ruby'
+
+# serializer support
+gem 'active_model_serializers', '~> 0.10.0'
+
+gem 'rqrcode'
+
+gem 'attr_encrypted'
+gem "figaro"

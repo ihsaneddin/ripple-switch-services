@@ -1,0 +1,13 @@
+<!-- start header -->
+<%= content_tag :header, class: 'main-header' do %>
+  <!-- start logo -->
+  <%= link_to '', class: 'logo' do %>
+    <%= content_tag :span, "#{content_tag(:b, "Ripple")}SS".html_safe, class: 'logo-mini' %>
+    <%= content_tag :span, "#{content_tag(:b, "Ripple")}SS".html_safe, class: 'logo-lg' %>
+  <%- end %>
+  <!-- end logo -->
+
+  <%= yield %>
+
+<%- end %>
+<!-- end header -->

@@ -1,0 +1,26 @@
+
+<%= yield %>
+
+<%= content_tag(:div, class: 'nav-tabs-custom') do %>
+  
+  <!-- build ul of nav-tabs frpm tabs_list options -->
+  <%= content_tag :ul, class: 'nav nav-tabs', role: "tablist" do %>
+    <% tabs_list(local_assigns[:suffix]).each do |tab| %>
+      <%= content_tag :li, class: is_tab_active?(local_assigns[:suffix], tab), role: 'presentation' do %>
+        <%= link_to tab, "##{tab.downcase.parameterize}", "aria-controls" => "#{tab.downcase.parameterize}", role: "tab", "data-toggle" => "tab" %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: 'tab-content' do %>
+    <!-- generate dynamic yield based on tabs_list values#underscore with `tab_content_for` prefix -->
+    <% tabs_list(local_assigns[:suffix]).each do |tab| %>
+      <%= content_tag :div, role: 'tabpanel', class: "tab-pane #{is_tab_active?(local_assigns[:suffix], tab)}", id: tab.downcase.parameterize do %>
+        <%= yield("tab_content_for_#{tab.downcase.parameterize.underscore}_#{local_assigns[:suffix]}".to_sym) %>
+      <%- end %>
+    <%- end %>
+
+  <%- end %>
+  <!-- end of build ul of nav-tabs -->
+
+<%- end %>

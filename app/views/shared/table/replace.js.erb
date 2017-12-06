@@ -1,0 +1,11 @@
+<% if respond_to?(:table_params) %>
+  <% if table_params[:id].present? %>
+    table_container= $("div#<%=table_params[:id]%>");
+    if (table_container.length)
+    {
+      table_container.html("<%= escape_javascript(render partial: table_params[:template] || "#{params[:controller]}/#{table_params[:template] || action_name}",  locals: { "#{table_params[:resources_name] || controller_name }".to_sym => instance_variable_get("@#{table_params[:resources_name]}") || instance_variable_get("@#{controller_name}") },formats: table_params[:formats] || [:html]) %>");
+      //update reload path
+      table_container.attr("data-reload-path", "<%= escape_javascript(link_to('reload', params.permit!, class: 'hidden reload-table', remote: true)) %>");
+    }
+  <% end %>
+<% end %>

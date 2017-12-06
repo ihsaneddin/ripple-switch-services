@@ -1,0 +1,13 @@
+<%= yield_content_for :page_title, "New Wallet" %>
+
+
+<% if modal_params.present? %>
+  <%= form_for @wallet, url: ripple_wallets_path, html: { class: "form form-horizontal" }, remote: true do |f| %>
+
+    <%= render :partial => "ripple/wallets/form", locals: { wallet: @wallet,f: f } %>
+
+    <%= modal_input_params %>
+    <%= table_input_params %>
+
+  <%-end %> 
+<%- end %>

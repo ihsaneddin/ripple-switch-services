@@ -1,0 +1,10 @@
+[ignore]
+.*/ripple-lib/dist/.*
+.*/ripple-lib/test/fixtures/.*
+
+[include]
+
+[libs]
+
+[options]
+module.system=node

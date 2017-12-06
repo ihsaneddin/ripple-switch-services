@@ -1,0 +1,36 @@
+<% if params[:notification].present? %>
+  $.notify("<%= params[:notification][:message] %>", { position: "<%= params[:notification][:position] || 'top center' %>", className: "<%= params[:notification][:type] || 'success' %>" })
+<%- end %>
+
+// if there is modal params
+// then display modal
+
+<% if respond_to?(:modal_params) && modal_params.present? %>
+  
+  if ($('body #modals').length == 0)
+  {
+    $('body').append("<div id='modals'></div>");
+  }
+
+  // remove any modal with the same id
+  $("#modals div#<%= modal_params[:id] %>").modal('hide');
+  $("#modals div#<%= modal_params[:id] %>").remove();
+  // render modal
+  modal = "<%= escape_javascript(render(layout: default_modal_layout, template: modal_template, locals: modal_locals_template)) %>";
+  //append modal
+  $("body #modals").append(modal);
+  //show modal
+  $("#modals div.modal").last().modal('show');
+
+  //append modal params and table params if form is found
+  //useful when you want to reload or replace table after a form submitted
+  $("div#<%= modal_params[:id] %> form").each(function(){
+    $(this).find('div.params-modal').remove();    
+    $(this).append("<%= escape_javascript(modal_input_params) %>");
+    <% if respond_to?(:table_params) %>
+      $(this).find('div.params-table').remove();
+      $(this).append("<%= escape_javascript(table_input_params) %>")
+    <% end %>
+  })
+
+<%- end %>

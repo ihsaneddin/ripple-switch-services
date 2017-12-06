@@ -1,0 +1,74 @@
+<%= yield_content_for :page_title, "Wallet Info" %>
+
+<% if modal_params.present? %>
+  
+  <%= content_tag :table, id: "wallet-#{@wallet.address}-info", class: "table table-hover" do %>
+    <%= content_tag :tr, class: 'wallet-address' do %>
+      <%= content_tag :td, "Address"%>
+      <%= content_tag :td, @wallet.address%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-name' do %>
+      <%= content_tag :td, "Label"%>
+      <%= content_tag :td, @wallet.label, style: "word-wrap: break-word;min-width: 160px;max-width: 160px;"%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-sequence' do %>
+      <%= content_tag :td, "Sequence"%>
+      <%= content_tag :td, nil%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-owner-count' do %>
+      <%= content_tag :td, "Owner Count"%>
+      <%= content_tag :td, nil%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-previousInitiatedTransactionID' do %>
+      <%= content_tag :td, "previousInitiatedTransactionID"%>
+      <%= content_tag :td, nil%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-previousAffectingTransactionID' do %>
+      <%= content_tag :td, "PreviousAffectingTransactionID"%>
+      <%= content_tag :td, nil%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-previousAffectingTransactionLedgerVersion' do %>
+      <%= content_tag :td, "previousAffectingTransactionLedgerVersion"%>
+      <%= content_tag :td, nil%>
+    <%- end %>
+    <%= content_tag :tr, class: 'wallet-xrp-balance' do %>
+      <%= content_tag :td, "XRPBalance"%>
+      <%= content_tag :td, nil%>
+    <%- end %>
+  <%- end %>
+
+  <script type="text/javascript">
+    
+    $(document).ready(function(){
+
+
+      var api = new ripple.RippleAPI({server:'wss://s.altnet.rippletest.net:51233'});
+      var myAddress = "<%= @wallet.address %>";
+      
+      api.connect().then(() => {
+        /* begin custom code ------------------------------------ */
+        console.log('getting account info for', myAddress);
+        return api.getAccountInfo(myAddress);
+
+      }).then(info => {
+        console.log(info);
+        table = $("table#wallet-"+myAddress+"-info")
+        table.find("tr.wallet-sequence td:last").html(info.sequence);
+        table.find("tr.wallet-owner-count td:last").html(info.ownerCount);
+        table.find("tr.wallet-previousInitiatedTransactionID td:last").html(info.previousInitiatedTransactionID);
+        table.find("tr.wallet-previousAffectingTransactionID td:last").html(info.previousAffectingTransactionID);
+        table.find("tr.wallet-previousAffectingTransactionLedgerVersion td:last").html(info.previousAffectingTransactionLedgerVersion);
+        table.find("tr.wallet-xrp-balance td:last").html(info.xrpBalance);
+        console.log('getAccountInfo done');
+
+        /* end custom code -------------------------------------- */
+      }).then(() => {
+        return api.disconnect();
+      }).then(() => {
+        console.log('done and disconnected.');
+      }).catch(console.error);
+
+    })
+
+  </script> 
+<%- end %>

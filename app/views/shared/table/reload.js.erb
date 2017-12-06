@@ -1,0 +1,31 @@
+// if there is notification message
+
+<% if params[:notification].present? %>
+  $.notify("<%= params[:notification][:message] %>", { position: "<%= params[:notification][:position] || 'top center' %>", className: "<%= params[:notification][:type] || 'success' %>" })
+<%- end %>
+
+// if there is table
+<% if respond_to?(:table_params) %>
+  table_container= $("div#<%=table_params[:id]%>");
+  if (table_container.length)
+  {
+    reload_path= table_container.attr("data-reload-path");
+    if (reload_path.length)
+    {
+      if (table_container.find("a.reload-table").length == 0) {
+        table_container.append(reload_path);
+      }
+      table_container.find('a.reload-table')[0].click();
+    }
+  }
+<% end %>
+
+// if there is modal
+<% if respond_to?(:modal_params) %>
+  modal_container= $("div#<%= modal_params[:id] %>");
+  if (modal_container.length)
+  {
+    modal_container.modal('hide');
+    modal_container.remove();
+  }
+<% end %>

@@ -1,10 +1,13 @@
 class SetupUsersModule < ActiveRecord::Migration[5.1]
   def self.up
 
+    enable_extension 'uuid-ossp'
+    enable_extension 'pgcrypto'
+
     #
     # create users table
     #
-    create_table :users_accounts do |t|
+    create_table :users_accounts, id: :uuid  do |t|
       ## Database authenticatable
       t.string :username
       t.string :email,              null: false, default: ""
@@ -40,6 +43,7 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
 
       t.datetime :deleted_at, index: true
 
+      t.string :token
 
       t.timestamps null: false
     end
@@ -49,6 +53,7 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
     add_index :users_accounts, :reset_password_token, unique: true
     add_index :users_accounts, :confirmation_token,   unique: true
     add_index :users_accounts, :unlock_token,         unique: true
+    add_index :users_accounts, :token, unique: true
 
   end
 

@@ -1,0 +1,117 @@
+<%= yield_content_for :page_title, "Wallets" %>
+
+<%= content_tag :div, class: 'row' do %>
+  
+  <%= content_tag :div, class: 'col-lg-4 col-xs-6' do %>
+    <%= content_tag :div, class: 'panel panel-default' do %>
+      <%= content_tag :div, class: 'panel-heading' do %>
+        <%= content_tag :h3, "Balance", class: "panel-title" %>
+      <%- end %>
+      <%= content_tag :div, class: 'panel-body' do %>
+        <%= content_tag :div, class: 'small-box bg-aqua' do %>
+          <%= content_tag :div, class: 'text-center inner' do %>
+            <%= content_tag :h3, 150 %>
+          <%- end %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: 'col-lg-4 col-xs-6' do %>
+    <%= content_tag :div, class: 'panel panel-default' do %>
+      <%= content_tag :div, class: 'panel-heading' do %>
+        <%= content_tag :h3, "Pending Transaction", class: "panel-title" %>
+      <%- end %>
+      <%= content_tag :div, class: 'panel-body' do %>
+        <%= content_tag :div, class: 'small-box bg-aqua' do %>
+          <%= content_tag :div, class: 'text-center inner' do %>
+            <%= content_tag :h3, 150 %>
+          <%- end %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: 'col-lg-4 col-xs-6' do %>
+    <%= content_tag :div, class: 'panel panel-default' do %>
+      <%= content_tag :div, class: 'panel-heading' do %>
+        <%= content_tag :h3, "API Information", class: "panel-title" %>
+      <%- end %>
+      <%= content_tag :div, class: 'panel-body' do %>
+        <%= content_tag :div, class: 'small-box bg-aqua' do %>
+          
+          <%= content_tag :ul, class: 'list-group' do %>
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "API Username", style: "color:#605854" %>
+              <%= content_tag :span, current_account.username, class: "badge" %>
+            <%- end %>
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "API Key", style: "color: #605854" %>
+              <%= content_tag :span, current_account.token, class: "badge badge-danger" %>
+            <%- end %>
+          <%- end %>
+        
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+<%- end %>
+
+<%= box_panel use_footer: false do |outer_template, options|%>
+  <%= _content_for(outer_template, :box_panel_header) do %>
+    <%= content_tag :h3, "Generated Wallets", class: "box-title" %>
+    <%= box_panel_links do %>
+
+      <%= link_to ripple_wallets_path(
+            table: { 
+              id: "table-container-for-#{controller_name}",
+              template: "ripple/wallets/table",
+              resources_name: "wallets"
+          }), remote: true, id: "unarchived-link", class: "toggle btn btn-default hidden", data: {toggle: "#archived-link"}, title: "Go to unarchived addresses" do %>
+        <%= content_tag :i, nil, class: 'fa fa-money' %>
+      <%- end %>
+
+      <%= link_to ripple_wallets_path(archived: true,
+            table: 
+              { 
+                id: "table-container-for-#{controller_name}",
+                template: "ripple/wallets/table",
+                resources_name: "wallets"
+              }
+          ), remote: true, id: "archived-link", class: "toggle btn btn-default", data: { toggle: "#unarchived-link" }, title: "Go to archived addresses" do %>
+        <%= content_tag :i, nil, class: 'fa fa-archive' %>
+      <%- end %>
+
+      <%= link_to new_ripple_wallet_path(
+        modal: {
+          id: "ripples-wallet-new",
+          title: "New Wallet",
+          template: "ripple/wallets/new",
+          use_footer: true,
+          use_submit_footer_buttons: true,
+          cancel_button_text: "Cancel",
+          submit_button_text: "Save"
+        },
+        table: {
+          id: "table-container-for-#{controller_name}"
+        }
+      ), class: 'btn btn-default remote-modal', remote: true, title: "Create new ripple wallet" do %> 
+        <%= content_tag :i, "", class: 'fa fa-plus' %>
+      <%- end %>
+
+    <%- end %>
+  <%- end %>
+  <%= _content_for(outer_template, :box_panel_body) do %>
+
+    <%= box_panel body_style: "table-responsive", use_footer: false, use_header: false do |box_table, options| %>
+      <%= _content_for(box_table, :box_panel_body) do %>
+        <%= table_container_for collection= @wallets, resources_name: "wallets", template: "ripple/wallets/table" do %>
+          <%= render partial: "ripple/wallets/table", locals: {wallets: @wallets}  %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    
+  
+  <%- end %>
+<%- end %>
