@@ -8,7 +8,7 @@ set :server_name, '139.59.107.166'#"api-staging.qashier.id"
 set :deploy_to, '/home/backend/apps/qashier-backend'
 
 # http://stackoverflow.com/questions/21036175/how-to-deploy-a-specific-revision-with-capistrano-3
-set :branch, ENV["REVISION"] || ENV["BRANCH_NAME"] || 'staging'
+set :branch, ENV["REVISION"] || ENV["BRANCH_NAME"] || 'master'
 
 role :app, %w{root@139.59.107.166}
 role :web, %w{root@139.59.107.166}
