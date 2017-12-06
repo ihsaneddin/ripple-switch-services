@@ -12,7 +12,7 @@ set :branch, ENV["REVISION"] || ENV["BRANCH_NAME"] || 'master'
 
 role :app, %w{root@139.59.107.166}
 role :web, %w{root@139.59.107.166}
-role :db,  %w{root@139.59.107.166}
+role :db,  %w{postgres@139.59.107.166}
 server '139.59.107.166', user: 'root', roles: %w{web app}
 
 # nginx conf

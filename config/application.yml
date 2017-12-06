@@ -3,8 +3,3 @@ development:
   ENCRYPT_IV: 'ytXeRLYmloBDmjEL'
   ENCRYPT_SALT: 'lxsgu01gFLkq9LA/2WPVPEDNcROFR2TF5Jz4Luvz7onlUWx7KfSudcAwao7A8Yn7wqu2B/VVrSDAA13VvtkIOCQRQ40vh8//cnM0vkGUPUvaxKiDjBVVplVyyw1mlkNk4c6eevwJaoJ1LPqtZ0p6UVrAj1vps2x+9lDYsWmgdUs='
   RIPPLED_SERVER: "https://s.altnet.rippletest.net:51234/"
-staging:
-  ENCRYPT_SECRET_KEY: 'xIT5mBtg9hEfOSdRZRwXQ0WFshdEzZxzcllzx3nfytA='
-  ENCRYPT_IV: 'ytXeRLYmloBDmjEL'
-  ENCRYPT_SALT: 'lxsgu01gFLkq9LA/2WPVPEDNcROFR2TF5Jz4Luvz7onlUWx7KfSudcAwao7A8Yn7wqu2B/VVrSDAA13VvtkIOCQRQ40vh8//cnM0vkGUPUvaxKiDjBVVplVyyw1mlkNk4c6eevwJaoJ1LPqtZ0p6UVrAj1vps2x+9lDYsWmgdUs='
-  RIPPLED_SERVER: "https://s.altnet.rippletest.net:51234/"
