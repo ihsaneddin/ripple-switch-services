@@ -37,7 +37,7 @@
 
 $(document).ready(function(){
 
-  $('.fa-sign-out').closest('a').attr('data-method', 'true');
+  $('.fa-sign-out').closest('a').attr('data-method', 'delete');
 
   // toggle alement
   $('body').on("click", '.toggle', function(e){
