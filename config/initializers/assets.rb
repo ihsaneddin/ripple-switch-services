@@ -26,6 +26,8 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 Rails.application.config.assets.paths << Rails.root.join("app", "assets", "fonts")
 Rails.application.config.assets.paths << Rails.root.join("vendor", "assets", "fonts")
 Rails.application.config.assets.precompile << /\.(?:svg|eot|woff|ttf)$/
+Rails.application.config.assets.paths << Rails.root.join("vendor", "assets", "images")
+Rails.application.config.assets.precompile += %w[*.png *.jpg *.jpeg *.gif] 
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in the app/assets
