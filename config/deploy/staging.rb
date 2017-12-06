@@ -5,15 +5,15 @@ set :rails_env, 'staging'
 set :full_app_name, "#{fetch(:applicaton)}-#{fetch(:stage)}"
 set :server_name, '139.59.107.166'#"api-staging.qashier.id"
 
-set :deploy_to, '/root/apps/rss'
+set :deploy_to, '/home/deploy/rss'
 
 # http://stackoverflow.com/questions/21036175/how-to-deploy-a-specific-revision-with-capistrano-3
 set :branch, ENV["REVISION"] || ENV["BRANCH_NAME"] || 'master'
 
-role :app, %w{root@139.59.107.166}
-role :web, %w{root@139.59.107.166}
-role :db,  %w{postgres@139.59.107.166}
-server '139.59.107.166', user: 'root', roles: %w{web app}
+role :app, %w{deploy@139.59.107.166}
+role :web, %w{deploy@139.59.107.166}
+role :db,  %w{deploy@139.59.107.166}
+server '139.59.107.166', user: 'deploy', roles: %w{web app}
 
 # nginx conf
 set :nginx_server_name, "139.59.107.166"
