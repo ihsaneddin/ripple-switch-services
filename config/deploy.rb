@@ -3,14 +3,14 @@ lock "~> 3.10.0"
 
 set :application, "rss"
 set :repo_url, "git@github.com:ihsaneddin/ripple-switch-services.git"
-set :rvm_ruby_version, '2.4.1@rss'
+set :rvm_ruby_version, '2.4.1@ripple-switch-services'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, "/var/www/my_app_name"
-set :deploy_to, '/root/apps'
+set :deploy_to, '/root/apps/rss'
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -24,7 +24,7 @@ set :deploy_to, '/root/apps'
 
 # Default value for :linked_files is []
 # append :linked_files, "config/database.yml", "config/secrets.yml"
-set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'config/puma.rb')
+set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml', 'config/puma.rb', "application.yml")
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"

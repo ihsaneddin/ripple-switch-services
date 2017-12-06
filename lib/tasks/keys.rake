@@ -2,7 +2,7 @@ namespace :openssl do
   desc "Generate Base64 encoded bytes for application.yml"
   task generate: :environment do
     {
-      ENCRYPT_SECRET_KEY: 12,
+      ENCRYPT_SECRET_KEY: 32,
       ENCRYPT_IV: 12,
       ENCRYPT_SALT: 128
     }.each do |k, length|

@@ -5,7 +5,7 @@ set :rails_env, 'staging'
 set :full_app_name, "#{fetch(:applicaton)}-#{fetch(:stage)}"
 set :server_name, '139.59.107.166'#"api-staging.qashier.id"
 
-set :deploy_to, '/home/backend/apps/qashier-backend'
+set :deploy_to, '/root/apps/rss'
 
 # http://stackoverflow.com/questions/21036175/how-to-deploy-a-specific-revision-with-capistrano-3
 set :branch, ENV["REVISION"] || ENV["BRANCH_NAME"] || 'master'
