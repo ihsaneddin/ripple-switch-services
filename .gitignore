@@ -28,3 +28,5 @@
 /log/*
 
 /config/locales/field_translations/*
+# Ignore application configuration
+/config/application.yml

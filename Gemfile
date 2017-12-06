@@ -104,6 +104,7 @@ gem 'date_validator'
 group :development do
   #deployment
   gem 'capistrano', '~> 3.6', require: false
+  gem 'capistrano-postgresql', '~> 4.2.0', require: false
   gem 'capistrano-rails', '~> 1.1', require: false
   gem 'capistrano-rvm', require: false
   gem 'capistrano3-puma', require: false

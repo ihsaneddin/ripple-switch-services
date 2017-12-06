@@ -11,7 +11,7 @@
 # seed development records
 #
 
-if Rails.env.development?
+unless Rails.env.production?
 
   account = Users::Models::Account.new email: 'user@mail.com', password: 'password', password_confirmation: 'password'
   account.skip_confirmation!

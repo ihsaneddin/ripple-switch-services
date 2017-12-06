@@ -10,7 +10,7 @@ set :rvm_ruby_version, '2.4.1@ripple-switch-services'
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, "/var/www/my_app_name"
-set :deploy_to, '/root/apps/rss'
+set :deploy_to, '/home/deploy/rss'
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
@@ -63,6 +63,6 @@ set :ssh_options, { forward_agent: true, auth_methods: %w(publickey) }
 
 namespace :deploy do
   before 'check:linked_files', 'puma:config'
-  before 'check:linked_files', 'puma:nginx_config'
+  #before 'check:linked_files', 'puma:nginx_config'
   #after 'puma:restart', 'nginx:restart'
 end
