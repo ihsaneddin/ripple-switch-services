@@ -15,7 +15,7 @@
           <%= content_tag :td, wallet.label %>
           <%= content_tag :td, wallet.address, class: "td-address" %>
           <%= content_tag :td, id: "status-#{wallet.address}-address" do %>
-            <%= content_tag :span, "#{wallet.validated?? 'active' : 'inactive'}",class: "active-label label label-#{wallet.validated?? 'success' : 'default'}", title: "You can activate the wallet by deposit" %>
+            <%= content_tag :span, "#{wallet.validated?? 'active' : 'inactive'}",class: "active-label label label-#{wallet.validated?? 'info' : 'default'}", title: "You can activate the wallet by deposit" %>
           <%- end %>
           <%= content_tag :td, 0, id: "td-#{wallet.address}-balance" %>
           <%= content_tag :td, 0, id: "td-#{wallet.address}-pending-received" %>
@@ -57,6 +57,21 @@
                 }), remote: true, class: 'btn btn-default', method: :delete, title: "Archive the wallet" do %>
                   <%= content_tag :i, "", class: "fa fa-trash" %>
               <%- end %>
+            <%- end %>
+
+            <% if wallet.validated? %>
+              <%= link_to new_ripple_wallet_transaction_path(wallet, 
+                    modal: {
+                      id: "ripples-wallet-#{wallet.id}-new-transaction",
+                      title: "New Transaction",
+                      template: "ripple/transactions/new"
+                    }
+                  ), class: "btn btn-default remote-modal", remote: true, title: "Create new transaction" do %>
+
+                  <%= content_tag :i, nil, class: "fa fa-payment" %>
+
+              <%- end %>
+              
             <%- end %>
 
           <%- end %>

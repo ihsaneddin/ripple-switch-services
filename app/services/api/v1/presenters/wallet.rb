@@ -6,6 +6,9 @@ module Api
         expose :id
         expose :label
         expose :address
+        expose :xrp_balance do |wallet, options| 
+          wallet.get_xrp_balance
+        end
         expose :deleted_at
         expose :created_at
         expose :updated_at
