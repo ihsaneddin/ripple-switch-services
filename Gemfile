@@ -111,6 +111,7 @@ group :development do
   gem 'capistrano3-nginx', require: false
   gem 'capistrano-upload-config', require: false
   gem 'capistrano-sidekiq', require: false
+  gem 'capistrano-figaro', require: false
 
   # simple mail opener for development
   gem 'letter_opener'
