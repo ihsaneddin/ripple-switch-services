@@ -35,6 +35,7 @@ require 'capistrano/puma'
 require 'capistrano/puma/nginx'
 require 'capistrano/upload-config'
 require 'capistrano/postgresql'
+require 'capistrano/figaro'
 
 install_plugin Capistrano::Puma  # Default puma tasks
 install_plugin Capistrano::Puma::Workers  # if you want to control the workers (in cluster mode)
