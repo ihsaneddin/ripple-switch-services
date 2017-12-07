@@ -34,10 +34,18 @@ module Ripples
       end
 
       def generate_address
-        resp = $rippleOfflineClient.wallet_propose
-        if resp.raw.present?
-          self.address= resp.raw.address
-          self.secret= resp.raw.secret
+        if Rails.env.development?
+          resp = $rippleOfflineClient.dev_wallet_propose
+          if resp.raw.present?
+            self.address= resp.raw.address
+            self.secret= resp.raw.secret
+          end
+        else
+          resp = $rippleOfflineClient.wallet_propose
+          if resp.raw.present?
+            self.address= resp.resp.public_key
+            self.secret= resp.resp.master_seed
+          end
         end
       end
 
