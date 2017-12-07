@@ -11,6 +11,14 @@ module RippleSwitchServices
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
+    envs = Rails.root.join("config", 'application.yml').to_s
+
+    if File.exists?(envs)
+      YAML.load_file(envs)[Rails.env].each do |key, value|
+        ENV[key] = value
+      end
+    end
+
     #
     # autoload handlers modules
     #
