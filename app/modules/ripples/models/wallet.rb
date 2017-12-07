@@ -43,7 +43,7 @@ module Ripples
         else
           resp = $rippleOfflineClient.wallet_propose
           if resp.raw.present?
-            self.address= resp.resp.public_key
+            self.address= resp.resp.account_id
             self.secret= resp.resp.master_seed
           end
         end
