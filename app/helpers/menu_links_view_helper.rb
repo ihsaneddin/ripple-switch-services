@@ -96,7 +96,7 @@ module MenuLinksViewHelper
     def admin_top_menu_links
       [
         {
-          name: user_avatar_image.html_safe,
+          name: current_account.try(:username),
           is_presented: true,
           route: '#',
           subs: [
