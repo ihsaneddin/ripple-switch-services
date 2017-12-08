@@ -120,7 +120,7 @@
   
  var addresses = <%= raw current_account.cached_wallet_collection %>;
 
- rippl = new ripple.RippleAPI({server: '<%= ENV["WRIPPLED_SERVER"] %>'});
+ rippl = new ripple.RippleAPI({server:'wss://s.altnet.rippletest.net:51233'});
 
  $(document).ready(function(){
     current_balance = 0;
