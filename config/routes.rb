@@ -25,6 +25,7 @@ Rails.application.routes.draw do
         put :active
         put :restore
       end
+      resources :transactions, only: [:new, :create]
     end
   end
 
