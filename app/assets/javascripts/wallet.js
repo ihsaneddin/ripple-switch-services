@@ -16,6 +16,8 @@ function fillTableAddresses(addresses){
           tr.find('a.activate')[0].click();
         }
       }      
-    })          
+    }).then(() => {
+      return api.disconnect();
+    });          
   });
 }

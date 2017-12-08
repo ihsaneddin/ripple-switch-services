@@ -1,0 +1,7 @@
+<%= form_group transaction, :destination, { label_class: "col-sm-2" } do %>
+  <%= f.text_field :destination, class: 'form-control', placeholder: 'Destination address' %>
+<%- end %>
+
+<%= form_group transaction, :amount, { label_class: "col-sm-2" } do %>
+  <%= f.number_field :amount, class: 'form-control', placeholder: 'Amount', step: 0.0000000001 %>
+<%- end %>

@@ -59,16 +59,23 @@
               <%- end %>
             <%- end %>
 
-            <% if wallet.validated? %>
+            <% if true#wallet.validated? %>
               <%= link_to new_ripple_wallet_transaction_path(wallet, 
                     modal: {
                       id: "ripples-wallet-#{wallet.id}-new-transaction",
                       title: "New Transaction",
-                      template: "ripple/transactions/new"
+                      template: "ripple/transactions/new",
+                      use_footer: true,
+                      use_submit_footer_buttons: true,
+                      cancel_button_text: "Cancel",
+                      submit_button_text: "Submit"
+                    },
+                    table: {
+                      id: "table-container-for-#{controller_name}"
                     }
                   ), class: "btn btn-default remote-modal", remote: true, title: "Create new transaction" do %>
 
-                  <%= content_tag :i, nil, class: "fa fa-payment" %>
+                  <%= content_tag :i, nil, class: "fa fa-minus" %>
 
               <%- end %>
               

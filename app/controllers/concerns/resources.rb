@@ -17,6 +17,7 @@ module Resources
     class_attribute :track_resource # to apply current_user object to context_resource#current_editor attribute. expect current_user helper method
     class_attribute :resource_actions # limit action on
     class_attribute :use_load_and_authorize_resources # cancan automation method
+    class_attribute :find_by
 
     self.context_resource_class = nil
     self.resource_actions = [:new, :create, :edit, :update, :show, :destroy]
@@ -27,6 +28,7 @@ module Resources
     self.use_fetch = false
     self.track_resource = false
     self.use_load_and_authorize_resources = false
+    self.find_by = :id
 
   end
 
@@ -83,7 +85,7 @@ module Resources
       if class_context.identifier.to_sym.eql?(:id)
         obj= resource_class_constant.fetch(params[class_context.identifier.to_sym])
       else
-        obj= resource_class_constant.send("fetch_by_#{class_context.identifier}", params[class_context.identifier.to_sym]).first
+        obj= resource_class_constant.send("fetch_by_#{class_context.find_by}", params[class_context.identifier.to_sym]).first
       end
       obj
     else
@@ -130,7 +132,7 @@ module Resources
     identifier = class_context.identifier
     if identifier.is_a? Symbol
       par = {}
-      par[identifier] = params[identifier]
+      par[class_context.find_by] = params[identifier]
       friendly_identifier? ? par[identifier] : par
     elsif identifier.is_a? Array
       Hash[identifier.map {|i|[i,params[i]]}]

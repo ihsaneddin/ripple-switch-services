@@ -49,16 +49,12 @@ module Ripples
         end
       end
 
-      def ripple_client
-        @ripple_client ||= Ripple.client.new(endpoint: ENV['RIPPLED_SERVER'], client_account: self.decrypted_address, client_secret: self.decrypted_secret)
-      end
-
       def qr_code
         @qr_code||= RQRCode::QRCode.new( self.address, :size => 4, :level => :h )
       end
 
       def ripple_client(opts ={})
-        @ripple_client ||= Ripple.client.new({ endpoint: "http://127.0.0.1:5005", client_account: self.address, client_secret: self.secret }.merge!(opts))
+        @ripple_client ||= Ripple.client({ endpoint: ENV['RIPPLED_SERVER'], client_account: self.address, client_secret: self.secret }.merge!(opts))
       end
 
       def get_xrp_balance

@@ -66,6 +66,22 @@ ActiveRecord::Schema.define(version: 20171205064819) do
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
   end
 
+  create_table "ripples_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "wallet_id"
+    t.string "destination"
+    t.string "tx_hash"
+    t.decimal "amount", precision: 15, scale: 2, default: "0.0"
+    t.string "currency"
+    t.string "state"
+    t.string "transaction_type"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_ripples_transactions_on_deleted_at"
+    t.index ["tx_hash"], name: "index_ripples_transactions_on_tx_hash"
+    t.index ["wallet_id"], name: "index_ripples_transactions_on_wallet_id"
+  end
+
   create_table "ripples_wallets", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "account_id"
     t.integer "sequence"
@@ -83,6 +99,7 @@ ActiveRecord::Schema.define(version: 20171205064819) do
     t.index ["account_id"], name: "index_ripples_wallets_on_account_id"
     t.index ["deleted_at"], name: "index_ripples_wallets_on_deleted_at"
     t.index ["label"], name: "index_ripples_wallets_on_label"
+    t.index ["validated"], name: "index_ripples_wallets_on_validated"
   end
 
   create_table "users_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

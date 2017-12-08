@@ -51,10 +51,14 @@
         <!-- end build sidebar menus -->
       <%- end %>
       <%= content_tag :div, class: "content-wrapper" do %>
+        
+        <%= flash_messages %>
         <%= content_header_section yield(:page_title) %>
+        
         <%= content_section do %>
           <%= yield %>
         <%- end %>
+
       <%- end %>
     <%- end %>
     <!-- end wrapper -->
