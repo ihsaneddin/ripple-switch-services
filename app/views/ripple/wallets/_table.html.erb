@@ -2,7 +2,7 @@
   <%= content_tag :table, class: 'table table-hover', id: "addresses" do %>
     <%= content_tag :thead do %>
       <%= content_tag :tr do %>
-        <% ["Sequence","Label", "Address", "Status", "Balance", "Pending Received", "Created At", ""].each do |header| %>
+        <% ["Sequence","Label", "Address", "Status", "Balance", "Pending Received", "Last Update", ""].each do |header| %>
           <%= content_tag :th, header %>  
         <%- end %>
       <%- end %>
@@ -94,12 +94,26 @@
 <script type="text/javascript">
   
   $(document).ready(function(){
-    addresses = [];
-    $.each( $("table#addresses td.td-address"), function( i, address ) {
-      addresses.push($(address).text());
-    })
+    addresses = <%= raw current_account.cached_wallet_collection %>
 
     fillTableAddresses(addresses);
+    
+    streams = {
+            "id": 1,
+            "command": "subscribe",
+            "accounts": addresses
+          }
+
+    var ws = new WebSocket('<%= ENV['WRIPPLED_SERVER'] %>');
+
+    ws.onopen = function(){
+      ws.send(JSON.stringify(streams))
+    };
+
+    ws.onmessage = function(e){
+      res = JSON.parse(e.data);
+    }
+
   });
 
 </script>

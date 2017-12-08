@@ -11,7 +11,7 @@ module Ripple
       else
         @wallets = resource_class_constant
       end
-      @wallets = @wallets.where(account: current_account).order("sequence ASC").page(params[:page]).per(5)
+      @wallets = @wallets.where(account: current_account).order("updated_at DESC").page(params[:page]).per(5)
       respond_to do |f|
         f.html
         f.js do 

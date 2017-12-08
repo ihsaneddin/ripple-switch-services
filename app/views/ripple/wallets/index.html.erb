@@ -10,7 +10,7 @@
       <%= content_tag :div, class: 'panel-body' do %>
         <%= content_tag :div, class: 'small-box bg-aqua' do %>
           <%= content_tag :div, class: 'text-center inner' do %>
-            <%= content_tag :h3, 150 %>
+            <%= content_tag :h3, 0, id: "total-balances" %>
           <%- end %>
         <%- end %>
       <%- end %>
@@ -25,7 +25,7 @@
       <%= content_tag :div, class: 'panel-body' do %>
         <%= content_tag :div, class: 'small-box bg-aqua' do %>
           <%= content_tag :div, class: 'text-center inner' do %>
-            <%= content_tag :h3, 150 %>
+            <%= content_tag :h3, 0 %>
           <%- end %>
         <%- end %>
       <%- end %>
@@ -115,3 +115,26 @@
   
   <%- end %>
 <%- end %>
+
+<script type="text/javascript">
+  
+ var addresses = <%= raw current_account.cached_wallet_collection %>;
+
+ rippl = new ripple.RippleAPI({server: '<%= ENV["WRIPPLED_SERVER"] %>'});
+
+ $(document).ready(function(){
+    current_balance = 0;
+    rippl.connect().then(() => {
+      $.each( addresses, function( i, address ) {
+        rippl.getBalances(address).then(balance => {
+          current_balance = current_balance + parseFloat(balance[0].value);
+          $("#total-balances").text(current_balance)
+        })//.then(() => { return rippleClient.disconnect() })
+      });
+    });
+
+ });
+
+
+
+</script>

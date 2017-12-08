@@ -14,7 +14,9 @@ module Ripple
           f.html { redirect_to ripple_wallets_path, notice: "Transaction is submitted" }
           f.js do 
             params[:notification]= { message: "Transaction is submitted" }
-            render_table "/shared/table/reload.js.erb"
+            if table_params_present?
+              render_table "/shared/table/reload.js.erb"
+            end
           end
         end
       else
@@ -47,6 +49,22 @@ module Ripple
     def transaction_params
       if params[:ripples_models_transaction].present?
         params.require(:ripples_models_transaction).permit(:amount, :currency, :destination)
+      end
+    end
+
+    def complete
+      @transaction = resource_class_constant.find_by_tx_hash(params[:id])
+      @transaction.complete!
+      respond_to do |f|
+        f.html{
+          redirect_to ripple_wallets_path, notice: "Transaction updated."
+        }
+        f.js {
+          params[:notification]= { message: "Transaction is completed." }
+          if table_params_present?
+            render_table "/shared/table/reload.js.erb"
+          end
+        }
       end
     end
 

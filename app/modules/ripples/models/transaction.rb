@@ -2,7 +2,7 @@ module Ripples
   module Models
     class Transaction < ::ApplicationRecord
 
-      belongs_to :wallet, class_name: "Ripples::Models::Wallet"
+      belongs_to :wallet, class_name: "Ripples::Models::Wallet", touch: true
     
       validates :wallet_id, presence: true
       validates :amount, :presence => true, numericality: { greater_than: 0 }
@@ -10,7 +10,11 @@ module Ripples
 
       before_create :submit
 
-      attr_accessor :issuer,:hashed_tx
+      attr_accessor :issuer
+
+      def complete!
+        update(status: "completed")
+      end
 
       def submit
         destination_amount = wallet.ripple_client.new_amount(value: "#{self.amount.floor}", currency: self.currency || 'XRP', issuer: self.issuer || self.destination )

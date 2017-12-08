@@ -1,6 +1,8 @@
 module Users
   module Models
     class Account < ::ApplicationRecord
+
+      self.caches_suffix_list= ['collection', 'wallet-collection']
     
       # devise modules definition
       # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -21,6 +23,9 @@ module Users
 
       before_validation :set_username, on: :create
 
+
+      has_many :wallets, class_name: "Ripples::Models::Wallet"
+
       #
       # upon registration, if username is not specified then generate from email
       # 
@@ -36,6 +41,12 @@ module Users
             suffix = suffix.to_i + 1
           end
         end        
+      end
+
+      def cached_wallet_collection(options={ condition: {} })
+        Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-wallet-collection", expires_in: 1.day) do 
+          wallets.map(&:address)
+        end
       end
 
       class << self
