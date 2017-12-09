@@ -25,7 +25,11 @@ Rails.application.routes.draw do
         put :active
         put :restore
       end
-      resources :transactions, only: [:new, :create]
+      resources :transactions, only: [:new, :create] do 
+        member do 
+          put :complete
+        end
+      end
     end
   end
 

@@ -42,8 +42,13 @@ module Ripple
       end
     end
 
+    def wallet_class
+      Ripples::Models::Wallet
+    end
+
     def wallet
-      @wallet ||= Ripples::Models::Wallet.where(account: current_account).find params[:wallet_id]
+      @wallet ||= wallet_class.where(account: current_account, id: params[:wallet_id])
+                  .or(wallet_class.where(account: current_account, encrypted_address: wallet_class.encrypt_address(params[:wallet_id]))).first
     end
 
     def transaction_params
@@ -53,18 +58,22 @@ module Ripple
     end
 
     def complete
-      @transaction = resource_class_constant.find_by_tx_hash(params[:id])
-      @transaction.complete!
-      respond_to do |f|
-        f.html{
-          redirect_to ripple_wallets_path, notice: "Transaction updated."
-        }
-        f.js {
-          params[:notification]= { message: "Transaction is completed." }
-          if table_params_present?
-            render_table "/shared/table/reload.js.erb"
-          end
-        }
+      @transaction = resource_class_constant.find_by_tx_hash(params[:id])#wallet.transactions.find_by_tx_hash(params[:id])
+      if @transaction
+        @transaction.complete! if @transaction.state.blank?
+        respond_to do |f|
+          f.html{
+            redirect_to ripple_wallets_path, notice: "Transaction updated."
+          }
+          f.js {
+            params[:notification]= { message: "Transaction is completed." }
+            if table_params_present?
+              render_table "/shared/table/reload.js.erb"
+            end
+          }
+        end
+      else
+        raise ActiveRecord::RecordNotFound
       end
     end
 

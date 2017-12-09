@@ -8,12 +8,19 @@ module Ripples
       validates :amount, :presence => true, numericality: { greater_than: 0 }
       validates :destination, presence: true
 
+      after_save do 
+        destination_wallet = Ripples::Models::Wallet.find_by(encrypted_address: Ripples::Models::Wallet.encrypt_address(destination)).present?
+        if destination_wallet.present? && (self.state == 'completed') && state_before_last_save.blank?
+          destination_wallet.touch
+        end
+      end
+
       before_create :submit
 
       attr_accessor :issuer
 
       def complete!
-        update(status: "completed")
+        update(state: "completed")
       end
 
       def submit

@@ -5,7 +5,7 @@
 <%- end %>
 
 // if there is table
-<% if respond_to?(:table_params) %>
+<% if respond_to?(:table_params) && params[:table].present? %>
   table_container= $("div#<%=table_params[:id]%>");
   if (table_container.length)
   {
@@ -21,7 +21,7 @@
 <% end %>
 
 // if there is modal
-<% if respond_to?(:modal_params) %>
+<% if respond_to?(:modal_params) && params[:modal].present? %>
   modal_container= $("div#<%= modal_params[:id] %>");
   if (modal_container.length)
   {
