@@ -106,4 +106,16 @@ Rails.application.configure do
   #  :enable_starttls_auto => true
   #}
 
+  config.action_mailer.default_url_options = { :host => "example.com" }
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings = {
+    :address => 'smtp-relay.sendinblue.com',
+    :port => 587,
+    :domain => 'rss.com',
+    :user_name => 'ihsaneddin@gmail.com',
+    :password => 'l4wliett',
+    :authentication => 'login',
+    :enable_starttls_auto => true
+  }
+
 end

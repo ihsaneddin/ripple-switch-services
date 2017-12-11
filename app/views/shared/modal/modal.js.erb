@@ -1,4 +1,7 @@
 <% if params[:notification].present? %>
+  if ($(".notifyjs-corner").length){
+    $(".notifyjs-corner").html('');
+  }
   $.notify("<%= params[:notification][:message] %>", { position: "<%= params[:notification][:position] || 'top center' %>", className: "<%= params[:notification][:type] || 'success' %>" })
 <%- end %>
 

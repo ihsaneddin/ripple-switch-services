@@ -24,3 +24,11 @@ $(function () {
     increaseArea: '20%' // optional
   });
 });
+
+// toggle alement
+$('body').on("click", '.toggle', function(e){
+
+  $(this).addClass('hidden');
+  $($(this).attr('data-toggle')).removeClass('hidden');
+
+});

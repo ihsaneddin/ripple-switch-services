@@ -58,7 +58,7 @@
               <%= link_to ripple_wallet_path(wallet.id, 
                 table: {
                   id: "table-container-for-#{controller_name}"
-                }), remote: true, class: 'btn btn-default', method: :delete, title: "Archive the wallet" do %>
+                }), remote: true, class: 'btn btn-default', method: :delete, title: "Archive the wallet", data: { confirm: "Are you sure?", title: "Alert" } do %>
                   <%= content_tag :i, "", class: "fa fa-trash" %>
               <%- end %>
             <%- end %>
@@ -72,7 +72,8 @@
                       use_footer: true,
                       use_submit_footer_buttons: true,
                       cancel_button_text: "Cancel",
-                      submit_button_text: "Submit"
+                      submit_button_text: "Submit",
+                      submit_data: { confirm: "Please enter your secret PIN", title: "Confirmation", pin: "true" }
                     },
                     table: {
                       id: "table-container-for-#{controller_name}"

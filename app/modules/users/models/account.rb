@@ -22,9 +22,33 @@ module Users
       has_secure_token :token
 
       before_validation :set_username, on: :create
+      before_create :generate_pin
 
+      attr_encrypted :pin, key: ENV['ENCRYPT_SECRET_KEY']
 
       has_many :wallets, class_name: "Ripples::Models::Wallet"
+
+      def generate_pin
+        while true
+          prop_pin = Base64.encode64(SecureRandom.random_bytes(12)).delete("\n")
+          unless self.class.find_by_encrypted_pin(self.class.encrypt_pin(prop_pin)).present? 
+            self.pin= prop_pin
+            break
+          end
+        end
+        self.pin
+      end
+
+      def change_pin
+        new_pin = generate_pin
+        if save
+          debugger
+          Users::Mailers::PinMailer.new_pin(self, new_pin).deliver
+          new_pin
+        else
+          return false
+        end
+      end
 
       #
       # upon registration, if username is not specified then generate from email

@@ -49,6 +49,11 @@
               <%= content_tag :b, "API Key", style: "color: #605854" %>
               <%= content_tag :span, current_account.token, class: "badge badge-danger" %>
             <%- end %>
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= link_to pin_path(current_account), class: "", method: :put, data: { confirm: "We will send a new Secret PIN to your email (#{current_account.email})", title: "Change secret PIN", commit: "Change" } do %>
+                Change Secret PIN <%= content_tag :i, '', class: "fa fa-key" %>
+              <%- end %>
+            <%- end %>
           <%- end %>
         
         <%- end %>

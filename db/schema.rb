@@ -124,6 +124,8 @@ ActiveRecord::Schema.define(version: 20171205064819) do
     t.datetime "locked_at"
     t.datetime "deleted_at"
     t.string "token"
+    t.string "encrypted_pin"
+    t.string "encrypted_pin_iv"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["confirmation_token"], name: "index_users_accounts_on_confirmation_token", unique: true

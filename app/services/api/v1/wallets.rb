@@ -50,6 +50,13 @@ module Api
           end
         end
 
+        desc "[PUT] restore a wallet by label or address or uuid"
+        put ":id/restore" do 
+          context_resource= resource_class_constant.only_deleted.where(id: params[:id]).or(resource_class_constant.only_deleted.where(label: params[:id])).or(resource_class_constant.only_deleted.where(encrypted_address: resource_class_constant.encrypt_address(params[:id]))).first
+          context_resource.restore
+          presenter context_resource
+        end
+
       end
 
 

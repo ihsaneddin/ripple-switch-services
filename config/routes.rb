@@ -33,4 +33,6 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :pins, only: [:update]
+
 end

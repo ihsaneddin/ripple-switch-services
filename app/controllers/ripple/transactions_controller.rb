@@ -6,7 +6,11 @@ module Ripple
     use_resource!
 
     helper_method :wallet
+
+    include Users::Helpers::TransactionAuthorization::Controller
   
+    before_action :authorize_transaction, only: [:create]
+
     def create
       @transaction.wallet = wallet
       if @transaction.save
@@ -61,19 +65,17 @@ module Ripple
       @transaction = resource_class_constant.find_by_tx_hash(params[:id])#wallet.transactions.find_by_tx_hash(params[:id])
       if @transaction
         @transaction.complete! if @transaction.state.blank?
-        respond_to do |f|
-          f.html{
-            redirect_to ripple_wallets_path, notice: "Transaction updated."
-          }
-          f.js {
-            params[:notification]= { message: "Transaction is completed." }
-            if table_params_present?
-              render_table "/shared/table/reload.js.erb"
-            end
-          }
-        end
-      else
-        raise ActiveRecord::RecordNotFound
+      end
+      respond_to do |f|
+        f.html{
+          redirect_to ripple_wallets_path, notice: "Transaction updated."
+        }
+        f.js {
+          params[:notification]= { message: "Transaction is completed." }
+          if table_params_present?
+            render_table "/shared/table/reload.js.erb"
+          end
+        }
       end
     end
 

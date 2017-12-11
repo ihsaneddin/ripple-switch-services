@@ -44,6 +44,8 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
       t.datetime :deleted_at, index: true
 
       t.string :token
+      t.string :encrypted_pin
+      t.string :encrypted_pin_iv
 
       t.timestamps null: false
     end

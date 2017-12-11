@@ -8,6 +8,8 @@ module Api
 
       use_resource!
 
+      include Users::Helpers::TransactionAuthorization::Grape
+
       helpers do 
 
         def transaction_params
@@ -23,18 +25,25 @@ module Api
 
       resources "wallets" do 
 
+        desc "[GET] get transaction collection"
+        get do 
+
+        end
+
         desc "[POST] create a new transaction"
         post do 
-          if context_resource.save
-            presenter context_resource
-          else
-            standard_validation_error details: context_resource.errors
+          authorize_transaction do
+            if context_resource.save
+              presenter context_resource
+            else
+              standard_validation_error details: context_resource.errors
+            end
           end
         end
 
-        desc "[GET] check transactions status"
+        desc "[GET] check transactions status by tx_hash"
         get ":id" do 
-          transaction_by_hash_or_id
+          
         end
 
       end

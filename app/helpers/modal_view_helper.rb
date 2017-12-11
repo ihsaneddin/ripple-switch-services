@@ -25,7 +25,7 @@ module ModalViewHelper
 
   def modal options={}
     suffix= suffix_template
-    options = {suffix: suffix, class: nil, id: "modal-#{suffix}", title: "Modal", use_footer: false, use_submit_footer_buttons: false, cancel_button_text: "Cancel", submit_button_text: "Submit" }.merge!(options)
+    options = {suffix: suffix, class: nil, id: "modal-#{suffix}", title: "Modal", submit_data: {}, use_footer: false, use_submit_footer_buttons: false, cancel_button_text: "Cancel", submit_button_text: "Submit" }.merge!(options)
     render layout: options[:layout] || default_modal_layout, template: modal_template, locals: options do 
       yield if block_given?
     end 
@@ -46,7 +46,16 @@ module ModalViewHelper
     content_tag(:div, class: "params-modal") do 
       inputs = []
       modal_params.each do |k,v|
-        inputs << hidden_field_tag("modal[#{k}]",v)
+        if v.is_a?(String)
+          inputs << hidden_field_tag("modal[#{k}]",v)
+        else 
+          has = v.try(:permit!).try(:to_h)
+          if has.is_a? Hash
+            v.each do |ke, va|
+              inputs << hidden_field_tag("modal[#{k}][#{ke}]", va)
+            end
+          end
+        end
       end
       inputs.join("\n").html_safe
     end

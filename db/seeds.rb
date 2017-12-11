@@ -13,7 +13,7 @@
 
 unless Rails.env.production?
 
-  account = Users::Models::Account.new email: 'user@mail.com', password: 'password', password_confirmation: 'password'
+  account = Users::Models::Account.new email: 'rss-user@mailinator.com', password: 'password', password_confirmation: 'password'
   account.skip_confirmation!
   account.save
 

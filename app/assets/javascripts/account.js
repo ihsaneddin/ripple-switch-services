@@ -33,6 +33,7 @@
 //= require ripple.min
 //= require custom
 //= require wallet
+//= require data-confirm
 
 (function(){
   // always pass csrf tokens on ajax calls

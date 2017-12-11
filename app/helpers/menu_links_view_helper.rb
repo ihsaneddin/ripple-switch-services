@@ -128,6 +128,12 @@ module MenuLinksViewHelper
           is_presented: true,
           icon: "fa fa-money",
           route: ripple_wallets_path
+        },
+        {
+          name: "API Documentation",
+          is_presented: true,
+          icon: "fa fa-file-code-o",
+          route: "#"
         }
       ]
     end

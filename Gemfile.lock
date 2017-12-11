@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ihsaneddin/ripple-lib-rpc-ruby
-  revision: d309fc2510fbfeaaea3611871417930e70c46b11
+  revision: 3018b15a9e10249df3b2b81ae07bc347f1164924
   specs:
     ripple_lib_rpc_ruby (0.0.0)
       eventmachine

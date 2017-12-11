@@ -2,6 +2,8 @@ module Ripples
   module Models
     class Transaction < ::ApplicationRecord
 
+      class_attribute :ripple_client
+
       belongs_to :wallet, class_name: "Ripples::Models::Wallet", touch: true
     
       validates :wallet_id, presence: true
@@ -40,6 +42,22 @@ module Ripples
           self.errors.add(:destination, e.message)
           throw :abort
         end
+      end
+
+      def status
+        wallet.ripple_client
+      end
+
+      class << self
+
+        def ripple_client
+          self.ripple_client||= Ripple.client({ endpoint: ENV['RIPPLED_SERVER'] })
+        end
+
+        def find_by_hash(tx_hash)
+          resp = ripple_client.account_tx(tx_hash)
+        end
+
       end
 
     end
