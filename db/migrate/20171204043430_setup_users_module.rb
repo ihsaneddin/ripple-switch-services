@@ -33,6 +33,8 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
       t.datetime :confirmation_sent_at
       t.string   :unconfirmed_email # Only if using reconfirmable
 
+      t.string   :token
+
       ## Lockable
       t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
       t.string   :unlock_token # Only if unlock strategy is :email or :both
@@ -48,6 +50,7 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
     add_index :users_accounts, :reset_password_token, unique: true
     add_index :users_accounts, :confirmation_token,   unique: true
     add_index :users_accounts, :unlock_token,         unique: true
+    add_index :users_accounts, :token, unique: true
 
   end
 

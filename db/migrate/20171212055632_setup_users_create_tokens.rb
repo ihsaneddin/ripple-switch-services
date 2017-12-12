@@ -15,11 +15,9 @@ class SetupUsersCreateTokens < ActiveRecord::Migration[5.1]
     add_index :users_tokens, :token
     add_index :users_tokens, :account_id
 
-    add_column :users_accounts, :token, :string
     add_column :users_accounts, :encrypted_pin, :string
     add_column :users_accounts, :encrypted_pin_iv, :string
 
-    add_index :users_accounts, :token, unique: true
   end
 
   def self.down
