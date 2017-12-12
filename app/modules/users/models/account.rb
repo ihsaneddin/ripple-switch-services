@@ -19,6 +19,8 @@ module Users
       #
       attr_accessor :login
 
+      validates :email, uniqueness: true, format: /\A[^@\s]+@[^@\s]+\z/ 
+
       has_secure_token :token
 
       before_validation :set_username, on: :create
@@ -27,6 +29,7 @@ module Users
       attr_encrypted :pin, key: ENV['ENCRYPT_SECRET_KEY']
 
       has_many :wallets, class_name: "Ripples::Models::Wallet"
+      has_many :tokens, class_name: "Users::Models::Token"
 
       def generate_pin
         while true
@@ -42,7 +45,6 @@ module Users
       def change_pin
         new_pin = generate_pin
         if save
-          debugger
           Users::Mailers::PinMailer.new_pin(self, new_pin).deliver
           new_pin
         else
@@ -87,6 +89,37 @@ module Users
 
       end
 
+      module RegistrationOrLoginByToken
+
+        extend ActiveSupport::Concern
+
+        def generate_token
+          self.tokens.create
+        end
+
+        module ClassMethods
+          
+          def registration_or_generate_login_by_token params={}
+            account = Users::Models::Account.find_by email: params[:email]
+            unless account
+              account = Users::Models::Account.new email: params[:email], password: SecureRandom.base64
+              account.skip_confirmation!
+              if account.save
+                Users::Mailers::PinMailer.new_pin(account, account.pin).deliver
+              end
+            end
+            return account.generate_token
+          end
+
+          def login_by_token token=nil
+            Users::Models::Token.find_and_authenticate token
+          end
+
+        end
+
+      end
+
+      include Users::Models::Account::RegistrationOrLoginByToken
 
     end
   end

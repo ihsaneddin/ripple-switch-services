@@ -226,7 +226,7 @@
 
     //added for PIN input
     if (options.pin){
-      var pin = $('<input/>', {"type": 'password', "class": settings.pinClass, "name": "pin"}).on('keyup', function () {
+      var pin = $('<input/>', {"type": 'password', "class": settings.pinClass, "name": "pin", "required": "true", "autocomplete": "off"}).on('keyup', function () {
       });
 
       modal.on('shown.bs.modal', function () {
@@ -358,6 +358,7 @@
               hpin = $('<input/>', {"type": 'password', "class": "hidden", "name": "pin", "value": pin_val})
               element.closest('.modal').find('form').append(hpin);
               element.addClass('confirmed');
+              element.removeAttr('data-confirm');
               element.trigger('click');
             }else{
               if (element.closest('form').length)

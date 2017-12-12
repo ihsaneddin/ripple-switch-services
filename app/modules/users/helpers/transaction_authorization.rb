@@ -8,7 +8,7 @@ module Users
 
         def authorize_transaction options={}
           pin = options[:pin] || params[:pin]
-          if Users::Models::Account.find_by(encrypted_pin: Users::Models::Account.encrypt_pin(pin))
+          if current_account.pin.eql?(pin)
             yield if block_given?
           else
             respond_to do |f|

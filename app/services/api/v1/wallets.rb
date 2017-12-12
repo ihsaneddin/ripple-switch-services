@@ -38,7 +38,7 @@ module Api
           end
         end
 
-        desc "[GET] get a wallet by uuid or label"
+        desc "[GET] get a wallet by uuid or label or address"
         get ':id' do 
           presenter context_resource
         end

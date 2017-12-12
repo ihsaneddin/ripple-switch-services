@@ -3,8 +3,8 @@ module NavViewHelper
   #
   # render nav top template
   #
-  def nav_top_bar
-    render layout: "/shared/navigation/topbar" do 
+  def nav_top_bar options={}
+    render layout: "/shared/navigation/topbar", locals: options do 
       yield if block_given?
     end
   end

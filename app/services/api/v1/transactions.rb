@@ -23,11 +23,11 @@ module Api
 
       end
 
-      resources "wallets" do 
+      resources "wallet/:wallet_id/transactions" do 
 
         desc "[GET] get transaction collection"
         get do 
-
+          
         end
 
         desc "[POST] create a new transaction"

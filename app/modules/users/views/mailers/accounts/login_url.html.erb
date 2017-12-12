@@ -1,0 +1,10 @@
+<%= content_tag :h3 do%>
+  <%= @account.email %>
+<%- end %>
+<%= content_tag :br %>
+
+<%= content_tag :p do %>
+
+  Here's your login URL : <%= link_to "sign in", token_session_account_url(account: { token: @token.token }) %>
+
+<%- end %>

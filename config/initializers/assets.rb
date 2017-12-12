@@ -35,7 +35,7 @@ Rails.application.config.assets.precompile += %w[*.png *.jpg *.jpeg *.gif]
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 
 # add stylesheets assets
-Rails.application.config.assets.precompile += %w( sessions.css account.css )
+Rails.application.config.assets.precompile += %w( sessions.css account.css landing.css )
 
 # add scripts assets
-Rails.application.config.assets.precompile += %w( sessions.js account.js custom.js wallet.js data-confirm.js )
+Rails.application.config.assets.precompile += %w( sessions.js account.js custom.js wallet.js data-confirm.js landing.js )

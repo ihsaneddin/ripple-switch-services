@@ -1,0 +1,70 @@
+<%= yield_content_for(:title, "Home") %>
+
+<% unless current_account %>
+
+  <% unless Rails.env.production? %>
+    <%= content_tag :div, class: 'row' do %>
+      <%= content_tag :div, class: "col-md-8 col-md-offset-2" do %>
+        <%= box_panel style: "box-warning box-solid" do |panel| %>
+
+          <%= _content_for(panel, :box_panel_body) do %>
+            <%= content_tag :p, "use mailinator to generate email for testing. eg: user@mailinator. then head to <a href='https://www.mailinator.com/v2/inbox.jsp?zone=public&query=user'>https://www.mailinator.com/v2/inbox.jsp?zone=public&query=user</a> to get login url".html_safe, class: "help-block", class: "text-center" %>
+          <%- end %>
+
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: 'col-md-4 col-md-offset-4' do %>
+    
+    <%= content_tag :div, class: 'text-center' do %>
+      <%= content_tag :h3, "Register/Login" %>
+    <%- end %>
+
+    <%= content_tag :div, class: "row" do %>
+
+      <%= box_panel do |panel| %>
+        
+        <%= _content_for panel, :box_panel_body do %>
+          <%= content_tag :p, "Sign in to start your session", class: 'login-box-msg' %>
+
+          <%= form_for(devise_resource, as: :account, url: account_session_path()) do |f| %>
+            
+            <%= form_group devise_resource, :login, options={ strict: false} do %>
+              <%= f.email_field :email, class: 'form-control', placeholder: 'Your email' %>
+              <%= content_tag :span, '', class: 'glyphicon glyphicon-envelope form-control-feedback' %>
+            <%- end %>
+
+            <% form_group devise_resource, :login, options={ strict: false} do %>
+              <%= f.text_field :login, class: 'form-control', placeholder: 'Your email' %>
+              <%= content_tag :span, '', class: 'glyphicon glyphicon-envelope form-control-feedback' %>
+            <%- end %>
+
+            <% form_group devise_resource, :password, options={ strict: false } do %>
+              <%= f.password_field :password, class: 'form-control', placeholder: 'Password' %>
+              <%= content_tag :span, '', class: 'glyphicon glyphicon-lock form-control-feedback' %>
+            <%- end %>
+
+            <%= content_tag :div, class: 'row' do %>
+              <% content_tag :div, class: 'col-xs-8' do %>
+                <%= content_tag :div, class: 'checkbox icheck' do %>
+                  <%= content_tag :label do %>
+                    <%= f.check_box :remember_me %> Remember Me
+                  <%- end %>
+                <%- end %>
+              <%- end %>
+              <%= content_tag :div, class: 'col-xs-4' do %>
+                <%= f.submit "Sign In", class: 'btn btn-primary btn-block btn-flat' %>
+              <%- end %>
+            <%- end %>
+          <%- end %>
+        <%- end %>
+
+      <%- end %>
+
+    <%- end %>
+
+  <%- end %>
+
+<%- end %>

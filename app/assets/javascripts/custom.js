@@ -18,7 +18,7 @@ $(document).ready(function(){
     currentModal = $(this).closest('div.modal');
     if (currentModal.length > 0){
       //check whether confirmed class is present
-      if ($(this).hasClass('confirmed')) {
+      if (!$(this).is('[data-confirm]')) {
         //currentModal.find('form').submit();
         if (currentModal.find('form button.modal-form-submit').length == 0){
           currentModal.find('form').append("<button class='hidden modal-form-submit' type='submit'>Submit</button>");
@@ -26,8 +26,8 @@ $(document).ready(function(){
         $(this).removeClass('confirmed');
         currentModal.find('form button.modal-form-submit').trigger("click");
       }
-      // check if data-confirmation is present
-      if ($(this).attr('data-confirmation')){
+      // check if data-confirm is present
+      if ($(this).is('[data-confirm]')){//attr('data-confirmation')){
          e.preventDefault();
       }
     }

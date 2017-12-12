@@ -2,11 +2,16 @@ Rails.application.routes.draw do
   #use_doorkeeper
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  root to: 'dashboard#index'
+  root to: 'home#index'
 
   devise_for :accounts, path: 'auth', skip: [:confirmations], class_name: "Users::Models::Account",
              path_names: {sign_in: 'login', sign_out: 'logout', password: 'passwords'},
              controllers: {sessions: 'sessions', passwords: 'passwords'}
+
+  # custom token login
+  devise_scope :account do
+    get 'sessions/token', to: "sessions#token", as: :token_session_account
+  end
 
   #namespace :api do 
   #  namespace :v1 do
@@ -34,5 +39,8 @@ Rails.application.routes.draw do
   end
 
   resources :pins, only: [:update]
+
+  # static pages
+  get "/pages/*page" => "pages#show", as: :page
 
 end

@@ -1,9 +1,11 @@
 <!-- Header Navbar: style can be found in header.less -->
 <%= content_tag :nav, class: 'navbar navbar-static-top' do %>
   
+  <% unless local_assigns[:hide_sidebar_toggle] %>
   <!-- Sidebar toggle button-->
-  <%= link_to "", class: "sidebar-toggle", data: { toggle: "offcanvas" } do %>
-    <%= content_tag :span, "Toggle navigation", class: "sr-only" %>
+    <%= link_to "", class: "sidebar-toggle", data: { toggle: "offcanvas" } do %>
+      <%= content_tag :span, "Toggle navigation", class: "sr-only" %>
+    <%- end %>
   <%- end %>
 
   <%= yield(:before_top_bar_links) %>

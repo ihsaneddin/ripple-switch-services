@@ -26,7 +26,7 @@
         <!-- if modal use default buttons footer start here -->
           <%= content_tag :p, class: 'text-center' do %>
             <% if modal_params[:use_submit_footer_buttons] %>
-              <%= content_tag :button, "#{modal_params[:submit_button_text]}", class: "submit-modal-form btn #{modal_params[:submit_button_style] || 'btn-info'}", data: modal_params[:submit_data].permit!.to_h %>
+              <%= content_tag :button, "#{modal_params[:submit_button_text]}", class: "submit-modal-form btn #{modal_params[:submit_button_style] || 'btn-info'}", data: modal_params[:submit_data].try(:permit!).try(:to_h) %>
               <%= content_tag :button, "#{modal_params[:cancel_button_text]}", class: "btn #{modal_params[:cancel_button_style] || 'btn-default'}", data: { dismiss: "modal" } %>
             <%- end %>
           <%- end %>

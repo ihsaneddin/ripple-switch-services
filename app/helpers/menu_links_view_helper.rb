@@ -74,7 +74,7 @@ module MenuLinksViewHelper
   #
   # return hash of top menu for specific user
   #
-  def top_menu_links(tipe=:admin)
+  def top_menu_links(tipe=:account)
     send("#{tipe}_top_menu_links") || [] 
   end
 
@@ -90,10 +90,27 @@ module MenuLinksViewHelper
   #
   module StaticList
 
+    def guest_top_menu_links
+      [
+        {
+          name: "Home",
+          is_presented: true,
+          icon: "fa fa-home",
+          route: root_path
+        },
+        {
+          name: "API Documentation",
+          icon: "fa fa-file-code-o",
+          route: page_path('documentation'),
+          is_presented: true
+        }
+      ]
+    end
+
     #
     # top menu admin definitions
     #
-    def admin_top_menu_links
+    def account_top_menu_links
       [
         {
           name: current_account.try(:username),
@@ -133,7 +150,7 @@ module MenuLinksViewHelper
           name: "API Documentation",
           is_presented: true,
           icon: "fa fa-file-code-o",
-          route: "#"
+          route: page_path('documentation')
         }
       ]
     end

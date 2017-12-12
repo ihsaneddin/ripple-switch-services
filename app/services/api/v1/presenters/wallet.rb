@@ -7,7 +7,11 @@ module Api
         expose :label
         expose :address
         expose :xrp_balance do |wallet, options| 
-          wallet.get_xrp_balance
+          begin
+            wallet.get_xrp_balance
+          rescue Ripple::MalformedTransaction
+            0       
+          end
         end
         expose :deleted_at
         expose :created_at

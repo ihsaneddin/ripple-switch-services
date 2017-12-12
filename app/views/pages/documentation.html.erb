@@ -1,0 +1,28 @@
+<%= yield_content_for(:title, "Home") %>
+<%= content_tag :div, class: "content-body" do %>
+  
+  <%= content_tag :section, id: "introduction" do %>
+    <%= content_tag :h2, class: "page-header" do %>
+      <%= link_to "API Documentation", "#introduction" %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :section, id: "content" do %>
+
+    <%= box_panel do |panel| %>
+
+      <%= _content_for panel, :box_panel_body do %>
+
+          <%= content_tag :p do %>
+            Base API URL : <%= content_tag :code, "http://39.59.107.166/" %>
+          <%- end %>
+
+          
+
+      <%- end %>
+
+    <%- end %>
+
+  <%- end %>
+
+<%- end %>
