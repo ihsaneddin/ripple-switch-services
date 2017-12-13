@@ -106,15 +106,25 @@ Rails.application.configure do
   #  :enable_starttls_auto => true
   #}
 
-  config.action_mailer.default_url_options = { :host => "example.com" }
-    config.action_mailer.delivery_method = :smtp
-    config.action_mailer.smtp_settings = {
-    :address => 'smtp-relay.sendinblue.com',
-    :port => 587,
-    :domain => 'rss.com',
-    :user_name => 'ihsaneddin@gmail.com',
-    :password => 'l4wliett',
-    :authentication => 'login',
+#  config.action_mailer.default_url_options = { :host => "http://139.59.107.166" }
+#    config.action_mailer.delivery_method = :smtp
+#    config.action_mailer.smtp_settings = {
+#    :address => 'smtp-relay.sendinblue.com',
+#    :port => 587,
+#    :domain => 'rss.com',
+#    :user_name => 'ihsaneddin@gmail.com',
+#    :password => 'l4wliett',
+#    :authentication => 'login',
+#    :enable_starttls_auto => true
+#  }
+
+  config.action_mailer.smtp_settings = {
+    :address              => 'smtp.sendgrid.net',
+    :port                 => 587,
+    :domain               => '139.59.107.166',
+    :user_name            => 'ihsaneddin',
+    :password             => 'l4wliett',
+    :authentication       => 'plain',
     :enable_starttls_auto => true
   }
 
