@@ -129,3 +129,5 @@ Rails.application.configure do
   }
 
 end
+
+Rails.application.routes.default_url_options[:host] = 'http://139.59.107.166'
