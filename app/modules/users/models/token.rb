@@ -8,7 +8,7 @@ module Users
       before_create :set_expired_at
 
       def set_expired_at
-        self.expired_at||= DateTime.now + 1.day
+        self.expired_at||= DateTime.now + 5.minutes
       end
 
       def generate_token
@@ -26,14 +26,18 @@ module Users
         self.delete if expired? 
       end
 
+      def expire!
+        self.delete
+      end
+
       class << self
 
         def find_and_authenticate token= nil
           token = find_by_token token
-          if token
-            token.expiring!
-            token.deleted?? nil : token
+          if token.present? && !token.expired?
+            token.expire!
           end
+          token
         end
 
       end

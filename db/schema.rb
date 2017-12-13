@@ -71,10 +71,13 @@ ActiveRecord::Schema.define(version: 20171212055632) do
     t.string "destination"
     t.string "tx_hash"
     t.decimal "amount", precision: 15, scale: 2, default: "0.0"
-    t.string "currency"
+    t.string "source_currency"
+    t.string "destination_currency"
     t.string "state"
     t.string "transaction_type"
+    t.integer "transaction_date"
     t.datetime "deleted_at"
+    t.boolean "validated", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_ripples_transactions_on_deleted_at"
@@ -86,8 +89,7 @@ ActiveRecord::Schema.define(version: 20171212055632) do
     t.uuid "account_id"
     t.integer "sequence"
     t.string "label"
-    t.string "encrypted_address"
-    t.string "encrypted_address_iv"
+    t.string "address"
     t.string "encrypted_secret"
     t.string "encrypted_secret_iv"
     t.string "seed"
@@ -97,6 +99,7 @@ ActiveRecord::Schema.define(version: 20171212055632) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_ripples_wallets_on_account_id"
+    t.index ["address"], name: "index_ripples_wallets_on_address", unique: true
     t.index ["deleted_at"], name: "index_ripples_wallets_on_deleted_at"
     t.index ["label"], name: "index_ripples_wallets_on_label"
     t.index ["validated"], name: "index_ripples_wallets_on_validated"
@@ -118,13 +121,13 @@ ActiveRecord::Schema.define(version: 20171212055632) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.string "token"
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "token"
     t.string "encrypted_pin"
     t.string "encrypted_pin_iv"
     t.index ["confirmation_token"], name: "index_users_accounts_on_confirmation_token", unique: true

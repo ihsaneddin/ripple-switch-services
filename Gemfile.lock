@@ -644,6 +644,7 @@ DEPENDENCIES
   devise_token_auth
   doorkeeper
   fastest-csv
+  faye-websocket
   figaro
   fog
   friendly_id

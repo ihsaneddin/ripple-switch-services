@@ -1,5 +1,3 @@
-require 'rqrcode'
-
 module Ripples
   module Models
     class Wallet < ::ApplicationRecord
@@ -7,7 +5,6 @@ module Ripples
       before_validation :generate_address, on: :create
       before_validation :set_sequence, on: :create
 
-      attr_encrypted :address, key: ENV['ENCRYPT_SECRET_KEY']
       attr_encrypted :secret, key: ENV['ENCRYPT_SECRET_KEY']
 
       include PgSearch
@@ -16,16 +13,27 @@ module Ripples
       belongs_to :account, class_name: "Users::Models::Account"
       has_many :transactions, class_name: "Ripples::Models::Transaction"
 
-      validates :label, uniqueness: { scope: :account_id }, unless: Proc.new { |w| w.deleted_at.blank? }
+      validates :label, uniqueness: { scope: :account_id }#, unless: Proc.new { |w| w.deleted_at.blank? }
+
+      self.caches_suffix_list= ['wallet-cached-address', "collection"]
 
       class << self
 
         def filter(params={})
           res = cached_collection.where(nil)
-          if params[:label]
+          if params[:label].present?
             res = res.search_by_label(params[:label])
           end
+          if params[:address].present?
+            res = res.where(address: params[:address])
+          end
           res
+        end
+
+        def address_collection
+          #Rails.cache.fetch("wallet-cached-address-collection", expires_in: 1.year) do 
+            select('address', 'deleted_at').map(&:address).compact
+          #end
         end
 
       end
@@ -48,10 +56,6 @@ module Ripples
             self.secret= resp.resp.master_seed
           end
         end
-      end
-
-      def qr_code
-        @qr_code||= RQRCode::QRCode.new( self.address, :size => 4, :level => :h )
       end
 
       def ripple_client(opts ={})

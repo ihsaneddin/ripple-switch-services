@@ -4,25 +4,29 @@ module Ripples
 
       class_attribute :ripple_client
 
-      belongs_to :wallet, class_name: "Ripples::Models::Wallet", touch: true
+      belongs_to :wallet, class_name: "Ripples::Models::Wallet", touch: true, optional: true
     
-      validates :wallet_id, presence: true
+      #validates :wallet_id, presence: true
       validates :amount, :presence => true, numericality: { greater_than: 0 }
       validates :destination, presence: true
 
       after_save do 
-        destination_wallet = Ripples::Models::Wallet.find_by(encrypted_address: Ripples::Models::Wallet.encrypt_address(destination)).present?
-        if destination_wallet.present? && (self.state == 'completed') && state_before_last_save.blank?
+        destination_wallet = Ripples::Models::Wallet.find_by(address: destination).present?
+        if destination_wallet.present? && (self.state == 'closed') && state_before_last_save.blank?
           destination_wallet.touch
         end
       end
 
-      before_create :submit
+      before_create :submit, unless: :skip_submit
 
-      attr_accessor :issuer
+      attr_accessor :issuer, :skip_submit
 
       def complete!
-        update(state: "completed")
+        update(state: "closed")
+      end
+
+      def completed?
+        state == 'closed'
       end
 
       def submit
@@ -44,8 +48,8 @@ module Ripples
         end
       end
 
-      def status
-        wallet.ripple_client
+      def xrp_amount
+        (self.amount * 1000000).floor
       end
 
       class << self

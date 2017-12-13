@@ -98,7 +98,7 @@
 
 <script type="text/javascript">
 
-  var addresses = <%= raw current_account.cached_wallet_collection %>;
+  var addresses = <%= raw current_account.cached_address_collection %>;
 
   rippl = new ripple.RippleAPI({server:'wss://s.altnet.rippletest.net:51233'});
 
@@ -115,14 +115,14 @@
   });
   
   $(document).ready(function(){
-    var addresses = <%= raw current_account.cached_wallet_collection %>
+    var addresses = <%= raw current_account.cached_address_collection %>
 
     fillTableAddresses(addresses);
     
     streams = {
-            "id": 1,
+            "id": "<%= current_account.id %>",
             "command": "subscribe",
-            "accounts": addresses
+            "accounts_proposed": addresses
           }
 
     var ws = new WebSocket('wss://s.altnet.rippletest.net:51233');

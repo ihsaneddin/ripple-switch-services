@@ -21,18 +21,28 @@ module Api
           @transaction ||= resource_class_constant.where(id: params[:id]).or(resource_class_constant.where(tx_hash: params[:id])).first
         end
 
+        def merged_filter_params
+          filter_params.merge!(wallet_ids: current_accont.wallet_collection.map(&:id))
+        end
+
+        def wallet
+          @wallet ||= current_accont.wallets.where(address: params[:wallet_id]).or(where(uuid: params[:wallet_id])).first || raise ActiveRecord::RecordNotFound
+        end
+
       end
 
       resources "wallet/:wallet_id/transactions" do 
 
         desc "[GET] get transaction collection"
         get do 
-          
+          transactions = resource_class_constant.filter(merged_filter_params)
+          presenter paginate(wallets)
         end
 
         desc "[POST] create a new transaction"
         post do 
           authorize_transaction do
+            context_resource.wallet = waller
             if context_resource.save
               presenter context_resource
             else
@@ -41,7 +51,7 @@ module Api
           end
         end
 
-        desc "[GET] check transactions status by tx_hash"
+        desc "[GET] get a transaction object by tx_hash or uuid"
         get ":id" do 
           
         end

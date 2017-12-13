@@ -34,6 +34,8 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
       t.string   :unconfirmed_email # Only if using reconfirmable
 
       t.string   :token
+      t.string :encrypted_pin
+      t.string :encrypted_pin_iv
 
       ## Lockable
       t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
@@ -52,10 +54,25 @@ class SetupUsersModule < ActiveRecord::Migration[5.1]
     add_index :users_accounts, :unlock_token,         unique: true
     add_index :users_accounts, :token, unique: true
 
+    # create tokens table
+    create_table :users_tokens, id: :uuid  do |t|
+      t.string :token
+      t.uuid :account_id
+      t.datetime :expired_at, null: false
+
+      t.datetime :deleted_at, index: true
+      
+      t.timestamps null: false
+    end
+
+    add_index :users_tokens, :token
+    add_index :users_tokens, :account_id
+
   end
 
   def self.down
-    drop_table :users_accounts  
+    drop_table :users_accounts
+    drop_table :users_tokens
   end
 
 end

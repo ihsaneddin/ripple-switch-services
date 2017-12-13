@@ -48,7 +48,7 @@ $(document).ready(function(){
   $('.fa-sign-out').closest('a').attr('data-method', 'delete');
 
   // toggle alement
-  $('body').on("click", '.toggle', function(e){
+  $(document).on("click", '.toggle', function(e){
 
     $(this).addClass('hidden');
     $($(this).attr('data-toggle')).removeClass('hidden');

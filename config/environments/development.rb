@@ -23,7 +23,7 @@ Rails.application.configure do
   else
     config.action_controller.perform_caching = false
 
-    config.cache_store = :null_store
+    config.cache_store= :redis_store, "redis://localhost:6379/1"
   end
 
   config.action_controller.default_url_options = { host: "localhost", port: 3000 }
@@ -50,7 +50,7 @@ Rails.application.configure do
 
   # mailer
   config.action_mailer.default_url_options = { :host => "localhost", port: 3000 }
-  #config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.delivery_method = :letter_opener
   #config.action_mailer.smtp_settings = {
   #   address:              'smtp.gmail.com',
   #   port:                 587,

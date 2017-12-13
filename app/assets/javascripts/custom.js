@@ -13,7 +13,7 @@ $(document).ready(function(){
   //
   // to submit modal form with btn with class submit-modal-form
   //
-  $('body').on("click", "button.submit-modal-form", function(e){
+  $(document).on("click", "button.submit-modal-form", function(e){
 
     currentModal = $(this).closest('div.modal');
     if (currentModal.length > 0){
@@ -37,7 +37,7 @@ $(document).ready(function(){
   //
   // show modal if already exists on click modal links
   //
-  $("body").on("click", "a.remote-modal", function(e){
+  $(document).on("click", "a.remote-modal", function(e){
     modal_id = $.urlParam(decodeURIComponent($(this).attr('href')), 'modal[id]');
     if ((modal_id != null) && (modal_id.trim()) )
     {

@@ -65,6 +65,39 @@ module Ripple
       end
     end
 
+    def edit
+      respond_to do |f|
+        f.html
+        f.js {
+          if modal_params_present?
+            render_modal
+          end
+        }
+      end
+    end
+
+    def update
+      if @wallet.save
+        respond_to do |f|
+          f.html { redirect_to ripple_wallets_path, notice: "Success" }
+          f.js do 
+            params[:notification]= { message: "Wallet updated!" }
+            render_table "/shared/table/reload.js.erb"
+          end
+        end
+      else
+        respond_to do |f|
+          f.html { render :new }
+          f.js do 
+            if modal_params_present?
+              params[:notification]= { message: "Failed to update wallet!", type: "danger" }
+              render_modal
+            end
+          end
+        end
+      end
+    end
+
     def destroy
       if @wallet.destroy
         respond_to do |f|

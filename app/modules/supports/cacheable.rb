@@ -29,7 +29,7 @@ module Supports
         if options[:condition].present?
           Rails.cache.delete(self.cached_name)
         end
-        Rails.cache.fetch("#{self.cached_name}-collection", expires_in: 1.day) do 
+        Rails.cache.fetch("#{self.cached_name}-collection", expires_in: 1.day ) do 
           self.order("#{self.table_name}.updated_at DESC").where(options[:condition]).load
         end
       end

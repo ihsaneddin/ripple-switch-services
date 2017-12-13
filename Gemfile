@@ -158,3 +158,4 @@ gem 'rqrcode'
 
 gem 'attr_encrypted'
 gem "figaro"
+gem 'faye-websocket'

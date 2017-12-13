@@ -128,6 +128,8 @@ Rails.application.configure do
 #    :enable_starttls_auto => true
 #  }
 
+
+
   config.action_mailer.smtp_settings = {
      address:              'smtp.gmail.com',
      port:                 587,

@@ -2,7 +2,8 @@ module Users
   module Models
     class Account < ::ApplicationRecord
 
-      self.caches_suffix_list= ['collection', 'wallet-collection']
+      self.caches_suffix_list= ['collection']
+      self.object_caches_suffix= ['wallet-collection']
     
       # devise modules definition
       # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -69,9 +70,13 @@ module Users
         end        
       end
 
-      def cached_wallet_collection(options={ condition: {} })
+      def cached_address_collection
+        cached_wallet_collection.map(&:address)
+      end
+
+      def cached_wallet_collection
         Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-wallet-collection", expires_in: 1.day) do 
-          wallets.map(&:address)
+          wallets.load
         end
       end
 
