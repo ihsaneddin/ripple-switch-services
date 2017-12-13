@@ -118,14 +118,24 @@ Rails.application.configure do
 #    :enable_starttls_auto => true
 #  }
 
+#  config.action_mailer.smtp_settings = {
+#    :address              => 'smtp.sendgrid.net',
+#    :port                 => 587,
+#    :domain               => '139.59.107.166',
+#    :user_name            => 'ihsaneddin',
+#    :password             => 'l4wliett',
+#    :authentication       => 'plain',
+#    :enable_starttls_auto => true
+#  }
+
   config.action_mailer.smtp_settings = {
-    :address              => 'smtp.sendgrid.net',
-    :port                 => 587,
-    :domain               => '139.59.107.166',
-    :user_name            => 'ihsaneddin',
-    :password             => 'l4wliett',
-    :authentication       => 'plain',
-    :enable_starttls_auto => true
+     address:              'smtp.gmail.com',
+     port:                 587,
+     domain:               '139.59.107.166',
+     user_name:            'tmtechnologyindonesia@gmail.com',
+     password:             'surapati157',
+     authentication:       'plain',
+     enable_starttls_auto: true
   }
 
 end
