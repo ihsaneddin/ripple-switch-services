@@ -9,6 +9,7 @@ class SessionsController < ::Devise::SessionsController
   def generate_login_url
     @token = Users::Models::Account.registration_or_generate_login_by_token account_params
     if @token.nil?
+      self.resource = resource_class.new
       respond_to do |f|
         f.html { render :new, error: "An error ocurred." }
       end
