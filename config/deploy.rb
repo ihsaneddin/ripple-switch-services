@@ -62,7 +62,22 @@ set :puma_daemonize, true
 set :ssh_options, { forward_agent: true, auth_methods: %w(publickey) }
 
 namespace :deploy do
+  
   before 'check:linked_files', 'puma:config'
   #before 'check:linked_files', 'puma:nginx_config'
   #after 'puma:restart', 'nginx:restart'
+
+  desc 'Start SubscriptionsManagerWorker class'
+  task :start_subscriptions_manager_worker do
+    on roles(:all) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, 'subscriptions_manager_worker:start'
+        end
+      end
+    end
+  end
+
+  after :publishing, :start_subscriptions_manager_worker
+
 end

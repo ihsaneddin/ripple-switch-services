@@ -107,10 +107,13 @@ set :sidekiq_options_per_process => ["--queue subscriptions1", "--queue subscrip
 set :sidekiq_concurrency => 15#nil
 set :sidekiq_monit_templates_path => 'config/deploy/templates'
 set :sidekiq_monit_conf_dir => '/etc/monit/conf.d'
-set :sidekiq_monit_use_sudo => true
+set :sidekiq_monit_use_sudo => false
 set :monit_bin => '/usr/bin/monit'
 set :sidekiq_monit_default_hooks => true
 set :sidekiq_service_name => "sidekiq_#{fetch(:application)}_#{fetch(:sidekiq_env)}"
 set :sidekiq_cmd => "#{fetch(:bundle_cmd, "bundle")} exec sidekiq" # Only for capistrano2.5
 set :sidekiqctl_cmd => "#{fetch(:bundle_cmd, "bundle")} exec sidekiqctl" # Only for capistrano2.5
 set :sidekiq_user => "deploy" #user to run sidekiq as
+
+
+set :pty,  false

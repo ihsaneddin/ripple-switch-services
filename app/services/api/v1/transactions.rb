@@ -26,7 +26,9 @@ module Api
         end
 
         def wallet
-          @wallet ||= current_accont.wallets.where(address: params[:wallet_id]).or(where(uuid: params[:wallet_id])).first || raise ActiveRecord::RecordNotFound
+          @wallet ||= current_accont.wallets.where(address: params[:wallet_id]).or(where(uuid: params[:wallet_id])).first
+          return @wallet if @wallet
+          raise ActiveRecord::RecordNotFound
         end
 
       end
