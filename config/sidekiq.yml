@@ -13,6 +13,9 @@
 # even put in dynamic logic, like a host-specific queue.
 # http://www.mikeperham.com/2013/11/13/advanced-sidekiq-host-specific-queues/
 :queues:
+  - subscriptions1
+  - subscriptions2
+  - subscriptions_manager
   - critical
   - default
   - low

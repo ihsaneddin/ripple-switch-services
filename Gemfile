@@ -111,8 +111,7 @@ group :development do
   gem 'capistrano3-nginx', require: false
   gem 'capistrano-upload-config', require: false
   gem 'capistrano-sidekiq', require: false
-  gem 'capistrano-figaro', require: false
-
+  
   # simple mail opener for development
   gem 'letter_opener'
 end
@@ -156,6 +155,8 @@ gem 'active_model_serializers', '~> 0.10.0'
 
 gem 'rqrcode'
 
+# ActiveRecord attr encryption support
 gem 'attr_encrypted'
-gem "figaro"
+
+# websocket support
 gem 'faye-websocket'

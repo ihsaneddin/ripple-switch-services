@@ -13,9 +13,15 @@ module Ripples
       belongs_to :account, class_name: "Users::Models::Account"
       has_many :transactions, class_name: "Ripples::Models::Transaction"
 
-      validates :label, uniqueness: { scope: :account_id }#, unless: Proc.new { |w| w.deleted_at.blank? }
+      validates :label, uniqueness: { scope: :account_id, allow_blank: true }#, unless: Proc.new { |w| w.deleted_at.blank? }
 
       self.caches_suffix_list= ['wallet-cached-address', "collection"]
+
+      notify_changes_after :create
+
+      def should_notify?
+        self.created_at == self.updated_at
+      end
 
       class << self
 
@@ -31,9 +37,9 @@ module Ripples
         end
 
         def address_collection
-          #Rails.cache.fetch("wallet-cached-address-collection", expires_in: 1.year) do 
+          Rails.cache.fetch("wallet-cached-address-collection", expires_in: 1.day) do 
             select('address', 'deleted_at').map(&:address).compact
-          #end
+          end
         end
 
       end
@@ -44,13 +50,13 @@ module Ripples
 
       def generate_address
         if Rails.env.development?
-          resp = $rippleOfflineClient.dev_wallet_propose
+          resp = $rippleClient.dev_wallet_propose
           if resp.raw.present?
             self.address= resp.raw.address
             self.secret= resp.raw.secret
           end
         else
-          resp = $rippleOfflineClient.wallet_propose
+          resp = $rippleClient.wallet_propose
           if resp.raw.present?
             self.address= resp.resp.account_id
             self.secret= resp.resp.master_seed
@@ -59,11 +65,10 @@ module Ripples
       end
 
       def ripple_client(opts ={})
-        @ripple_client ||= Ripple.client({ endpoint: ENV['RIPPLED_SERVER'], client_account: self.address, client_secret: self.secret }.merge!(opts))
-      end
-
-      def get_xrp_balance
-        ripple_client.xrp_balance        
+        @ripple_client ||= $rippleClient
+        @ripple_client.client_account= self.address
+        @ripple_client.client_secret= self.secret
+        @ripple_client
       end
 
     end

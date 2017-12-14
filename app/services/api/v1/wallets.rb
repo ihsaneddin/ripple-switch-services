@@ -16,7 +16,7 @@ module Api
         end
 
         def existing_resource_finder
-          resource_class_constant.where(id: params[:id]).or(resource_class_constant.where(label: params[:id])).first
+          resource_class_constant.where(id: params[:id]).or(resource_class_constant.where(label: params[:id])).or(resource_class_constant.where(address: params[:id])).first
         end
 
       end
@@ -43,7 +43,7 @@ module Api
           presenter context_resource
         end
 
-        desc "[DELETE] archive a wallet by label or uuid"
+        desc "[DELETE] archive a wallet by label or uuid or address"
         delete ":id" do 
           if context_resource.destroy
             presenter context_resource

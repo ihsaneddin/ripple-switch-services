@@ -2,8 +2,6 @@ module Ripples
   module Models
     class Transaction < ::ApplicationRecord
 
-      class_attribute :ripple_client
-
       belongs_to :wallet, class_name: "Ripples::Models::Wallet", touch: true, optional: true
     
       #validates :wallet_id, presence: true
@@ -54,12 +52,17 @@ module Ripples
 
       class << self
 
-        def ripple_client
-          self.ripple_client||= Ripple.client({ endpoint: ENV['RIPPLED_SERVER'] })
-        end
-
-        def find_by_hash(tx_hash)
-          resp = ripple_client.account_tx(tx_hash)
+        def filter(params={})
+          res = cached_collection
+          if params[:wallet_id].present?
+            res = res.join(:wallet).where("ripples_wallets.id = :wallet_id or ripples_wallets.address = :wallet_id", params[:wallet_id])
+          else
+            res = res.where(wallet_id: params[:wallet_ids] || [])
+          end
+          if params[:tx_hash].present?
+            res = res.where(tx_hash: params[:tx_hash])
+          end
+          res
         end
 
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171212055632) do
+ActiveRecord::Schema.define(version: 20171205064819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -122,14 +122,14 @@ ActiveRecord::Schema.define(version: 20171212055632) do
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
     t.string "token"
+    t.string "encrypted_pin"
+    t.string "encrypted_pin_iv"
     t.integer "failed_attempts", default: 0, null: false
     t.string "unlock_token"
     t.datetime "locked_at"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "encrypted_pin"
-    t.string "encrypted_pin_iv"
     t.index ["confirmation_token"], name: "index_users_accounts_on_confirmation_token", unique: true
     t.index ["deleted_at"], name: "index_users_accounts_on_deleted_at"
     t.index ["email"], name: "index_users_accounts_on_email", unique: true

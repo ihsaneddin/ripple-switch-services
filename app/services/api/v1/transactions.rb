@@ -17,7 +17,7 @@ module Api
           posts.require(:transaction).permit!(:amount, :destination)
         end
 
-        def transaction_by_hash_or_id
+        def existing_resource_finder
           @transaction ||= resource_class_constant.where(id: params[:id]).or(resource_class_constant.where(tx_hash: params[:id])).first
         end
 
@@ -42,7 +42,7 @@ module Api
         desc "[POST] create a new transaction"
         post do 
           authorize_transaction do
-            context_resource.wallet = waller
+            context_resource.wallet = wallet
             if context_resource.save
               presenter context_resource
             else
@@ -53,11 +53,10 @@ module Api
 
         desc "[GET] get a transaction object by tx_hash or uuid"
         get ":id" do 
-          
+          presenter context_resource
         end
 
       end
-
 
     end
   end
