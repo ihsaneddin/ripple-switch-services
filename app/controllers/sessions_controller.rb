@@ -11,7 +11,7 @@ class SessionsController < ::Devise::SessionsController
     if @token.nil?
       self.resource = resource_class.new
       respond_to do |f|
-        flash[:error]= "An error ocurred."
+        flash[:error]= "Wrong email"
         f.html { render :new }
       end
     else

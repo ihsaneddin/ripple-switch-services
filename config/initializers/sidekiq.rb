@@ -7,7 +7,8 @@ Sidekiq::Web.use(Rack::Auth::Basic) do |user, password|
   if Rails.env.development?
     [user, password] == ['admin', 'password']
   else
-    [user, password] == [ENV['SIDEKIQ_WEB_NAME'], ENV['SIDEKIQ_WEB_PASS']]
+    #[user, password] == [ENV['SIDEKIQ_WEB_NAME'], ENV['SIDEKIQ_WEB_PASS']]
+    [user, password] == ['admin', 'password']
   end
 end
 
