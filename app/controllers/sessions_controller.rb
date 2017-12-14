@@ -11,7 +11,8 @@ class SessionsController < ::Devise::SessionsController
     if @token.nil?
       self.resource = resource_class.new
       respond_to do |f|
-        f.html { render :new, error: "An error ocurred." }
+        flash[:error]= "An error ocurred."
+        f.html { render :new }
       end
     else
       Users::Mailers::AccountMailer.login_url(@token).deliver
