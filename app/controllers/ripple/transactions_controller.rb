@@ -52,7 +52,7 @@ module Ripple
 
     def wallet
       @wallet ||= wallet_class.where(account: current_account, id: params[:wallet_id])
-                  .or(wallet_class.where(account: current_account, encrypted_address: wallet_class.encrypt_address(params[:wallet_id]))).first
+                  .or(wallet_class.where(account: current_account, address: params[:wallet_id])).first
     end
 
     def transaction_params

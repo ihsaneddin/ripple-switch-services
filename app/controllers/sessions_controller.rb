@@ -15,7 +15,7 @@ class SessionsController < ::Devise::SessionsController
         f.html { render :new }
       end
     else
-      Users::Mailers::AccountMailer.login_url(@token).deliver
+      Users::Mailers::AccountMailer.delay.login_url(@token.token)
       respond_to do |f|
         f.html{ redirect_to root_path, notice: "Login URL has been sent to your e-mail" }
       end

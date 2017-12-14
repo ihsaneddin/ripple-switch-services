@@ -4,10 +4,12 @@ module Users
       
       default template_path: "pins"
       
-      def new_pin(account, pin)
-        @pin = pin
-        @account= account
-        mail to: account.email, subject: 'New PIN'
+      def new_pin(account_id)
+        @account= Users::Models::Account.find_by_id account_id
+        if @account
+          @pin = @account.pin
+          mail to: account.email, subject: 'New PIN'
+        end
       end
     
     end
