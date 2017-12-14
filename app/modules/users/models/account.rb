@@ -113,7 +113,7 @@ module Users
                 Users::Mailers::PinMailer.new_pin(account, account.pin).deliver
               end
             end
-            return account.generate_token
+            return account.generate_token if account.persisted?
           end
 
           def login_by_token token=nil
