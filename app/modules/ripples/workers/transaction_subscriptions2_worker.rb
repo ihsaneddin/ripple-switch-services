@@ -29,7 +29,6 @@ module Ripples
           end
 
           ws.on :message do |event|
-            p [:methods, ws.methods]
             p [:message, event.data]
             res = Hashie::Mash.new(JSON.parse(event.data))
             

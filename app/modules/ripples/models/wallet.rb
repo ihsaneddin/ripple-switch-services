@@ -15,7 +15,7 @@ module Ripples
 
       validates :label, uniqueness: { scope: :account_id, allow_blank: true }#, unless: Proc.new { |w| w.deleted_at.blank? }
 
-      self.caches_suffix_list= ['wallet-cached-address', "collection"]
+      self.caches_suffix_list= ['address-collection', "collection"]
 
       notify_changes_after :create
 
@@ -37,7 +37,7 @@ module Ripples
         end
 
         def address_collection
-          Rails.cache.fetch("wallet-cached-address-collection", expires_in: 1.day) do 
+          Rails.cache.fetch("address-collection", expires_in: 1.day) do 
             select('address', 'deleted_at').map(&:address).compact
           end
         end
