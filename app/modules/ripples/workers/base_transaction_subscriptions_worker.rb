@@ -67,7 +67,7 @@ module Ripples
                           counter_parties.each do |node|
                             modified_node= node.ModifiedNode
                             
-                            next unless modified_node.FinalFields.try(:Account)
+                            next unless modified_node.try(:FinalFields).try(:Account)
                             
                             affectedAccount = Ripples::Models::Wallet.find_by_address modified_node.FinalFields.Account
 
