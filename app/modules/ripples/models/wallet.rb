@@ -10,7 +10,7 @@ module Ripples
       include PgSearch
       pg_search_scope :search_by_label, :against => [:label]
 
-      belongs_to :account, class_name: "Users::Models::Account"
+      belongs_to :account, class_name: "Users::Models::Account",touch: true
       has_many :transactions, class_name: "Ripples::Models::Transaction"
 
       validates :label, uniqueness: { scope: :account_id, allow_blank: true }#, unless: Proc.new { |w| w.deleted_at.blank? }

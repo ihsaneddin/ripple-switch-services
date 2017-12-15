@@ -91,29 +91,28 @@ set :puma_daemonize, true
 # sidekiq configurations
 #
 
-set :sidekiq_default_hooks => true
-set :sidekiq_pid => File.join(shared_path, 'tmp', 'pids', 'sidekiq.pid') # ensure this path exists in production before deploying.
-set :sidekiq_env => fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
-set :sidekiq_log => File.join(shared_path, 'log', 'sidekiq.log')
-set :sidekiq_options => nil
-set :sidekiq_require => nil
-set :sidekiq_tag => nil
-set :sidekiq_config => nil#"config/sidekiq.yml" # if you have a config/sidekiq.yml, do not forget to set this. 
-set :sidekiq_queue => nil
-set :sidekiq_timeout => 10
-set :sidekiq_role => :app
-set :sidekiq_processes => 4
-set :sidekiq_options_per_process => ["--queue subscriptions1", "--queue subscriptions2", "--queue subscriptions_manager", "--queue critical --queue default --queue low --queue mailers"]
+#set :sidekiq_default_hooks => true
+#set :sidekiq_pid => File.join(shared_path, 'tmp', 'pids', 'sidekiq.pid') # ensure this path exists in production before deploying.
+#set :sidekiq_env => fetch(:rack_env, fetch(:rails_env, fetch(:stage)))
+#set :sidekiq_log => File.join(shared_path, 'log', 'sidekiq.log')
+#set :sidekiq_options => nil
+#set :sidekiq_require => nil
+#set :sidekiq_tag => nil
+#set :sidekiq_config => nil#"config/sidekiq.yml" # if you have a config/sidekiq.yml, do not forget to set this. 
+#set :sidekiq_queue => nil
+#set :sidekiq_timeout => 10
+#set :sidekiq_role => :app
+set :sidekiq_processes, 4
+set :sidekiq_options_per_process, ["--queue subscriptions1", "--queue subscriptions2", "--queue subscriptions_manager", "--queue critical --queue default --queue low --queue mailers"]
 set :sidekiq_concurrency => 15#nil
-set :sidekiq_monit_templates_path => 'config/deploy/templates'
-set :sidekiq_monit_conf_dir => '/etc/monit/conf.d'
-set :sidekiq_monit_use_sudo => false
-set :monit_bin => '/usr/bin/monit'
-set :sidekiq_monit_default_hooks => true
-set :sidekiq_service_name => "sidekiq_#{fetch(:application)}_#{fetch(:sidekiq_env)}"
-set :sidekiq_cmd => "#{fetch(:bundle_cmd, "bundle")} exec sidekiq" # Only for capistrano2.5
-set :sidekiqctl_cmd => "#{fetch(:bundle_cmd, "bundle")} exec sidekiqctl" # Only for capistrano2.5
-set :sidekiq_user => "deploy" #user to run sidekiq as
-
+#set :sidekiq_monit_templates_path => 'config/deploy/templates'
+#set :sidekiq_monit_conf_dir => '/etc/monit/conf.d'
+#set :sidekiq_monit_use_sudo, false
+#set :monit_bin => '/usr/bin/monit'
+#set :sidekiq_monit_default_hooks => true
+#set :sidekiq_service_name => "sidekiq_#{fetch(:application)}_#{fetch(:sidekiq_env)}"
+#set :sidekiq_cmd => "#{fetch(:bundle_cmd, "bundle")} exec sidekiq" # Only for capistrano2.5
+#set :sidekiqctl_cmd => "#{fetch(:bundle_cmd, "bundle")} exec sidekiqctl" # Only for capistrano2.5
+#set :sidekiq_user => "deploy" #user to run sidekiq as
 
 set :pty,  false
