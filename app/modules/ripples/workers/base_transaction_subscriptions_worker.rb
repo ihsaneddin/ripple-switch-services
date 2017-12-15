@@ -69,7 +69,7 @@ module Ripples
                             address = modified_node.try(:FinalFields).try(:Account)
                             unless address
                                modified_node= node.CreatedNode
-                               address = created_node.try(:NewFields).try(:Account)
+                               address = modified_node.try(:NewFields).try(:Account)
                                next unless address
                             end
                             affectedAccount = Ripples::Models::Wallet.find_by_address address
