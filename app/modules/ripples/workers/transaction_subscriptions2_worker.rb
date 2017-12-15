@@ -100,6 +100,9 @@ module Ripples
 
           ws.onerror = lambda do |error|
             p [:error, error.message]
+            if error.message == 'Errno::ECONNRESET'
+              Ripples::Workers::TransactionSubscriptions1Worker.perform_async(wss)
+            end
           end
 
 

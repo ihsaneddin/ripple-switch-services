@@ -4,6 +4,7 @@ module Api
       class Transaction < ::Grape::Entity
 
         expose :id
+        expose :wallet_id
         expose :address do |t|
           t.wallet.address
         end
@@ -11,6 +12,12 @@ module Api
         expose :amount
         expose :tx_hash
         expose :currency
+        expose :source_currency
+        expose :destination_currency
+        expose :transaction_date
+        expose :transaction_type
+        expose :state
+        expose :validated 
         expose :deleted_at
         expose :created_at
         expose :updated_at
