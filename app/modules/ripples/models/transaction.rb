@@ -9,10 +9,15 @@ module Ripples
       validates :destination, presence: true
 
       after_save do 
-        destination_wallet = Ripples::Models::Wallet.find_by(address: destination).present?
-        if destination_wallet.present? && (self.state == 'closed') && state_before_last_save.blank?
+        destination_wallet = Ripples::Models::Wallet.find_by(address: destination)
+        if destination_wallet.present?
           destination_wallet.touch
+          destination_wallet.try(:account).touch
         end
+      end
+
+      after_save do 
+        wallet.try(:account).try(:touch)
       end
 
       before_create :submit, unless: :skip_submit

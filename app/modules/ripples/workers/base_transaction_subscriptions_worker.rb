@@ -72,6 +72,7 @@ module Ripples
                             affectedAccount = Ripples::Models::Wallet.find_by_address modified_node.FinalFields.Account
 
                             if affectedAccount.present?
+                              puts affectedAccount
                               new_balance = modified_node.FinalFields.Balance
                               affectedAccount.update balance: new_balance, validated: true
                             end  
