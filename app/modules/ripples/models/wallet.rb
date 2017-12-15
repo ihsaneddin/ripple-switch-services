@@ -37,7 +37,11 @@ module Ripples
         end
 
         def address_collection
-          Rails.cache.fetch("address-collection", expires_in: 1.day) do 
+          cached_address_collection
+        end
+
+        def cached_address_collection
+          Rails.cache.fetch("#{self.cached_name}-address-collection", expires_in: 1.day) do 
             select('address', 'deleted_at').map(&:address).compact
           end
         end

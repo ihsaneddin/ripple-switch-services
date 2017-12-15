@@ -16,9 +16,9 @@ module Ripples
 
       def perform(wss)
 
-        subscribe_params = { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.address_collection, command: "subscribe"}
+        subscribe_params = { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.cached_address_collection, command: "subscribe"}
 
-        unsubscribe_params = { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.address_collection, command: "unsubscribe"}
+        unsubscribe_params = { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.cached_address_collection, command: "unsubscribe"}
 
         EM.run {
           ws = Faye::WebSocket::Client.new(wss, nil, ping: 60)
