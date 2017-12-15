@@ -65,7 +65,7 @@ module Ripples
                         counter_parties = res.meta.AffectedNodes
                         if counter_parties.kind_of? Array
                           counter_parties.each do |node|
-                            modified_node= node.ModifiedNode
+                            modified_node= node.ModifiedNode || node.CreatedNode
                             
                             next unless modified_node.try(:FinalFields).try(:Account)
                             
