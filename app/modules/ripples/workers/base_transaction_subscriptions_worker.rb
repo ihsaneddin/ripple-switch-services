@@ -65,15 +65,19 @@ module Ripples
                         counter_parties = res.meta.AffectedNodes
                         if counter_parties.kind_of? Array
                           counter_parties.each do |node|
-                            modified_node= node.ModifiedNode || node.CreatedNode
-                            
-                            next unless modified_node.try(:FinalFields).try(:Account)
-                            
-                            affectedAccount = Ripples::Models::Wallet.find_by_address modified_node.FinalFields.Account
+                            modified_node= node.ModifiedNode
+                            address = modified_node.try(:FinalFields).try(:Account)
+                            unless address
+                               modified_node= node.CreatedNode
+                               address = created_node.try(:NewFields).try(:Account)
+                               next unless address
+                            end
+                            affectedAccount = Ripples::Models::Wallet.find_by_address address
 
                             if affectedAccount.present?
                               puts affectedAccount
-                              new_balance = modified_node.FinalFields.Balance
+                              new_balance = modified_node.try(:FinalFields).try(:Balance) || modified_node.try(:NewFields).try(:Balance)
+                              puts new_balance
                               affectedAccount.update balance: new_balance, validated: true
                             end  
                           end
@@ -177,4 +181,67 @@ end
    "hash"=>"3CCDE421572A1050C7BD87E8C984F3ECE54700030B33B8C0214BB322A205221D"},
  "type"=>"transaction",
  "validated"=>true}
+
+{
+  
+"engine_result":"tesSUCCESS",
+"engine_result_code":0,
+"engine_result_message":"The transaction was applied. Only final in a validated ledger.",
+"ledger_hash":"39FDA3DC8EDE924596CD2A085172C58E1A5FEB65BA7E3FD2D9BB9A3FBEF69439",
+"ledger_index":4985553,
+"meta":{
+"AffectedNodes":[
+{
+"ModifiedNode":{
+"FinalFields":{
+"Account":"rJYdEH8Lc4oCjTeEczJL52txKU3zKpvpwE",
+"Balance":"9834999750",
+"Flags":0,
+"OwnerCount":0,
+"Sequence":26
+},
+"LedgerEntryType":"AccountRoot",
+"LedgerIndex":"53E6F5BB5CCCEC71A4B2CC3A4DC1A905223F907022A853719330152F11FFE016",
+"PreviousFields":{
+"Balance":"9854999760",
+"Sequence":25
+},
+"PreviousTxnID":"2DEBE56A07560923ECDD2154F3DCB171DE247851C764B4EAF0EAA93C69374685",
+"PreviousTxnLgrSeq":4985299
+}
+},
+{
+"CreatedNode":{
+"LedgerEntryType":"AccountRoot",
+"LedgerIndex":"660A73E86D975A92741B3C89E1134FE01D5F22100274D3730A15C01232D399F6",
+"NewFields":{
+"Account":"r91R5nQfACcqaeFuAw9UXmg18ydo7f1yrg",
+"Balance":"20000000",
+"Sequence":1
+}
+}
+}
+],
+"TransactionIndex":1,
+"TransactionResult":"tesSUCCESS"
+},
+"status":"closed",
+"transaction":{
+"Account":"rJYdEH8Lc4oCjTeEczJL52txKU3zKpvpwE",
+"Amount":"20000000",
+"Destination":"r91R5nQfACcqaeFuAw9UXmg18ydo7f1yrg",
+"Fee":"10",
+"Flags":2147483648,
+"Sequence":25,
+"SigningPubKey":"031003B59F34DF43035B82AC5436ED3CB46CD279C1B688F01A818BFC82B8C8EECF",
+"TransactionType":"Payment",
+"TxnSignature":"304402202C7EBA0FF026CCFBB94A9344E3308FFE583B1E7045364517207E0000B8EB7701022075B227E27FAC38303FD7A7A7674EBCC33998FE031AD0288ED4BC46E9BE1C9A0E",
+"date":566650790,
+"hash":"427B855753E483FD8DBB112F13BF1131D54140CDB46930D30E469B59C7EA47DB"
+},
+"type":"transaction",
+"validated":true
+}
+
+
 =end
