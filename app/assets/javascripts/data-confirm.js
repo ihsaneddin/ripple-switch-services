@@ -355,7 +355,7 @@
           if (element.data('pin')){
             pin_val = modal.find('input[name="pin"]').val();
             if (element.hasClass('submit-modal-form')){
-              hpin = $('<input/>', {"type": 'password', "class": "hidden", "name": "pin", "value": pin_val})
+              hpin = $('<input/>', {"type": 'password', "class": "hidden", "name": "pin", "value": pin_val, "autocomplete": "off", "required": "required"})
               element.closest('.modal').find('form').append(hpin);
               element.addClass('confirmed');
               element.removeAttr('data-confirm');

@@ -42,7 +42,7 @@ module TableViewHelper
       params[:table]= params.class.new.permit! if params[:table].nil?
       options = { id: "table-container-for-#{controller_name}", template: "", resources_name: collection.first.class.name.demodulize.underscore.pluralize }.merge!(options)
       params[:table]= params[:table].merge!(params.class.new(options).permit!)
-      content_tag :div, id: options[:id], data: { "reload-path": link_to("reload", current_url(options[:resources_url].nil?? params.permit! : options[:resource_url]), class: 'hidden reload-table', remote: true) } do 
+      content_tag :div, id: options[:id], data: { "reset-path": link_to("reset", current_url, class: 'hidden reset-table', remote: true) ,"reload-path": link_to("reload", current_url(options[:resources_url].nil?? params.permit! : options[:resource_url]), class: 'hidden reload-table', remote: true) } do 
         yield
       end
     end

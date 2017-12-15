@@ -72,7 +72,7 @@ module ApplicationHelper
 
   def current_url(new_params={})
     params.merge!(new_params)
-    "#{request.base_url + request.path}?#{params.to_param}"
+    "#{request.base_url + request.path}?#{params.permit!.to_param}"
   end
 
 end

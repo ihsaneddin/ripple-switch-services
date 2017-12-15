@@ -3,6 +3,7 @@
     $(".notifyjs-corner").html('');
   }
   $.notify("<%= params[:notification][:message] %>", { position: "<%= params[:notification][:position] || 'top center' %>", className: "<%= params[:notification][:type] || 'success' %>" })
+  <%params[:notification]= nil %>
 <%- end %>
 
 // if there is modal params

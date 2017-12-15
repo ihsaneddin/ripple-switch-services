@@ -13,6 +13,7 @@
 //= require jquery
 //= require rails-ujs
 //= require turbolinks
+//= require ripple_client
 //= require bootstrap/js/bootstrap
 //= require raphael/raphael
 //= require morris/morris

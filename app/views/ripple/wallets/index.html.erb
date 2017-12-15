@@ -10,7 +10,7 @@
       <%= content_tag :div, class: 'panel-body' do %>
         <%= content_tag :div, class: 'small-box bg-aqua' do %>
           <%= content_tag :div, class: 'text-center inner' do %>
-            <%= content_tag :h3, 0, id: "total-balances" %>
+            <%= content_tag :h3, current_account.total_balance_xrp, id: "total-balances" %>
           <%- end %>
         <%- end %>
       <%- end %>
@@ -20,12 +20,12 @@
   <%= content_tag :div, class: 'col-lg-4 col-xs-6' do %>
     <%= content_tag :div, class: 'panel panel-default' do %>
       <%= content_tag :div, class: 'panel-heading' do %>
-        <%= content_tag :h3, "Pending Transaction", class: "panel-title" %>
+        <%= content_tag :h3, "Pending Received", class: "panel-title" %>
       <%- end %>
       <%= content_tag :div, class: 'panel-body' do %>
         <%= content_tag :div, class: 'small-box bg-aqua' do %>
           <%= content_tag :div, class: 'text-center inner' do %>
-            <%= content_tag :h3, 0 %>
+            <%= content_tag :h3, current_account.wallets_received_pending_transactions_count, id: "total-pending-received" %>
           <%- end %>
         <%- end %>
       <%- end %>

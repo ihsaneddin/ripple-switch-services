@@ -1,9 +1,12 @@
 module Ripples
   module Models
     class Wallet < ::ApplicationRecord
+
+      self.object_caches_suffix= ['transactions', "received-transactions", "sent-transactions"]
       
       before_validation :generate_address, on: :create
       before_validation :set_sequence, on: :create
+      before_validation :generate_label, on: :create
 
       attr_encrypted :secret, key: ENV['ENCRYPT_SECRET_KEY']
 
@@ -21,6 +24,10 @@ module Ripples
 
       def should_notify?
         self.created_at == self.updated_at
+      end
+
+      def generate_label
+        self.label||= SecureRandom.urlsafe_base64(nil, false)
       end
 
       class << self
@@ -74,6 +81,53 @@ module Ripples
         @ripple_client.client_secret= self.secret
         @ripple_client
       end
+
+      def balance_xrp
+        (self.balance / 1000000).floor
+      end
+
+      module Transactions
+
+        extend ActiveSupport::Concern
+
+        def cached_transactions
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-transactions", expires_in: 1.day) do 
+            transactions.load
+          end
+        end
+
+        def cached_received_transactions
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-received-transactions", expires_in: 1.day) do 
+            cached_transactions.where(destination: self.address).load
+          end
+        end
+
+        def cached_sent_transactions
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-sent-transactions", expires_in: 1.day) do 
+            cached_transactions.where(wallet_id: self.id).load
+          end
+        end
+
+        def pending_received_transactions_count
+          cached_received_transactions.inject(0){|count, tr| count + (tr.validated?? 0 : 1) }
+        end
+
+        def validated_received_transactions_count
+          cached_received_transactions.inject(0){|count, tr| count + (tr.validated?? 1 : 0) }
+        end
+
+        def pending_sent_transactions_count
+          cached_sent_transactions.inject(0){|count, tr| count + (tr.validated?? 0 : 1) }
+        end
+
+        def validated_sent_transactions_count
+          cached_sent_transactions.inject(0){|count, tr| count + (tr.validated?? 1 : 0) }
+        end
+
+      end
+
+      include Ripples::Models::Wallet::Transactions
+
 
     end
   end

@@ -57,6 +57,11 @@ module Api
           presenter context_resource
         end
 
+        desc "[GET] sum of balance of account's wallets"
+        get "balance" do 
+          current_account.total_balance
+        end
+
       end
 
 

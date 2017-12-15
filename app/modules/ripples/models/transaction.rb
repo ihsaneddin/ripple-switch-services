@@ -55,13 +55,30 @@ module Ripples
         def filter(params={})
           res = cached_collection
           if params[:wallet_id].present?
-            res = res.join(:wallet).where("ripples_wallets.id = :wallet_id or ripples_wallets.address = :wallet_id", params[:wallet_id])
+            res = res.joins(:wallet).where("ripples_wallets.id = ? or ripples_wallets.address = ?", params[:ripple_id],"%#{params[:wallet_id]}%" )
           else
             res = res.where(wallet_id: params[:wallet_ids] || [])
           end
           if params[:tx_hash].present?
             res = res.where(tx_hash: params[:tx_hash])
           end
+          if params[:before_date].present?
+            before_date= Date.parse(params[:before_date]) rescue nil
+            res = res.where("date(created_at) >= ?", before_date) if before_date
+          end
+          if params[:after_date].present?
+            after_date= Date.parse(params[:after_date]) rescue nil
+            res = res.where("date(created_at) >= ?", after_date) if after_date
+          end
+          if params[:from_time].present?
+            from_time= DateTime.parse(params[:from_time]) rescue nil
+            res = res.where("created_at >= ?", from_time) if from_time
+          end
+          if params[:to_time].present?
+            to_time= DateTime.parse(params[:to_time]) rescue nil
+            res = res.where("created_at <= ?", to_time) if to_time
+          end
+          
           res
         end
 

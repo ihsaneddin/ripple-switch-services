@@ -33,13 +33,32 @@ module Api
 
       end
 
-      resources "wallet/:wallet_id/transactions" do 
+      resources "transactions" do 
 
-        desc "[GET] get transaction collection"
+        desc "[GET] get all account's transactions"
         get do 
           transactions = resource_class_constant.filter(merged_filter_params)
           presenter paginate(wallets)
         end
+
+        desc "[GET] get a transaction object by tx_hash or uuid"
+        get ":id" do 
+          presenter context_resource
+        end
+
+        desc "[GET] get count of pending transaction"
+        get "pending_count" do 
+          current_account.pending_transaction_count
+        end
+
+        desc "[GET] get count of validated transaction"
+        get "validated" do 
+          current_account.validated_transaction_count
+        end
+
+      end
+
+      resources "wallet/:wallet_id/transactions" do 
 
         desc "[POST] create a new transaction"
         post do 
@@ -51,11 +70,6 @@ module Api
               standard_validation_error details: context_resource.errors
             end
           end
-        end
-
-        desc "[GET] get a transaction object by tx_hash or uuid"
-        get ":id" do 
-          presenter context_resource
         end
 
       end

@@ -25,10 +25,12 @@ $(function () {
   });
 });
 
-// toggle alement
-$('body').on("click", '.toggle', function(e){
+$(document).ready(function(e){
+  // toggle alement
+  $(document).on("click", '.toggle', function(e){
 
-  $(this).addClass('hidden');
-  $($(this).attr('data-toggle')).removeClass('hidden');
+    $(this).addClass('hidden');
+    $($(this).attr('data-toggle')).removeClass('hidden');
 
-});
+  });
+})

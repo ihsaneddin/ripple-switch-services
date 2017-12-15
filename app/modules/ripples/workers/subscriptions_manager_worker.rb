@@ -47,8 +47,6 @@ module Ripples
           #
 
           pro.try(:stop!)
-
-          puts "\n\n ASUP"
         
           Signal.trap("INT")  { break }
           Signal.trap("TERM") { break }

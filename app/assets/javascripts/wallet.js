@@ -1,4 +1,4 @@
-var rippleClient = new ripple.RippleAPI({server:'wss://s.altnet.rippletest.net:51233'});
+
 
 function fillTableAddresses(addresses){
   $.each( addresses, function( i, address ) {
