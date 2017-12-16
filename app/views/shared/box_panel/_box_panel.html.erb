@@ -1,7 +1,7 @@
 <%= yield %><!-- # main yield, required -->
 
 <!-- start box panel div -->
-<%= content_tag :div, class: "box #{local_assigns[:style]}" do %>
+<%= content_tag :div, class: "box #{local_assigns[:style]}", id: "box-#{local_assigns[:id]}" do %>
   <% if local_assigns[:use_header] %>
     <%= content_tag :div, class: "box-header #{local_assigns[:header_style]}" do %>
       <%= local_assigns[:header] %><!-- # display box_panel_header variable if provided -->

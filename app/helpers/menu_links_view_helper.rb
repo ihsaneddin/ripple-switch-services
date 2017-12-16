@@ -101,7 +101,7 @@ module MenuLinksViewHelper
         {
           name: "API Documentation",
           icon: "fa fa-file-code-o",
-          route: page_path('documentation'),
+          route: 'https://rss6.docs.apiary.io',#page_path('documentation'),
           is_presented: true
         }
       ]
@@ -150,7 +150,7 @@ module MenuLinksViewHelper
           name: "API Documentation",
           is_presented: true,
           icon: "fa fa-file-code-o",
-          route: page_path('documentation')
+          route: "https://rss6.docs.apiary.io"#page_path('documentation'),
         }
       ]
     end

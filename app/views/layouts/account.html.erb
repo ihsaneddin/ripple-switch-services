@@ -26,7 +26,8 @@
     <%=  yield(:styles) %>
     
     <%= javascript_include_tag 'account', 'data-turbolinks-track': 'reload' %>
-    
+    <%= yield(:head_scripts) %> 
+
   </head>
 
   <!-- begin body -->

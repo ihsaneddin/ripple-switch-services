@@ -9,7 +9,7 @@ module BoxPanelViewHelper
   # `suffix` is used to avoid double render with the same yield
   #
   def box_panel options={}, &block
-    options= { suffix: suffix_template, header: nil, footer: nil, use_footer: true, use_header: true, body_style: nil}.merge!(options)
+    options= { suffix: suffix_template, header: nil, footer: nil, use_footer: true, use_header: true, body_style: nil, id: nil}.merge!(options)
     box_panel_params(options[:suffix])
     instance_variable_set("@box_panel_params_#{options[:suffix]}", options)
     render layout: '/shared/box_panel/box_panel', locals: options do 

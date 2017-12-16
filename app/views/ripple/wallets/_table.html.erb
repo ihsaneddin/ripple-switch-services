@@ -133,7 +133,7 @@
 
     wssu = new WebSocket(rippleWS)
     wssu.onopen = function(){
-      ws.send(JSON.stringify(streams))
+      wssu.send(JSON.stringify(streams))
     };
 
     wssu.onmessage = function(e){
