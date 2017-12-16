@@ -11,13 +11,12 @@ module Api
         expose :destination
         expose :amount
         expose :tx_hash
-        expose :currency
         expose :source_currency
         expose :destination_currency
         expose :transaction_date
         expose :transaction_type
         expose :state
-        expose :validated 
+        expose :validated
         expose :deleted_at
         expose :created_at
         expose :updated_at

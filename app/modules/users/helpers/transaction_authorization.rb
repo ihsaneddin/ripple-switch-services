@@ -29,11 +29,15 @@ module Users
 
         extend ActiveSupport::Concern
 
+        included do 
+          helpers HelperMethods
+        end
+
         module HelperMethods
 
           def authorize_transaction options={}
             pin = options[:pin] || params[:pin]
-            if Users::Models::Account.find_by(encrypted_pin: Users::Models::Account.encrypt_pin(pin))
+            if current_account.pin == pin
               yield if block_given?
             else
               error!('Wrong secret PIN', 401)

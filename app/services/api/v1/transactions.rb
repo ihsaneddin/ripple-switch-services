@@ -14,7 +14,7 @@ module Api
 
         def transaction_params
           posts[:transaction] = posts
-          posts.require(:transaction).permit!(:amount, :destination)
+          posts.require(:transaction).permit(:amount, :destination, :destination_currency)
         end
 
         def existing_resource_finder
@@ -22,11 +22,11 @@ module Api
         end
 
         def merged_filter_params
-          filter_params.merge!(wallet_ids: current_accont.wallet_collection.map(&:id))
+          filter_params.merge!(wallet_ids: current_account.cached_wallet_collection.map(&:id))
         end
 
         def wallet
-          @wallet ||= current_accont.wallets.where(address: params[:wallet_id]).or(where(uuid: params[:wallet_id])).first
+          @wallet ||= current_account.wallets.where(address: params[:wallet_id]).or(current_account.wallets.where(id: params[:wallet_id])).first
           return @wallet if @wallet
           raise ActiveRecord::RecordNotFound
         end
@@ -38,22 +38,26 @@ module Api
         desc "[GET] get all account's transactions"
         get do 
           transactions = resource_class_constant.filter(merged_filter_params)
-          presenter paginate(wallets)
+          presenter paginate(transactions)
         end
 
         desc "[GET] get a transaction object by tx_hash or uuid"
-        get ":id" do 
+        get ":id", requirements: { id: /[0-9]*/ } do 
           presenter context_resource
         end
 
+      end
+
+      resources "account_transactions" do
+
         desc "[GET] get count of pending transaction"
-        get "pending_count" do 
-          current_account.pending_transaction_count
+        get "pending_count" do
+          current_account.wallets_pending_transactions_count
         end
 
         desc "[GET] get count of validated transaction"
-        get "validated" do 
-          current_account.validated_transaction_count
+        get "validated_count" do 
+          current_account.wallets_validated_transactions_count
         end
 
       end

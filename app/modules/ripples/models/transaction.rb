@@ -24,6 +24,12 @@ module Ripples
 
       attr_accessor :issuer, :skip_submit
 
+      def default_attrs
+        self.source_currency||= "XRP"
+        self.destination_currency||= "XRP"
+        self.destination.transaction_type||= "Payment"
+      end
+
       def complete!
         update(state: "closed")
       end
@@ -33,14 +39,14 @@ module Ripples
       end
 
       def submit
-        destination_amount = wallet.ripple_client.new_amount(value: "#{self.amount.floor}", currency: self.currency || 'XRP', issuer: self.issuer || self.destination )
+        destination_amount = wallet.ripple_client.new_amount(value: "#{self.amount.floor}", currency: self.destination_currency || 'XRP', issuer: self.issuer || self.destination )
         
         if destination_amount.currency == "XRP"
           destination_amount.value= "#{(self.amount * 1000000).floor}" # 1 xrp == 1 million drops
         end
 
         trans = wallet.ripple_client.new_transaction destination_account: self.destination.to_s.strip, destination_amount: destination_amount, 
-                                        source_currency: self.currency || 'XRP'
+                                        source_currency: self.destination_currency || 'XRP'
         begin
           
           trans = wallet.ripple_client.sign_transaction(trans)
@@ -59,13 +65,23 @@ module Ripples
 
         def filter(params={})
           res = cached_collection
-          if params[:wallet_id].present?
-            res = res.joins(:wallet).where("ripples_wallets.id = ? or ripples_wallets.address = ?", params[:ripple_id],"%#{params[:wallet_id]}%" )
+          if params[:addresses].present?
+            res = res.joins(:wallet).where(ripples_wallets: { address: addresses })
           else
             res = res.where(wallet_id: params[:wallet_ids] || [])
           end
+
           if params[:tx_hash].present?
             res = res.where(tx_hash: params[:tx_hash])
+          end
+          if params[:destination].present?
+            res = res.where(destination: params[:destination])
+          end
+          if params[:state].present?
+            res = res.where(state: params[:state])
+          end
+          if params[:validated].present?
+            res = res.where(validated: params[:validated])
           end
           if params[:before_date].present?
             before_date= Date.parse(params[:before_date]) rescue nil

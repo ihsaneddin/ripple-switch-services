@@ -42,6 +42,7 @@ module Api
       end
 
       mount Wallets
+      mount Transactions
 
     end
   end

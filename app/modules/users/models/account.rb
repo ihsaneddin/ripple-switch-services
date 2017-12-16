@@ -109,11 +109,11 @@ module Users
           end
         end
 
-        def wallets_pending_transaction_count
+        def wallets_pending_transactions_count
           cached_wallets_transactions.inject(0){|count, tr| count + ( tr.validated ? 0 : 1 ) }
         end
 
-        def wallets_validated_transaction_count
+        def wallets_validated_transactions_count
           cached_wallets_transactions.inject(0){|count, tr| count + ( tr.validated ? 1 : 0 ) }
         end
 

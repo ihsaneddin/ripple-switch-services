@@ -33,12 +33,19 @@ module Ripples
       class << self
 
         def filter(params={})
-          res = cached_collection.where(nil)
+          if params[:archived]
+            res = only_deleted
+          else
+            res = cached_collection.where(nil)
+          end
           if params[:label].present?
             res = res.search_by_label(params[:label])
           end
           if params[:address].present?
             res = res.where(address: params[:address])
+          end
+          if params[:validated].present?
+            res = res.where(validated: params[:validated])
           end
           res
         end
