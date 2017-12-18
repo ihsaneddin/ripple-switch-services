@@ -25,18 +25,21 @@ module Api
         end
 
         def authorize!
-          error!('Unauthorized', 401) unless current_account
+          error!('Unauthorized', 401) unless authenticated
         end
 
-        #
-        # define current_resource_owner to get current user
-        #
-        def current_resource_owner
-          @current_resource_owner||= Users::Models::Account.where(api_keys).first
+        def warden
+          env['warden']
+        end
+
+        def authenticated
+          @current_resource_owner||= Users::Models::Account.cached_collection.where(api_keys).first
+          warden.set_user(@current_resource_owner, scope: :account) if @current_resource_owner
+          return true if warden.authenticated?
         end
 
         def current_account
-          current_resource_owner
+          warden.user || @current_resource_owner
         end
 
       end

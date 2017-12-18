@@ -8,5 +8,10 @@ class ApplicationRecord < ActiveRecord::Base
 
   scope :recent, -> { order("updated_at DESC") }
   scope :asc, -> { order("created_at ASC") }
+  scope :desc, -> { order("created_at DESC") }
+
+  def newly_created?
+    self.updated_at == self.created_at
+  end
   
 end

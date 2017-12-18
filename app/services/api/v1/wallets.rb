@@ -8,6 +8,8 @@ module Api
 
       use_resource!
 
+      include Users::Helpers::SubscriptionRestriction::Grape
+
       helpers do 
 
         def wallet_params
@@ -47,11 +49,13 @@ module Api
         end
 
         desc "[POST] create a new wallet address"
-        post do 
-          if context_resource.save
-            presenter context_resource
-          else
-            standard_validation_error details: context_resource.errors
+        post do
+          restrict_address_creation do
+            if context_resource.save
+              presenter context_resource
+            else
+              standard_validation_error details: context_resource.errors
+            end
           end
         end
 

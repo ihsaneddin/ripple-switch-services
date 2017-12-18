@@ -10,12 +10,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171205064819) do
+ActiveRecord::Schema.define(version: 20171218033603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
+
+  create_table "administration_admins", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "username"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string "unconfirmed_email"
+    t.string "token"
+    t.string "encrypted_pin"
+    t.string "encrypted_pin_iv"
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["confirmation_token"], name: "index_administration_admins_on_confirmation_token", unique: true
+    t.index ["deleted_at"], name: "index_administration_admins_on_deleted_at"
+    t.index ["email"], name: "index_administration_admins_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_administration_admins_on_reset_password_token", unique: true
+    t.index ["token"], name: "index_administration_admins_on_token", unique: true
+    t.index ["unlock_token"], name: "index_administration_admins_on_unlock_token", unique: true
+    t.index ["username"], name: "index_administration_admins_on_username", unique: true
+  end
 
   create_table "oauth_access_grants", force: :cascade do |t|
     t.integer "resource_owner_id", null: false
@@ -137,6 +171,44 @@ ActiveRecord::Schema.define(version: 20171205064819) do
     t.index ["token"], name: "index_users_accounts_on_token", unique: true
     t.index ["unlock_token"], name: "index_users_accounts_on_unlock_token", unique: true
     t.index ["username"], name: "index_users_accounts_on_username", unique: true
+  end
+
+  create_table "users_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.text "features"
+    t.text "description"
+    t.decimal "price", precision: 15, scale: 2, default: "0.0"
+    t.string "currency"
+    t.integer "display_order"
+    t.string "state"
+    t.boolean "free", default: false
+    t.string "per_period", default: "month"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_users_plans_on_deleted_at"
+    t.index ["name"], name: "index_users_plans_on_name"
+    t.index ["price"], name: "index_users_plans_on_price"
+  end
+
+  create_table "users_subscriptions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.uuid "account_id"
+    t.uuid "plan_id"
+    t.decimal "price", precision: 15, scale: 2, default: "0.0"
+    t.string "paid_currency"
+    t.datetime "expired_at"
+    t.string "state"
+    t.string "txn_id"
+    t.string "notification_email"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_users_subscriptions_on_account_id"
+    t.index ["deleted_at"], name: "index_users_subscriptions_on_deleted_at"
+    t.index ["expired_at"], name: "index_users_subscriptions_on_expired_at"
+    t.index ["name"], name: "index_users_subscriptions_on_name"
+    t.index ["plan_id"], name: "index_users_subscriptions_on_plan_id"
   end
 
   create_table "users_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

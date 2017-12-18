@@ -5,6 +5,8 @@ module Ripple
     self.resource_actions = [:new, :create, :active, :show, :destroy]
     use_resource!
 
+    include Users::Helpers::SubscriptionRestriction::Controller
+
     def index
       if params[:archived]
         @wallets = resource_class_constant.deleted
@@ -32,22 +34,24 @@ module Ripple
     end
 
     def create
-      @wallet.account = current_account
-      if @wallet.save
-        respond_to do |f|
-          f.html { redirect_to ripple_wallets_path, notice: "Success" }
-          f.js do 
-            params[:notification]= { message: "Wallet created!" }
-            render_table "/shared/table/reload.js.erb"
+      restrict_address_creation do
+        @wallet.account = current_account
+        if @wallet.save
+          respond_to do |f|
+            f.html { redirect_to ripple_wallets_path, notice: "Success" }
+            f.js do 
+              params[:notification]= { message: "Wallet created!" }
+              render_table "/shared/table/reload.js.erb"
+            end
           end
-        end
-      else
-        respond_to do |f|
-          f.html { render :new }
-          f.js do 
-            if modal_params_present?
-              params[:notification]= { message: "Failed to create wallet!", type: "danger" }
-              render_modal
+        else
+          respond_to do |f|
+            f.html { render :new }
+            f.js do 
+              if modal_params_present?
+                params[:notification]= { message: "Failed to create wallet!", type: "danger" }
+                render_modal
+              end
             end
           end
         end

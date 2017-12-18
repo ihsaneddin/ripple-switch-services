@@ -3,11 +3,7 @@ module Users
     class Account < ::ApplicationRecord
 
       self.caches_suffix_list= ['collection']
-      self.object_caches_suffix= ['wallet-collection', 'wallets-received-validated-transactions', 
-                                  'wallets-sent-pending-transactions', 'wallets-received-pending-transactions', 
-                                  'wallets-transactions', "wallets-sent-transactions", 
-                                  "wallets-received-transactions", 'wallets-pending-transactions', 
-                                  'wallets-validated-transactions', 'wallets-sent-validated-transactions']
+      self.object_caches_suffix= ['wallet-collection']
     
       # devise modules definition
       # :confirmable, :lockable, :timeoutable and :omniauthable
@@ -35,6 +31,8 @@ module Users
 
       has_many :wallets, class_name: "Ripples::Models::Wallet"
       has_many :tokens, class_name: "Users::Models::Token"
+      has_many :subscriptions, class_name: "Users::Models::Subscription"
+      has_many :plans, class_name: "Users::Models::Plan", through: :subscriptions
 
       def generate_pin
         while true
@@ -102,6 +100,17 @@ module Users
       module Transactions
 
         extend ActiveSupport::Concern
+
+        included do 
+
+          self.object_caches_suffix += ['wallets-received-validated-transactions', 
+                                        'wallets-sent-pending-transactions', 'wallets-received-pending-transactions', 
+                                        'wallets-transactions', "wallets-sent-transactions", 
+                                        "wallets-received-transactions", 'wallets-pending-transactions', 
+                                        'wallets-validated-transactions', 'wallets-sent-validated-transactions'
+                                        ]
+
+        end
 
         def cached_wallets_transactions
           Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-wallets-transactions", expires_in: 1.day) do 
@@ -237,6 +246,40 @@ module Users
       end
 
       include Users::Models::Account::RegistrationOrLoginByToken
+
+      module Subscriptions
+
+        extend ActiveSupport::Concern
+
+        included do 
+
+          after_create :attach_to_free_plan
+
+          self.object_caches_suffix += ['subscriptions']
+
+        end
+
+        def attach_to_free_plan
+          Users::Models::Plan.create_subscription_for self, "Free"
+        end
+
+        def cached_subscriptions
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-subscriptions", expires_in: 1.day) do 
+            subscriptions.includes(:plan).desc.load
+          end
+        end
+
+        def active_subscription
+          cached_subscriptions.active.try :first
+        end
+
+        def active_plan
+          active_subscription.try(:plan) || Users::Models::Plan.free.first
+        end
+
+      end
+
+      include Users::Models::Account::Subscriptions
 
     end
   end

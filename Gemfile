@@ -160,3 +160,9 @@ gem 'attr_encrypted'
 
 # websocket support
 gem 'faye-websocket'
+
+# api request throttling 
+gem 'rack-defense'
+
+# subscription payment
+gem 'coinpayments'

@@ -34,9 +34,22 @@ module Supports
         end
       end
 
+      #
+      # define cached relationship object/collections
+      #
+      def cached_relationships
+        reflect_on_all_associations.map(&:name).each do |r_name|
+        end
+      end
+
+
     end
 
     protected
+
+      def cache_prefix
+        "#{self.class.cached_name}-#{self.id}"
+      end
 
       #
       # clear cache if present
@@ -46,7 +59,7 @@ module Supports
           Rails.cache.delete("#{self.class.cached_name}-#{cache_suffix}")            
         end
         self.class.object_caches_suffix.each do |cache_suffix|
-          Rails.cache.delete("#{self.class.cached_name}-#{self.id}-#{cache_suffix}")            
+          Rails.cache.delete("#{cache_prefix}-#{cache_suffix}")            
         end
       end
     
