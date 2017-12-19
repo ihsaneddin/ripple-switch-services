@@ -10,7 +10,13 @@ module Api
 
       helpers do 
 
-        def verify_webhook data
+        def verify_webhook data=nil
+          logger.info("++++ START COINSPAYMENT APN ++++\n")
+          
+          unless data
+            request.body.rewind
+            data = request.body.read
+          end
           digest  = OpenSSL::Digest.new('sha512')
           logger.info("#{request.headers}\n")
           logger.info("#{data}\n")
@@ -22,6 +28,8 @@ module Api
           else
             logger.info ("Not Verified\n")
           end
+
+          logger.info("++++ END COINSPAYMENT APN ++++\n")
         end
 
         def coinspayment_header
@@ -41,13 +49,7 @@ module Api
       resources "coinspayment" do 
 
         post do 
-          logger.info("++++ START COINSPAYMENT APN ++++\n")
-          request.body.rewind
-          data = request.body.read
-          verify_webhook(data) do 
-
-          end
-          logger.info("++++ END COINSPAYMENT APN ++++\n")
+          
         end
 
       end
