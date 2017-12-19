@@ -21,7 +21,7 @@ module Users
         state :expired
 
         event :cancel do
-          transitions to: :canceled, from: :draft
+          transitions to: :canceled, from: [:draft, :waiting_confirmation]
         end
 
         event :wait_for_confirmation do 
