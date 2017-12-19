@@ -11,6 +11,9 @@ module Api
 
         def verify_webhook data
           digest  = OpenSSL::Digest.new('sha256')
+          logger.info(request.headers)
+          logger.info(COIN_PAYMENTS_IPN_KEY)
+          logger(data)
           if coinspayment_header.present?
             calculated_hmac = OpenSSL::HMAC.digest(digest, COIN_PAYMENTS_IPN_KEY, data).strip
             if ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, coinspayment_header)
