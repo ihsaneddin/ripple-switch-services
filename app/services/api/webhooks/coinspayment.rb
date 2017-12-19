@@ -23,6 +23,7 @@ module Api
           if coinspayment_header.present?
             calculated_hmac = OpenSSL::HMAC.hexdigest(digest, COIN_PAYMENTS_IPN_KEY, data).strip
             if ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, coinspayment_header) &&  ActiveSupport::SecurityUtils.secure_compare(params[:merchant], COIN_PAYMENTS_MERCHANT_ID)
+              logger.info("\nVerified!\n")
               block_given?? yield : true
             end
           else
