@@ -1,0 +1,52 @@
+<%= yield_content_for :page_title, "Payment" %>
+
+<%= content_tag :div, class: "row" do %>
+ <%= content_tag :div, class: "col-md-6 col-md-offset-3" do %> 
+  <%= box_panel do |outer_template, options|%>
+
+    <%= _content_for(outer_template, :box_panel_header) do %>
+      <%= content_tag :h4, "Upgrade or Continue #{plan.name} Plan", class: "text-center" %>
+    <%- end %>
+
+    <%= _content_for(outer_template, :box_panel_body) do %>
+
+      <%= content_tag :div, class: 'row' do %>
+        <%= content_tag :div, class: 'text-center' do %>
+          <%= image_tag @subscription.qrcode_url, class: 'qr-code img-thumbnail img-responsive' %>
+        <%- end %>
+      <%- end %>
+
+    <%- end %>
+
+    <%= _content_for outer_template, :box_panel_footer do %>
+
+      <%= content_tag :div, class: 'well' do %>
+        <%= content_tag :div, class: "text-center inner" do %>
+          <%= content_tag :p, "Payment Address: <b>#{@subscription.payment_address}</b>".html_safe %>
+          <%= content_tag :p, "Payment Amount: <b>#{@subscription.amount} #{@subscription.coin}</b>".html_safe %>
+        <%- end %>
+      <%- end %>
+
+      <%= content_tag :div, class: "inner" do %>
+        <%= content_tag :p, "Please send the requested amount above to the shown address." %>
+        <%= content_tag :p, '<font style="color:red;font-weight:bold">This transaction can not be refunded.</font>'.html_safe %>
+        <%= content_tag :p do%>
+          <%= content_tag :b, "This payment will Upgrade or Continue #{plan.name} Plan." %>
+        <%- end %>
+      <%- end %>
+
+      <%= submit_buttons_wrapper divider: true do %>
+
+        <%= link_to "Dashboard", root_path, class: "btn btn-primary" %>
+        <% if @subscription.draft? %>
+          <%= link_to "Cancel Request", cancel_plan_subscription_path(plan.name, @subscription.name), method: :put, data: { confirm: "Are you sure?", title: "Cancel Subscription Request" }, class: "btn btn-danger" %>
+        <%- end %>
+      <%- end %>
+
+
+    <%- end %>
+
+  <%- end %>
+
+  <%- end %>
+<%- end %>

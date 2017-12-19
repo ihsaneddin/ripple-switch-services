@@ -1,0 +1,102 @@
+<%= yield_content_for :page_title, "Plans" %>
+
+<%= content_tag :div, class: 'row' do %>
+
+  <%= content_tag :div, class: 'col-lg-6 col-xs-6 col-lg-offset-3' do %>
+    <%= content_tag :div, class: 'panel panel-primary' do %>
+      <%= content_tag :div, class: 'panel-heading' do %>
+        <%= content_tag :h3, "Current Plan", class: "panel-title" %>
+      <%- end %>
+      <%= content_tag :div, class: 'panel-body' do %>
+        <%= content_tag :div, class: 'small-box bg-aqua' do %>
+          
+          <%= content_tag :ul, class: 'list-group' do %>
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Plan Type", style: "color:#605854" %>
+              <%= content_tag :span, @current_plan.name, class: "badge" %>
+            <%- end %>
+            
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Expired At", style: "color: #605854" %>
+              <%= content_tag :span, current_account.active_subscription.expired_at || "No expiration date", class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Address", style: "color: #605854" %>
+              <%= content_tag :span, "#{current_account.cached_wallet_collection.count}/#{@current_plan.features[:max_wallets_count]}" || "No expiration date", class: "badge badge-danger" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Active Address", style: "color: #605854" %>
+              <%= content_tag :span, current_account.cached_wallet_collection.count, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Archived Address", style: "color: #605854" %>
+              <%= content_tag :span, current_account.cached_wallets_only_deleted_collection.count, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "API Request per second", style: "color: #605854" %>
+              <%= content_tag :span, @current_plan.features[:max_api_request_per_second], class: "badge" %>
+            <%- end %>
+            
+          <%- end %>
+        
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %> 
+
+<%- end %>
+
+<hr />
+
+<%= content_tag :div, class: 'row' do %>
+  
+  <% @plans.each do |plan| %>
+
+    <%= content_tag :div, class: 'col-lg-4 col-xs-6 ' do %>
+      <%= content_tag :div, class: 'panel panel-warning' do %>
+        
+        <%= content_tag :div, class: 'panel-heading' do %>
+          <%= content_tag :h1, "#{plan.name} #{plan == @current_plan ? '(Current Plan)' : nil}", class: "panel-title" %>
+        <%- end %>
+        
+        <%= content_tag :div, class: 'panel-body' do %>
+      
+          <%= content_tag :div, class: 'small-box bg-yellow' do %>
+            <%= content_tag :div, class: "text-center inner" do %>
+              <% if not plan.free? and plan.price <= 0 %>
+                <%= content_tag :h1, "Contact Us", class: "text-center" %>
+              <% elsif plan.free? %>
+                <%= content_tag :h1, "FREE", class: "text-center" %>
+              <% else %>
+                <%= content_tag :h1 do %> 
+                <%= number_to_currency(plan.price) %> / <%= content_tag :small, plan.per_period%>
+              <%- end %>
+              <%- end %>
+            <%- end %>
+          <%- end %>
+          
+
+          <%= content_tag :div, class: 'well' do %>
+            
+             <%= plan.description.html_safe %>
+          
+          <%- end %>
+        <%- end %>
+
+        <% if Users::Models::Plan.could_be_upgraded?(@current_plan, plan) && plan.name != "Exchanger" %>
+          <%= content_tag :div, class: "panel-footer text-center" do %>
+            <%= link_to "Upgrade", new_plan_subscription_path(plan.name), class: 'btn btn-danger btn-lg' %>
+          <%- end %>
+        <%- end %>
+
+      <%- end %>
+    <%- end %>  
+
+  <%- end %>
+
+
+<%- end %>

@@ -1,0 +1,20 @@
+<%= yield_content_for :page_title, "Upgrade or Continue Subscription" %>
+
+<%= box_panel use_footer: false do |outer_template, options|%>
+
+  <%= _content_for(outer_template, :box_panel_body) do %>
+  
+    <%= form_for @subscription, url: plan_subscriptions_path(plan.name), html: { class: "form form-horizontal" } do |f| %>
+
+      <%= render partial: "subscriptions/form", locals: { f: f, plan: plan, plan_rates: plan_rates, subscription: @subscription } %>  
+
+      <%= submit_buttons_wrapper divider: true do %>
+        <%= f.submit "Continue", class: "btn btn-info" %>
+        <%= link_to "Cancel", plans_path, class: "btn btn-danger"  %>
+      <%- end %>
+
+    <%- end %>
+
+  <%- end %>
+
+<%- end %>

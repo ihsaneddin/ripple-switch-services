@@ -2,7 +2,8 @@ module Ripples
   module Models
     class Wallet < ::ApplicationRecord
 
-      self.object_caches_suffix= ['transactions', "received-transactions", "sent-transactions"]
+      self.object_caches_suffix= ['transactions', "received-transactions", "sent-transactions", 
+                                  "with-deleted-collection", "with-only-deleted-collection"]
       
       before_validation :generate_address, on: :create
       before_validation :set_sequence, on: :create
@@ -57,6 +58,18 @@ module Ripples
         def cached_address_collection
           Rails.cache.fetch("#{self.cached_name}-address-collection", expires_in: 1.day) do 
             select('address', 'deleted_at').map(&:address).compact
+          end
+        end
+
+        def cached_with_deleted_collection
+          Rails.cache.fetch("#{self.cached_name}-with-deleted-collection", expires_in: 1.day) do 
+            self.with_deleted.load
+          end
+        end
+
+        def cached_only_deleted_collection
+          Rails.cache.fetch("#{self.cached_name}-with-only-deleted-collection", expires_in: 1.day) do 
+            self.only_deleted.load
           end
         end
 

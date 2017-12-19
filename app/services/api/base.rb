@@ -104,6 +104,7 @@ module Api
     end
 
     mount ::Api::V1::Base
+    mount ::Api::Webhooks::Base
 
     route :any do
       error!({ error:  'Not Found',

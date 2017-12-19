@@ -2,6 +2,8 @@ module Users
   module Models
     class Plan < ApplicationRecord
 
+      include Users::Helpers::Form
+
       serialize :features, Hash
       
       has_many :subscriptions, :class_name => "Users::Models::Subcription"
@@ -13,6 +15,7 @@ module Users
       validates :per_period, presence: true, inclusion: { in: ["month", "year"] }
 
       before_validation :set_default_features
+      before_validation :set_per_period
 
       scope :free, -> { where(free: true) }
 
@@ -23,9 +26,27 @@ module Users
                           }
       end
 
+      class << self
+
+        def cached_collection 
+          Rails.cache.fetch("#{self.cached_name}-collection", expires_in: 1.day ) do 
+            self.order("#{self.table_name}.display_order ASC").load
+          end
+        end
+
+      end
+
+      def set_per_period
+        self.per_period||= "month"
+      end
+
       module Subscriptions
 
         extend ActiveSupport::Concern
+
+        def could_be_upgraded_to? prop_plan
+          self.price < prop_plan.price
+        end
 
         module ClassMethods
 
@@ -48,7 +69,7 @@ module Users
           end
 
           def could_be_upgraded?(prev_plan, prop_plan)
-            prev_plan.price <= prop_plan.price
+            prev_plan.price < prop_plan.price
           end
 
         end

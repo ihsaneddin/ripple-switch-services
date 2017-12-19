@@ -2,6 +2,10 @@ module Users
   module Models
     class Subscription < ApplicationRecord
 
+      include Users::Helpers::Coinspayment
+
+      self.caches_suffix_list= ['collection', 'need-coinspayment-status-collection']
+
       belongs_to :account, class_name: "Users::Models::Account", touch: true
       belongs_to :plan, class_name: "Users::Models::Plan", touch: true
 
@@ -49,6 +53,30 @@ module Users
 
       def expire!
         self.update state: true
+      end
+
+      class << self
+
+        def accepted_coins_rates
+          #Rails.cache.fetch("#{cache_prefix}-accepted-coins", expires_in: 1.month) do 
+          Coinpayments.rates(accepted: 1)
+          #end
+        end
+
+        def cached_draft_collection
+          
+        end
+
+        def cached_wait_for_confirmation_collection
+          
+        end
+
+        def need_coinspayment_status_collection
+          Rails.cache.fetch("#{self.cached_name}-need-coinspayment-status-collection", expires_in: 1.day) do 
+            where(state: ["draft", "waiting_confirmation"]).order("created_at ASC").load
+          end
+        end
+
       end
 
     end

@@ -20,6 +20,8 @@ else
 
 end
 
+#Users::Models::Plan.destroy_all
+
 unless Users::Models::Plan.exists?
   #
   # seed subscriptions plan
@@ -27,7 +29,7 @@ unless Users::Models::Plan.exists?
   Users::Models::Plan.transaction do 
     [
       {
-        name: "Free",
+        name: "Starter",
         price: 0,
         currency: "USD",
         display_order: 1,
@@ -40,7 +42,7 @@ unless Users::Models::Plan.exists?
                       <p>1 API Request per Second</p>"
       },
       {
-        name: "Starter",
+        name: "Intermediate",
         price: 50,
         currency: "USD",
         display_order: 2,
@@ -52,7 +54,7 @@ unless Users::Models::Plan.exists?
                       <p>5 API Request per Second</p>"
       },
       {
-        name: "Intermediate",
+        name: "Advance",
         price: 150,
         currency: "USD",
         display_order: 3,
@@ -77,7 +79,7 @@ unless Users::Models::Plan.exists?
       },
       {
         name: "Exchanger",
-        price: 50,
+        price: 0,
         currency: "USD",
         display_order: 5,
         features: {

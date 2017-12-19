@@ -75,14 +75,32 @@ module Users
       module Wallets 
           
         extend ActiveSupport::Concern
+
+        included do 
+
+          self.object_caches_suffix += ['wallets-with-deleted-collection', 'wallets-only-deleted-collection', 'wallet-collection']
+
+        end
         
         def cached_address_collection
           cached_wallet_collection.map(&:address)
         end
 
+        def cached_wallets_with_deleted_collection
+          Rails.cache.fetch("#{self.cache_prefix}-wallets-with-deleted-collection", expires_in: 1.day) do 
+            self.wallets.with_deleted.load
+          end
+        end
+
+        def cached_wallets_only_deleted_collection
+          Rails.cache.fetch("#{self.cache_prefix}-wallets-only-deleted-collection", expires_in: 1.day) do 
+            self.wallets.only_deleted.load
+          end
+        end
+
         def cached_wallet_collection
-          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-wallet-collection", expires_in: 1.day) do 
-            wallets.load
+          Rails.cache.fetch("#{self.cache_prefix}-wallet-collection", expires_in: 1.day) do 
+            self.wallets.load
           end
         end
 
@@ -255,7 +273,7 @@ module Users
 
           after_create :attach_to_free_plan
 
-          self.object_caches_suffix += ['subscriptions']
+          self.object_caches_suffix += ['subscriptions', 'draft-subscription']
 
         end
 
@@ -269,8 +287,14 @@ module Users
           end
         end
 
+        def draft_subscription
+          Rails.cache.fetch("#{self.cache_prefix}-draft-subscription", expires_in: 1.day) do 
+            subscriptions.draft.last
+          end
+        end
+
         def active_subscription
-          cached_subscriptions.active.try :first
+          cached_subscriptions.active.try(:first) || subscriptions.new
         end
 
         def active_plan

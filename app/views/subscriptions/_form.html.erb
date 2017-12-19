@@ -1,0 +1,39 @@
+<%= form_group subscription, :coin, { label_class: "col-sm-2", label_name: "Select Coin" } do %>
+  <%= f.select :coin, plan_rates[plan.name].keys, { prompt: "Select..." }, { required: true, class: "form-control col-sm-9", data: { rates: plan_rates[plan.name].to_json } }  %>
+<%- end %>
+
+<%= form_group subscription, :amount, { label_class: "col-sm-2" } do %>
+  <%= f.text_field :amount, class: 'form-control', placeholder: 'Amount', disabled: true, required: true %>
+<%- end %>
+
+<%= form_group subscription, :price, { label_class: "col-sm-2" } do %>
+  <%= f.text_field :price, class: 'form-control', value: number_to_currency(plan.price), disabled: true %>
+<%- end %>
+
+
+<script type="text/javascript">
+  
+ $(document).ready(function(){
+
+  select = $("select#users_models_subscription_coin");
+  
+  rates = JSON.parse(select.attr('data-rates'));
+  current_select = rates[select.val()];
+
+  if (rates[select.val()] != undefined){
+    $("input#users_models_subscription_amount").val(current_select.rate)    
+  }
+
+  $(document).on("change", "select#users_models_subscription_coin", function(e){
+
+    rates = JSON.parse($(this).attr('data-rates'))
+
+    current_select = rates[$(this).val()]
+
+    $("input#users_models_subscription_amount").val(current_select.rate)
+
+  });
+
+ });
+
+</script>

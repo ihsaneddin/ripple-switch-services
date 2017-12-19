@@ -31,11 +31,14 @@ class SetupUsersModuleSubscriptions < ActiveRecord::Migration[5.1]
       t.string :name
       t.uuid :account_id
       t.uuid :plan_id
-      t.decimal :price, :default => 0.0, :precision => 15, :scale => 2
-      t.string :paid_currency
+      t.decimal :amount, :precision => 50, :scale => 35, default: 0
+      t.string :coin
       t.datetime :expired_at
       t.string :state
       t.string :txn_id
+      t.string :qrcode_url
+      t.string :status_url
+      t.string :payment_address
       t.string :notification_email
 
       t.datetime :deleted_at, index: true

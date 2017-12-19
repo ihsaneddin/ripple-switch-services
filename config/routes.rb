@@ -42,6 +42,14 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :plans, only: [:index], param: :name do 
+    resources :subscriptions, only: [:new, :create, :show], param: :name do 
+      member do 
+        put :cancel
+      end
+    end
+  end
+
   resources :pins, only: [:update]
 
   # static pages

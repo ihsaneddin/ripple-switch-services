@@ -147,6 +147,12 @@ module MenuLinksViewHelper
           route: ripple_wallets_path
         },
         {
+          name: "Plan",
+          is_presented: true,
+          icon: "fa fa-briefcase",
+          route: plans_path
+        },
+        {
           name: "API Documentation",
           is_presented: true,
           icon: "fa fa-file-code-o",

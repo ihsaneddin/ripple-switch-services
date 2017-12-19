@@ -12,4 +12,10 @@ class AccountController < ApplicationController
     params[:filter] || {}
   end
 
+  def subscribing?
+    if current_account.draft_subscription.present?
+      redirect_to plan_subscription_path(current_account.draft_subscription.plan.name, current_account.draft_subscription.name)
+    end
+  end
+
 end

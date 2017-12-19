@@ -5,9 +5,9 @@ Rack::Defense.setup do |config|
   #end
 
   Users::Models::Plan.cached_collection.each do |plan|
-    next if plan.features[:max_api_request_per_second] <= 0
+    next if (plan.features[:max_api_request_per_second] <= 0)
     config.throttle('api', plan.features[:max_api_request_per_second], 1.second.in_milliseconds) do |req|
-      req.env['warden'].user.id if (%r{^/api/} =~ req.path) && (req.env['warden'].user.active_plan.name == plan.name)
+      req.env['warden'].user.id if (%r{^/api/} =~ req.path) &&  req.env['warden'].user.present? &&(req.env['warden'].user.active_plan.name == plan.name)
     end
   end
 

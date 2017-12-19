@@ -111,7 +111,7 @@ module Resources
   def resource_class
     resource_class = self.class_context.context_resource_class
     if resource_class.nil?
-      resource_class = class_context.name.demodulize.classify
+      resource_class = controller_name.singularize
     end
     resource_class
   end
