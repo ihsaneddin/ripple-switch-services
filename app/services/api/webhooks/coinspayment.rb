@@ -11,15 +11,15 @@ module Api
 
         def verify_webhook data
           digest  = OpenSSL::Digest.new('sha256')
-          logger.info(request.headers)
-          logger.info(data)
+          logger.info("#{request.headers}\n")
+          logger.info("#{data}\n")
           if coinspayment_header.present?
-            calculated_hmac = OpenSSL::HMAC.digest(digest, COIN_PAYMENTS_IPN_KEY, data).strip
+            calculated_hmac = Base64.encode64(OpenSSL::HMAC.hexdigest(digest, COIN_PAYMENTS_IPN_KEY, data)).strip
             if ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, coinspayment_header)
               yield
             end
           else
-            logger.info ("Not Verified")
+            logger.info ("Not Verified\n")
           end
         end
 
@@ -32,14 +32,14 @@ module Api
       resources "coinspayment" do 
 
         post do 
-          logger.info("++++ START COINSPAYMENT APN ++++")
+          logger.info("++++ START COINSPAYMENT APN ++++\n")
           request.body.rewind
           data = request.body.read
           verify_webhook(data) do 
             logger.info "Verified"
             logger.info data  
           end
-          logger.info("++++ END COINSPAYMENT APN ++++")
+          logger.info("++++ END COINSPAYMENT APN ++++\n")
         end
 
       end
