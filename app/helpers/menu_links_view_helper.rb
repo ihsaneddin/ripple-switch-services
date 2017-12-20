@@ -81,7 +81,7 @@ module MenuLinksViewHelper
   #
   # return array of sidebar menu for spesific user
   #
-  def sidebar_menu_links(tipe=:admin)
+  def sidebar_menu_links(tipe=:account)
     send("#{tipe}_sidebar_menu_links")
   end
 
@@ -130,9 +130,9 @@ module MenuLinksViewHelper
     end
 
     #
-    # admin sidebar menu links
+    # account sidebar menu links
     #
-    def admin_sidebar_menu_links
+    def account_sidebar_menu_links
       [
         {
           name: "Dashboard",
@@ -157,6 +157,54 @@ module MenuLinksViewHelper
           is_presented: true,
           icon: "fa fa-file-code-o",
           route: "https://rss6.docs.apiary.io"#page_path('documentation'),
+        }
+      ]
+    end
+
+    #
+    # admin top menu links
+    #
+    def admin_sidebar_menu_links
+      [
+        {
+          name: "Dashboard",
+          is_presented: true,
+          route: admin_path,
+          icon: "fa fa-dashboard"
+        },
+        {
+          name: "Accounts",
+          is_presented: true,
+          route: admin_accounts_path,
+          icon: "fa fa-user"
+        },
+        {
+          name: "Packages",
+          is_presented: true,
+          route: admin_plans_path,
+          icon: "fa fa-rss-square"
+        }
+      ]
+    end
+
+    #
+    # admin sidebar menu links
+    #
+    def admin_top_menu_links
+      [
+        {
+          name: current_admin.try(:username),
+          is_presented: true,
+          route: '#',
+          subs: [
+            {
+              name: "Logout",
+              icon: 'fa fa-sign-out',
+              route: destroy_admin_session_path(),
+              is_presented: true
+            }
+          ]
+
         }
       ]
     end

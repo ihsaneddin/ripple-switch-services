@@ -38,3 +38,12 @@
   })
 
 <%- end %>
+
+
+$(function(){
+  $(".wysihtml5").wysihtml5({"html": true});
+  $('.pick-a-date').datepicker({
+                                autoclose: true,
+                                format: "dd-mm-yyyy"
+                              });
+});

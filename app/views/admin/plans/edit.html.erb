@@ -1,0 +1,13 @@
+<%= yield_content_for :page_title, "Edit #{@plan.name} Package" %>
+
+
+<% if modal_params.present? %>
+  <%= form_for @plan, url: admin_plan_path(@plan.name), html: { class: "form form-horizontal" }, remote: true do |f| %>
+
+    <%= render :partial => "admin/plans/form", locals: { plan: @plan, f: f } %>
+
+    <%= modal_input_params %>
+    <%= table_input_params %>
+
+  <%-end %> 
+<%- end %>

@@ -36,6 +36,31 @@ module FormViewHelper
     nil
   end
 
+  def form_group_tag attribute, options={}
+    options = { active: true, skip_error_message: false, strict: true }.merge!(options)
+    if options[:active]
+      if options[:strict]
+        content_tag :div, class: "form-group has-feedback" do
+          label= content_tag :label, class: "control-label #{options[:label_class] || 'col-sm-3'}" do
+            if options[:label_name].present?
+              options[:label_name].html_safe
+            else
+              attribute.to_s.titleize
+            end
+          end
+          input= content_tag :div, class: options[:input_div_class] || 'col-sm-9' do 
+            yield if block_given?
+          end
+          label.concat input
+        end
+      else
+        content_tag :div, class: "form-group has-feedback" do
+          yield if block_given?
+        end
+      end
+    end
+  end
+
   #
   # build form group
   #

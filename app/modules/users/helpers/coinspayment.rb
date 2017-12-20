@@ -6,10 +6,10 @@ module Users
 
       included do 
 
-        validates :coin, presence: true, inclusion: { in: Users::Models::Plan.accepted_coins, allow_blank: true }
+        validates :coin, presence: true, inclusion: { in: Users::Models::Plan.accepted_coins, allow_blank: true }, unless: Proc.new{|subs| subs.plan.try(:free) }
         #validates :amount, presence: true, numericality: { greater_than: 0 }
 
-        before_create :submit_payment
+        before_create :submit_payment, unless: Proc.new{|subs| subs.plan.try(:free?) }
         before_validation :generate_name
 
       end

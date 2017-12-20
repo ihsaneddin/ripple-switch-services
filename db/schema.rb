@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171218033603) do
+ActiveRecord::Schema.define(version: 20171220142354) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,18 @@ ActiveRecord::Schema.define(version: 20171218033603) do
     t.index ["token"], name: "index_administration_admins_on_token", unique: true
     t.index ["unlock_token"], name: "index_administration_admins_on_unlock_token", unique: true
     t.index ["username"], name: "index_administration_admins_on_username", unique: true
+  end
+
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
+    t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|
@@ -175,17 +187,19 @@ ActiveRecord::Schema.define(version: 20171218033603) do
 
   create_table "users_plans", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
+    t.string "code"
     t.text "features"
     t.text "description"
     t.decimal "price", precision: 15, scale: 2, default: "0.0"
     t.string "currency"
-    t.integer "display_order"
+    t.integer "position", default: 1
     t.string "state"
     t.boolean "free", default: false
     t.string "per_period", default: "month"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_users_plans_on_code"
     t.index ["deleted_at"], name: "index_users_plans_on_deleted_at"
     t.index ["name"], name: "index_users_plans_on_name"
     t.index ["price"], name: "index_users_plans_on_price"

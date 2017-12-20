@@ -20,7 +20,7 @@ module ContentViewHelper
     end
   end
 
-  def label content, options={}
+  def label_tag content, options={}
     content_tag :span, class: "label #{options[:label_class]}" do 
       content.try(:html_safe)
     end

@@ -1,0 +1,29 @@
+<%= content_tag :div, class: "row" do %>
+    
+  <%= content_tag :div, class: "col-md-6" do %>
+    
+    <%= form_group_tag :email, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag "filter[login]", filter_params[:login], class: 'form-control', placeholder: 'Filter by email' %>
+    <%- end %>
+
+    <%= form_group_tag :active_from, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag 'filter[from_time]', filter_params[:from_time], class: 'form-control pick-a-date', placeholder: 'Set date' %>
+    <%- end %>
+
+  <%- end %>
+
+  <%= content_tag :div, class: "col-md-6" do %>
+    
+    <%= form_group_tag :package_type, { label_class: "col-sm-3" } do %>
+      <%= select_tag 'filter[plan_id]', options_from_collection_for_select(plans, "id", "name", filter_params[:plan_id]), prompt: "Filter by user's package type", class: "form-control" %>
+    <%- end %>
+
+    <%= form_group_tag :active_to, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag 'filter[to_time]', filter_params[:to_time], class: 'form-control pick-a-date', placeholder: 'Set date' %>
+    <%- end %>
+
+  <%- end %>
+
+
+
+<%- end %>

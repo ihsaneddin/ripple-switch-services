@@ -1,0 +1,51 @@
+
+  <%= content_tag :table, class: 'table table-hover', id: "plans" do %>
+    <%= content_tag :thead do %>
+      <%= content_tag :tr do %>
+        <% ["Name","Type", "Price", "Status", "Display Order", "Last Updated At", ""].each do |header| %>
+          <%= content_tag :th, header %>  
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    <%= content_tag :tbody do %>
+
+      <%= empty_table plans, colspan=6, no_record="No record found." %>
+      <% plans.each do |plan| %>
+        <%= content_tag :tr, id: "tr-#{plan.id}" do %>
+          
+          <%= content_tag :td, plan.name %>
+          <%= content_tag :td, plan.free ? "Free" : "Paid" %>
+          <%= content_tag :td, number_to_currency(plan.price) %>
+          <%= content_tag :td, plan.state %>
+          <%= content_tag :td, plan.display_order %>
+          <%= content_tag :td, plan.updated_at %>
+          <%= content_tag :td do %>
+            <%= link_to admin_plan_path(plan.name), class: "btn btn-sm btn-default" do %>
+              <%= content_tag :i, nil, class: "fa fa-info", title: "Go to this package details." %>
+            <%- end %>
+            <%= link_to edit_admin_plan_path(plan.name, 
+                  modal: {
+                      id: "edit-plan-#{plan.id}",
+                      title: "Edit Package",
+                      template: "admin/plans/edit",
+                      use_footer: true,
+                      use_submit_footer_buttons: true,
+                      cancel_button_text: "Cancel",
+                      submit_button_text: "Update"
+                    },
+                    table: {
+                      id: "table-container-for-#{controller_name}"
+                    }
+                ), class: "btn btn-sm btn-default", remote: true, title: "Edit this package." do %>
+                <%= content_tag :i, nil, class: "fa fa-pencil-square-o" %>
+            <%- end %>
+          <%- end %>
+          
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+<%= content_tag :div, class: "text-center" do %>
+  <%= paginate plans, remote: true %>
+<%- end %>

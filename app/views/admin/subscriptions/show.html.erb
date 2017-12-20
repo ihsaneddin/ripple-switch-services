@@ -1,11 +1,11 @@
-<%= yield_content_for :page_title, "Payment" %>
+<%= yield_content_for :page_title, "Subscription" %>
 
 <%= content_tag :div, class: "row" do %>
  <%= content_tag :div, class: "col-md-6 col-md-offset-3" do %> 
   <%= box_panel do |outer_template, options|%>
 
     <%= _content_for(outer_template, :box_panel_header) do %>
-      <%= content_tag :h4, "Upgrade or Continue #{plan.name} Plan", class: "text-center" %>
+      <%= content_tag :h4, "#{@subscription.plan.name} Plan #{@subscription.plan.free?? '<small>(free)</small>' : nil}".html_safe, class: "text-center" %>
     <%- end %>
 
     <%= _content_for(outer_template, :box_panel_body) do %>
@@ -35,31 +35,30 @@
           <%= content_tag :p, "Please send the requested amount above to the shown address." %>
           <%= content_tag :p, '<font style="color:red;font-weight:bold">This transaction can not be refunded.</font>'.html_safe %>
           <%= content_tag :p do%>
-            <%= content_tag :b, "This payment will Upgrade or Continue #{plan.name} Plan." %>
+            <%= content_tag :b, "This payment will Upgrade or Continue #{@subscription.plan.name} Plan." %>
           <%- end %>
         <%- end %>
 
         <% if @subscription.waiting_confirmation? %>
+          <%= content_tag :p, "This payment is still waiting for confirmation. You can check it #{link_to "here", @subscription.status_url}".html_safe %>
         <%- end %>
 
         <% if @subscription.canceled? %>
         <%- end %>
 
         <% if @subscription.active? %>
+           <%= content_tag :p, "This subscription is active for user #{link_to @subscription.account.try(:username), admin_account_path(@subscription.account.username, modal: {
+                id: "account-#{@subscription.account.id}",
+                title: "Account Info",
+                template: "admin/accounts/show"
+              }
+              ), remote: true} until #{@subscription.expired_at.present?? @subscription.expired_at : "forever"}".html_safe %>
         <%- end %>
 
         <% if @subscription.expired? %>
 
         <%- end %>
 
-      <%- end %>
-
-      <%= submit_buttons_wrapper divider: true do %>
-
-        <%= link_to "Dashboard", root_path, class: "btn btn-primary" %>
-        <% if @subscription.draft? %>
-          <%= link_to "Cancel Request", cancel_plan_subscription_path(plan.name, @subscription.name), method: :put, data: { confirm: "Are you sure?", title: "Cancel Subscription Request" }, class: "btn btn-danger" %>
-        <%- end %>
       <%- end %>
 
 

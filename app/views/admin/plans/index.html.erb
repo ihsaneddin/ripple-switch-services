@@ -1,0 +1,67 @@
+<%= yield_content_for :page_title, "Packages" %>
+
+
+<%= box_panel use_footer: false, style: "box-primary" do |filter_box, options|%>
+
+  <%= _content_for(filter_box, :box_panel_header) do %>
+    <%= content_tag :h3, "Filter", class: "box-title" %>
+    <%= box_panel_links collapse: true %>
+  <%- end %>
+  
+  <%= _content_for(filter_box, :box_panel_body) do %>
+
+    <%= form_tag nil, class: 'form-horizontal', method: :get, remote: true do %>
+
+      <%= render partial: "admin/plans/filter", locals: { states: plan_states } %>
+
+      <%= generate_table_input_params resources_name: "plans", template: "admin/plans/table", id: "table-container-for-#{controller_name}" %>
+      
+      <%= content_tag :div, class: "row" do %>
+        <%= submit_buttons_wrapper divider: false do %>
+          <%= submit_tag "Filter", class: "btn btn-info" %>
+          <%= button_tag "Reset", type: "reset", class: "btn btn-default" %>
+        <%- end %>
+      <%- end %>
+
+    <%- end %>
+  
+  <%- end %>
+<%- end %>
+
+<%= box_panel use_footer: false, use_header: true, style: "box-primary" do |outer_template, options|%>
+  
+  <%= _content_for(outer_template, :box_panel_header) do %>
+    <%= content_tag :h3, "Subscription Packages", class: "box-title" %>
+    <%= box_panel_links do %>
+      <%= link_to new_admin_plan_path(
+        modal: {
+          id: "plan-new",
+          title: "New Package",
+          template: "admin/plans/new",
+          use_footer: true,
+          use_submit_footer_buttons: true,
+          cancel_button_text: "Cancel",
+          submit_button_text: "Create"
+        },
+        table: {
+          id: "table-container-for-#{controller_name}"
+        }
+      ), class: 'btn btn-default remote-modal', remote: true, title: "Create new package" do %> 
+        <%= content_tag :i, "", class: 'fa fa-plus' %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+  <%= _content_for(outer_template, :box_panel_body) do %>
+
+    <%= box_panel body_style: "table-responsive", use_footer: false, use_header: false do |box_table, options| %>
+      <%= _content_for(box_table, :box_panel_body) do %>
+        <%= table_container_for collection= @plans, resources_name: "plans", template: "admin/plans/table" do %>
+          <%= render partial: "admin/plans/table", locals: {plans: @plans}  %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    
+  
+  <%- end %>
+<%- end %>

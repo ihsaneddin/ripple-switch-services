@@ -1,0 +1,28 @@
+<%= form_group plan, :name, { label_class: "col-sm-2" } do %>
+  <%= f.text_field :name, class: 'form-control', placeholder: 'Package name', required: true %>
+<%- end %>
+
+<%= form_group_tag :free, { label_class: "col-sm-2", label_name: "Type" } do %>
+  <%= f.select :free, [["Free", 1], ["Paid", 0]], { prompt: "Package type" }, { required: true, class: "form-control col-sm-9" }  %>
+<%- end %>
+
+<%= form_group plan, :price, { label_class: "col-sm-2" } do %>
+  <%= f.number_field :price, class: 'form-control', placeholder: 'Package price' %>
+<%- end %>
+
+<%= form_group plan, :display_order, { label_class: "col-sm-2" } do %>
+  <%= f.number_field :display_order, class: 'form-control', placeholder: 'Set display order for packages page' %>
+<%- end %>
+
+<%= form_group plan, :features, { label_class: "col-sm-2", label_name: "Maximum wallet count" } do %>
+  <%= number_field_tag "users_models_plan[features][max_wallets_count]", plan.features[:max_wallets_count], class: 'form-control', placeholder: 'Set maximum wallets for this package' %>
+<%- end %>
+
+<%= form_group plan, :features, { label_class: "col-sm-2", label_name: "Maximum API request" } do %>
+  <%= number_field_tag "users_models_plan[features][max_api_request_per_second]", plan.features[:max_api_request_per_second], class: 'form-control', placeholder: 'Set maximum API request per second for this package' %>
+<%- end %>
+
+
+<%= form_group plan, :description, { label_class: "col-sm-2" } do %>
+  <%= f.text_area :description, class: "wysihtml5 form-control" %>
+<%- end %>

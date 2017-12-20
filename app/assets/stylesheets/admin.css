@@ -1,0 +1,44 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require bootstrap/css/bootstrap
+ *= require font-awesome/css/font-awesome
+ *= require adminLTE/css/AdminLTE
+ *= require adminLTE/css/skins/_all-skins
+ *= require iCheck/square/blue
+ *= require morris/morris
+ *= require jvectormap/jquery-jvectormap-1.2.2
+ *= require datepicker/datepicker3
+ *= require daterangepicker/daterangepicker
+ *= require bootstrap-wysihtml5/bootstrap3-wysihtml5
+ *= require select2/select2
+ *= require fullcalendar/fullcalendar
+ *= require bootstrap-slider/slider
+ */
+
+ .avatar-image {
+  float: left;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-top: -2px;
+}
+
+.submit-buttons-wrapper-top-divider {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  border-top: 1px solid #f4f4f4;
+  padding: 20px;
+}

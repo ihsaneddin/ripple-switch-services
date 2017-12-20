@@ -73,8 +73,8 @@
                 <%= content_tag :h1, "FREE", class: "text-center" %>
               <% else %>
                 <%= content_tag :h1 do %> 
-                <%= number_to_currency(plan.price) %> / <%= content_tag :small, plan.per_period%>
-              <%- end %>
+                  <%= number_to_currency(plan.price) %> / <%= content_tag :small, plan.per_period%>
+                <%- end %>
               <%- end %>
             <%- end %>
           <%- end %>

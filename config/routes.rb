@@ -4,20 +4,11 @@ Rails.application.routes.draw do
   #use_doorkeeper
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  # sidekiq Routes
   mount Sidekiq::Web => '/sidekiq'
 
-  root to: 'home#index'
-
-  devise_for :accounts, path: 'auth', skip: [:confirmations], class_name: "Users::Models::Account",
-             path_names: {sign_in: 'login', sign_out: 'logout', password: 'passwords'},
-             controllers: {sessions: 'sessions', passwords: 'passwords'}
-
-  # custom token login
-  devise_scope :account do
-    get 'sessions/token', to: "sessions#token", as: :token_session_account
-  end
-
-  #namespace :api do 
+  # api routes
+    #namespace :api do 
   #  namespace :v1 do
       #
       # oauth2 implementation routes for grant password and refresh_token
@@ -27,6 +18,20 @@ Rails.application.routes.draw do
   #end
 
   mount Api::Base => '/'
+
+  # root path
+  root to: 'home#index'
+
+  # account's routes
+
+  devise_for :accounts, path: 'auth', skip: [:confirmations, :registrations, :passwords], class_name: "Users::Models::Account",
+             path_names: {sign_in: 'login', sign_out: 'logout',},
+             controllers: {sessions: 'sessions',}
+
+  # custom token login
+  devise_scope :account do
+    get 'sessions/token', to: "sessions#token", as: :token_session_account
+  end
 
   namespace :ripple do 
     resources :wallets, except: [:edit, :update] do 
@@ -54,5 +59,29 @@ Rails.application.routes.draw do
 
   # static pages
   get "/pages/*page" => "pages#show", as: :page
+
+  # admin's routes
+
+  devise_for :admins, path: "administrator", skip: [:confirmations, :registrations], class_name: "Administration::Models::Admin",
+              path_names: { sign_in: "login", sign_out:  "logout"},
+              controllers: { sessions: "admin/sessions", passwords: "admin/profile" }
+
+  namespace :admin, path: "administrator" do 
+    
+    get "", to: "dashboards#index"
+
+    resources :dashboards, path: "dashboard", only: :index
+    resources :accounts, only: [:index, :show], param: :username
+    resources :plans, path: "packages", param: :name do 
+      member do 
+        put :activate
+        put :deactivate
+      end
+    end
+    resources :subscriptions, only: [:index, :show], param: :name
+    resources :profiles, path: "profile", only: [:edit, :update]
+
+  end
+
 
 end

@@ -1,0 +1,63 @@
+<%= content_tag :div, class: 'row' do %>
+
+  <%= content_tag :div, class: 'col-md-12 col-xs-12' do %>
+    <%= content_tag :div, class: 'panel panel-primary' do %>
+      
+      <%= content_tag :div, class: 'panel-body' do %>
+        <%= content_tag :div, class: 'small-box bg-aqua' do %>
+          
+          <%= content_tag :ul, class: 'list-group' do %>
+            
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Username", style: "color:#605854" %>
+              <%= content_tag :span, @account.username, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Email", style: "color:#605854" %>
+              <%= content_tag :span, @account.email, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Last Sign in at", style: "color:#605854" %>
+              <%= content_tag :span, @account.last_sign_in_at, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Plan Type", style: "color:#605854" %>
+              <%= content_tag :span, @account.active_plan.name, class: "badge" %>
+            <%- end %>
+            
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Expired At", style: "color: #605854" %>
+              <%= content_tag :span, @account.active_subscription.expired_at || "No expiration date", class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Address", style: "color: #605854" %>
+              <%= content_tag :span, "#{@account.cached_wallet_collection.count}/#{@account.active_plan.features[:max_wallets_count]}" || "No expiration date", class: "badge badge-danger" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Active Address", style: "color: #605854" %>
+              <%= content_tag :span, @account.cached_wallet_collection.count, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "Archived Address", style: "color: #605854" %>
+              <%= content_tag :span, @account.cached_wallets_only_deleted_collection.count, class: "badge" %>
+            <%- end %>
+
+            <%= content_tag :li, class: "list-group-item" do %>
+              <%= content_tag :b, "API Request per second", style: "color: #605854" %>
+              <%= content_tag :span, @account.active_plan.features[:max_api_request_per_second], class: "badge" %>
+            <%- end %>
+            
+          <%- end %>
+        
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %> 
+
+<%- end %>

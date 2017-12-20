@@ -166,3 +166,5 @@ gem 'rack-defense'
 
 # subscription payment
 gem 'coinpayments'
+
+gem 'acts_as_list'

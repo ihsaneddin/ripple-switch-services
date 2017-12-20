@@ -32,10 +32,18 @@ module Users
           transitions to: :active, from: :waiting_confirmation
         end
 
+        event :confirm_free_plan, guard: :free? do 
+          transitions from: [:draft, :waiting_confirmation], to: :active
+        end
+
         event :expire do
           transitions :from => :active, :to => :expired
         end
       
+      end
+
+      def free?
+        plan.try(:free)
       end
 
       def void_previous_subscription_and_set_expired_time
@@ -48,7 +56,7 @@ module Users
       end
 
       def expiring!
-        expire! if expired_at > DateTime.now
+        expire! if expired_at > DateTime.now && may_expire?
       end
 
       def expire!
@@ -56,6 +64,28 @@ module Users
       end
 
       class << self
+
+        def filter params={}
+          res = cached_collection
+          if params[:plan_id].present?
+            res = res.where(plan_id: params[:plan_id])
+          end
+          if params[:name].present?
+            res = res.where(name: params[:name])
+          end
+          if params[:state].present?
+            res = res.where(state: params[:state])
+          end
+          if params[:to_time].present?
+            to_time= DateTime.parse(params[:to_time]) rescue nil
+            res = res.where("updated_at <= ?", to_time) if to_time
+          end
+          if params[:plan_type].present?
+            free = params[:plan_type].eql?("Free") ? true : false
+            res = res.where(free: free)
+          end
+          res
+        end
 
         def accepted_coins_rates
           #Rails.cache.fetch("#{cache_prefix}-accepted-coins", expires_in: 1.month) do 

@@ -32,7 +32,13 @@ module Users
       has_many :wallets, class_name: "Ripples::Models::Wallet"
       has_many :tokens, class_name: "Users::Models::Token"
       has_many :subscriptions, class_name: "Users::Models::Subscription"
+      has_one :subscription_active, -> { where(state: "active") }, class_name: "Users::Models::Subscription"
       has_many :plans, class_name: "Users::Models::Plan", through: :subscriptions
+
+      #
+      # pg_search implementation
+      #
+      pg_search_scope :search_by_login, :against => [:email, :username]
 
       def generate_pin
         while true
@@ -231,6 +237,25 @@ module Users
           end
         end
 
+        def filter params={}
+          res = cached_collection
+          if params[:login].present?
+            res = res.search_by_login(params[:login])
+          end
+          if params[:from_time].present?
+            from_time= DateTime.parse(params[:from_time]) rescue nil
+            res = res.where("updated_at >= ?", from_time) if from_time
+          end
+          if params[:to_time].present?
+            to_time= DateTime.parse(params[:to_time]) rescue nil
+            res = res.where("updated_at <= ?", to_time) if to_time
+          end
+          if params[:plan_id].present?
+            res = res.joins(:subscription_active).where(users_subscriptions: { plan_id: params[:plan_id] })
+          end
+          res
+        end
+
       end
 
       module RegistrationOrLoginByToken
@@ -278,7 +303,8 @@ module Users
         end
 
         def attach_to_free_plan
-          Users::Models::Plan.create_subscription_for self, "Free"
+          subscription = Users::Models::Plan.create_subscription_for self, "Free"
+          subscription.confirm_free_plan!
         end
 
         def cached_subscriptions
@@ -294,11 +320,11 @@ module Users
         end
 
         def active_subscription
-          cached_subscriptions.active.try(:first) || subscriptions.new
+          cached_subscriptions.active.try(:first) #|| subscriptions.new
         end
 
         def active_plan
-          active_subscription.try(:plan) || Users::Models::Plan.free.first
+          active_subscription.try(:plan) #|| Users::Models::Plan.free.first
         end
 
       end

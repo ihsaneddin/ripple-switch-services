@@ -11,7 +11,9 @@ module Ripples
 
       attr_encrypted :secret, key: ENV['ENCRYPT_SECRET_KEY']
 
-      include PgSearch
+      #
+      # pg_search implementation
+      #
       pg_search_scope :search_by_label, :against => [:label]
 
       belongs_to :account, class_name: "Users::Models::Account",touch: true

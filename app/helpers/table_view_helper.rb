@@ -62,14 +62,19 @@ module TableViewHelper
   end
 
   #table input params, useful for reloading table
-  def table_input_params
+  def table_input_params input_params=nil
+    input_params ||= table_params
     content_tag(:div, class: "params-table") do 
       inputs = []
-      table_params.each do |k,v|
+      input_params.each do |k,v|
         inputs << hidden_field_tag("table[#{k}]",v)
       end
       inputs.join("\n").html_safe
     end
+  end
+
+  def generate_table_input_params input_params={}
+    table_input_params(input_params)
   end
 
   def table_params

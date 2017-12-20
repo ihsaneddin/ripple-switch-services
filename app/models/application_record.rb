@@ -10,6 +10,8 @@ class ApplicationRecord < ActiveRecord::Base
   scope :asc, -> { order("created_at ASC") }
   scope :desc, -> { order("created_at DESC") }
 
+  include PgSearch
+
   def newly_created?
     self.updated_at == self.created_at
   end

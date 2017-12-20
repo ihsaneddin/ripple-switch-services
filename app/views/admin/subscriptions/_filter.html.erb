@@ -1,0 +1,33 @@
+<%= content_tag :div, class: "row" do %>
+    
+  <%= content_tag :div, class: "col-md-6" do %>
+    
+    <%= form_group_tag :identifier, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag "filter[name]", filter_params[:name], class: 'form-control', placeholder: 'Filter by identifier' %>
+    <%- end %>
+
+    <%= form_group_tag :package_name, { label_class: "col-sm-3" } do %>
+      <%= select_tag 'filter[plan_id]', options_from_collection_for_select(plans, "id", "name", filter_params[:plan_id]), prompt: "Filter by package", class: "form-control" %>
+    <%- end %>
+
+  <%- end %>
+
+  <%= content_tag :div, class: "col-md-6" do %>
+    
+    <%= form_group_tag :status, { label_class: "col-sm-3" } do %>
+      <%= select_tag 'filter[state]', options_for_select(states), prompt: "Filter by subscription status", class: "form-control" %>
+    <%- end %>
+
+    <%= form_group_tag :updated_to, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag 'filter[to_time]', filter_params[:to_time], class: 'form-control pick-a-date', placeholder: 'Set date' %>
+    <%- end %>
+
+    <%= form_group_tag :updated_from, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag 'filter[from_time]', filter_params[:from_time], class: 'form-control pick-a-date', placeholder: 'Set date' %>
+    <%- end %>
+
+  <%- end %>
+
+
+
+<%- end %>

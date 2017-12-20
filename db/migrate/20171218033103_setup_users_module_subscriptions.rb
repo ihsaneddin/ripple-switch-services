@@ -7,11 +7,12 @@ class SetupUsersModuleSubscriptions < ActiveRecord::Migration[5.1]
     #
     create_table :users_plans, id: :uuid  do |t|
       t.string :name
+      t.string :code
       t.text :features
       t.text :description
       t.decimal :price, :default => 0.0, :precision => 15, :scale => 2
       t.string :currency
-      t.integer :display_order
+      t.integer :position, default: 1
       t.string :state
       t.boolean :free, default: false
       t.string :per_period, default: "month"
@@ -23,6 +24,7 @@ class SetupUsersModuleSubscriptions < ActiveRecord::Migration[5.1]
 
     add_index :users_plans, :name
     add_index :users_plans, :price
+    add_index :users_plans, :code
 
     #
     # create subscriptions table

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!--[if lt IE 9]>
+        <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+        <![endif]-->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    <title>RippleSS<%= content_for?(:title) ? "-#{yield(:title)}" : nil %></title>
+
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag 'admin', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%=  yield(:styles) %>
+    
+    <%= javascript_include_tag 'admin', 'data-turbolinks-track': 'reload' %>
+    <%= yield(:head_scripts) %> 
+
+  </head>
+
+  <!-- begin body -->
+  <%= content_tag :body, class: 'hold-transition skin-red sidebar-mini', data: { "rails-ws" => ENV["WEB_RIPPLED_SERVER"] } do %>
+
+    <!-- start wrapper -->
+    <%= content_tag :div, class: 'wrapper' do %>
+      <%= render layout: "/shared/header/header" do %>
+        <%= nav_top_bar do %>
+          <%= content_tag :div, class: 'navbar-custom-menu' do %> 
+            <!-- start current user menu --> 
+            <%= build_nav_menu top_menu_links(:admin) %>
+            <!-- end current user menu -->
+          <%- end %>
+        <%- end %>
+      <%- end %>
+      <%= nav_side_bar do %>
+        <!-- build sidebar menus -->
+        <%= build_sidebar_menu sidebar_menu_links(:admin) do %>
+          <%= content_tag :li, "MAIN", class: "header" %>
+        <%- end %> 
+        <!-- end build sidebar menus -->
+      <%- end %>
+      <%= content_tag :div, class: "content-wrapper" do %>
+        
+        <%= flash_messages %>
+        <%= content_header_section yield(:page_title) %>
+        
+        <%= content_section do %>
+          <%= yield %>
+        <%- end %>
+
+      <%- end %>
+    <%- end %>
+    <!-- end wrapper -->
+
+    <%= content_tag :div, nil, id: "modals" %>
+
+    <%= yield(:scripts) %>
+
+  <%- end %>
+  <!-- end of body -->
+
+</html>

@@ -39,6 +39,7 @@ $(document).ready(function(){
   //
   $(document).on("click", "a.remote-modal", function(e){
     modal_id = $.urlParam(decodeURIComponent($(this).attr('href')), 'modal[id]');
+    console.log(modal_id)
     if ((modal_id != null) && (modal_id.trim()) )
     {
       if ($("div#"+modal_id+"").length > 0){

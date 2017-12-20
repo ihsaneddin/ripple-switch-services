@@ -7,19 +7,6 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 
-#
-# seed development records
-#
-
-unless Rails.env.production?
-
-  account = Users::Models::Account.new email: 'rss-user@mailinator.com', password: 'password', password_confirmation: 'password'
-  account.skip_confirmation!
-  account.save
-else
-
-end
-
 #Users::Models::Plan.destroy_all
 
 unless Users::Models::Plan.exists?
@@ -32,7 +19,7 @@ unless Users::Models::Plan.exists?
         name: "Starter",
         price: 0,
         currency: "USD",
-        display_order: 1,
+        position: 1,
         free: true,
         features: {
           max_wallets_count: 10,
@@ -45,7 +32,7 @@ unless Users::Models::Plan.exists?
         name: "Intermediate",
         price: 50,
         currency: "USD",
-        display_order: 2,
+        position: 2,
         features: {
           max_wallets_count: 100,
           max_api_request_per_second: 5
@@ -57,7 +44,7 @@ unless Users::Models::Plan.exists?
         name: "Advance",
         price: 150,
         currency: "USD",
-        display_order: 3,
+        position: 3,
         features: {
           max_wallets_count: 1000,
           max_api_request_per_second: 25
@@ -69,7 +56,7 @@ unless Users::Models::Plan.exists?
         name: "Expert",
         price: 500,
         currency: "USD",
-        display_order: 4,
+        position: 4,
         features: {
           max_wallets_count: 5000,
           max_api_request_per_second: 100
@@ -81,7 +68,7 @@ unless Users::Models::Plan.exists?
         name: "Exchanger",
         price: 0,
         currency: "USD",
-        display_order: 5,
+        position: 5,
         features: {
           max_wallets_count: 0,
           max_api_request_per_second: 0
@@ -99,4 +86,26 @@ unless Users::Models::Plan.exists?
       end
     end
   end
+end
+
+#
+# seed development records
+#
+
+unless Rails.env.production?
+
+  unless Users::Models::Account.exists?
+    account = Users::Models::Account.new email: 'rss-user@mailinator.com', password: 'password', password_confirmation: 'password'
+    account.skip_confirmation!
+    puts "seed account created.\n"if account.save
+  end
+
+  unless Administration::Models::Admin.exists?
+    admin = Administration::Models::Admin.new email: "rss-admin@mailinator.com", password: "password", password_confirmation: "password"
+    admin.skip_confirmation!
+    puts "admin user created\n" if admin.save
+  end
+
+else
+
 end
