@@ -4,12 +4,12 @@ Rack::Defense.setup do |config|
   #  req.env['warden'].user.id if (%r{^/api/} =~ req.path) && req.env['warden'].user
   #end
 
-  Users::Models::Plan.cached_collection.each do |plan|
-    next if (plan.max_api_request_per_second <= 0) rescue false
-    config.throttle('api', plan.features[:max_api_request_per_second], 1.second.in_milliseconds) do |req|
-      req.env['warden'].user.id if (%r{^/api/} =~ req.path) &&  req.env['warden'].user.present? &&(req.env['warden'].user.active_plan.name == plan.name)
-    end
-  end
+  #Users::Models::Plan.cached_collection || [].each do |plan|
+  #  next if (plan.max_api_request_per_second <= 0) rescue false
+  #  config.throttle('api', plan.features[:max_api_request_per_second], 1.second.in_milliseconds) do |req|
+  #    req.env['warden'].user.id if (%r{^/api/} =~ req.path) &&  req.env['warden'].user.present? &&(req.env['warden'].user.active_plan.name == plan.name)
+  #  end
+  #end
 
   config.banned_response =
     ->(env) { [404, {'Content-Type' => 'application/json'}, [{message: "Not found"}.to_json]] }
