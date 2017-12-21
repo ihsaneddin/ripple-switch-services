@@ -168,3 +168,8 @@ gem 'rack-defense'
 gem 'coinpayments'
 
 gem 'acts_as_list'
+
+# charts
+gem 'groupdate'
+gem 'chartkick'
+gem 'active_median'

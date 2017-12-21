@@ -1,6 +1,7 @@
 <%= yield_content_for :page_title, "Wallet Info" %>
 
 <% if modal_params.present? %>
+
   
   <%= content_tag :table, id: "wallet-#{@wallet.address}-info", class: "table table-hover" do %>
     <%= content_tag :tr, class: 'wallet-address' do %>
@@ -42,7 +43,7 @@
     $(document).ready(function(){
 
 
-      var api = new ripple.RippleAPI({server:rippleWS});
+      var api = new ripple.RippleAPI({server:'wss://s.altnet.rippletest.net:51233'});
       var myAddress = "<%= @wallet.address %>";
       
       api.connect().then(() => {

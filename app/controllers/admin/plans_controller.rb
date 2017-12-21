@@ -10,7 +10,7 @@ module Admin
     helper_method :plan_states
     
     def index
-      @plans = Users::Models::Plan.cached_collection.filter(filter_params).page(params[:page]).per(params[:per_page] || 20)
+      @plans = Users::Models::Plan.cached_collection.filter(filter_params).page(params[:page]).per(params[:per_page] || 2)
       respond_to do |f|
         f.html
         f.js do 
@@ -40,7 +40,7 @@ module Admin
 
     def create
       if @plan.save
-        @plan.reorder_position
+        #@plan.reorder_position
         message = "New package is successfully created!"
         respond_to do |f|
           f.html { redirect_to admin_plans_path, notice: "Success" }
@@ -110,8 +110,7 @@ module Admin
     end
 
     def activate
-      if @plan.may_activate?
-        @plan.activate!
+      if @plan.activate!
         message= "Package #{@plan.name} is activated"
         respond_to do |f|
           f.html { redirect_to admin_plans_path, notice: message }
@@ -122,40 +121,17 @@ module Admin
             end
           end
         end
-      else
-        message = "Package #{@plan.name} can not be activated"
-        respond_to do |f|
-          f.html { redirect_to admin_plans_path, error: message }
-          f.js do 
-            if table_params_present?
-              params[:notification]= { message: message, type: "danger" }
-              render_table "/shared/table/reload.js.erb"
-            end
-          end
-        end
       end
     end
 
     def deactivate
-      if @plan.may_deactivate?
-        @plan.deactivate!
+      if @plan.deactivate!
         message= "Package #{@plan.name} is deactivated"
         respond_to do |f|
           f.html { redirect_to admin_plans_path, notice: message }
           f.js do 
             if table_params_present?
               params[:notification]= { message: message }
-              render_table "/shared/table/reload.js.erb"
-            end
-          end
-        end
-      else
-        message = "Package #{@plan.name} can not be deactivated"
-        respond_to do |f|
-          f.html { redirect_to admin_plans_path, error: message }
-          f.js do 
-            if table_params_present?
-              params[:notification]= { message: message, type: "danger" }
               render_table "/shared/table/reload.js.erb"
             end
           end

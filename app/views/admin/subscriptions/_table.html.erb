@@ -30,6 +30,18 @@
               <%= content_tag :i, "", class: 'fa fa-info' %>
           <%- end %>
 
+          <%= link_to cancel_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to cancel this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-warning remote-modal',  title: "Cancel subscription" do %> 
+              <%= content_tag :i, "", class: 'fa fa-remove' %>
+          <%- end %>
+
+          <%= link_to confirm_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to activate this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-primary remote-modal', title: "Activate subscription" do %> 
+              <%= content_tag :i, "", class: 'fa fa-check-square-o' %>
+          <%- end %>
+
+          <%= link_to expire_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to expiry this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-danger remote-modal', title: "Expiry subscription" do %> 
+              <%= content_tag :i, "", class: 'fa-exclamation-circle' %>
+          <%- end %>
+
         <%- end %>
       <%- end %>
     <%- end %>
@@ -37,5 +49,5 @@
 <%- end %>
 
 <%= content_tag :div, class: "text-center" do %>
-  <%= paginate subscriptions, remote: true %>
+  <%= paginate subscriptions, remote: true, params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] } %>
 <%- end %>

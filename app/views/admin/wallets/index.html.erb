@@ -1,0 +1,70 @@
+<%= yield_content_for :page_title, "Wallets" %>
+
+<%= box_panel use_footer: false, style: "box-primary" do |filter_box, options|%>
+
+  <%= _content_for(filter_box, :box_panel_header) do %>
+    <%= content_tag :h3, "Filter", class: "box-title" %>
+    <%= box_panel_links collapse: true %>
+  <%- end %>
+  
+  <%= _content_for(filter_box, :box_panel_body) do %>
+
+    <%= form_tag nil, class: 'form-horizontal', method: :get, remote: true do %>
+
+      <%= render partial: "admin/wallets/filter" %>
+
+      <%= generate_table_input_params resources_name: "wallets", template: "admin/wallets/table", id: "table-container-for-#{controller_name}" %>
+      
+      <%= content_tag :div, class: "row" do %>
+        <%= submit_buttons_wrapper divider: false do %>
+          <%= submit_tag "Filter", class: "btn btn-info" %>
+          <%= button_tag "Reset", type: "reset", class: "btn btn-default" %>
+        <%- end %>
+      <%- end %>
+
+    <%- end %>
+  
+  <%- end %>
+<%- end %>
+
+<%= box_panel use_footer: false do |outer_template, options|%>
+  <%= _content_for(outer_template, :box_panel_header) do %>
+    <%= content_tag :h3, "Generated Wallets", class: "box-title" %>
+    <%= box_panel_links do %>
+
+      <%= link_to admin_wallets_path(
+            table: { 
+              id: "table-container-for-wallets",
+              template: "admin/wallets/table",
+              resources_name: "wallets"
+          }), remote: true, id: "unarchived-link", class: "toggle btn btn-default", data: {toggle: "#archived-link"}, title: "Go to unarchived addresses" do %>
+        <%= content_tag :i, nil, class: 'fa fa-money' %>
+      <%- end %>
+
+      <%= link_to admin_wallets_path(archived: true,
+            table: 
+              { 
+                id: "table-container-for-wallets",
+                template: "admin/wallets/table",
+                resources_name: "wallets"
+              }
+          ), remote: true, id: "archived-link", class: "toggle btn btn-default", data: { toggle: "#unarchived-link" }, title: "Go to archived addresses" do %>
+        <%= content_tag :i, nil, class: 'fa fa-archive' %>
+      <%- end %>
+
+
+    <%- end %>
+  <%- end %>
+  <%= _content_for(outer_template, :box_panel_body) do %>
+
+    <%= box_panel body_style: "table-responsive", use_footer: false, use_header: false do |box_table, options| %>
+      <%= _content_for(box_table, :box_panel_body) do %>
+        <%= table_container_for collection= @wallets, resources_name: "wallets", template: "admin/wallets/table" do %>
+          <%= render partial: "admin/wallets/table", locals: {wallets: @wallets}  %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    
+  
+  <%- end %>
+<%- end %>

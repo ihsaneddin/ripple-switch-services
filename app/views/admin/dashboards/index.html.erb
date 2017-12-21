@@ -1,0 +1,77 @@
+<%= yield_content_for :page_title, "Dashboard" %>
+
+<%= content_tag :div, class: "row" do %>
+
+  <%= content_tag :div, class: "col-lg-3 col-xs-6" do %>
+    <%= content_tag :div, class: "small-box bg-aqua" do %>
+      <%= content_tag :div, "#{content_tag :h3, Users::Models::Account.where(created_at: Time.now.beginning_of_month..Time.now.end_of_month).count} #{content_tag :p, 'New Accounts'}".html_safe, class: "inner" %>
+      <%= link_to "More info #{content_tag :i, nil, class: "fa fa-arrow-circle-right"}".html_safe, admin_accounts_path(from_time: Time.now.beginning_of_month, to_time: Time.now.end_of_month), class: "small-box-footer" %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: "col-lg-3 col-xs-6" do %>
+    <%= content_tag :div, class: "small-box bg-yellow" do %>
+      <%= content_tag :div, "#{content_tag :h3, Users::Models::Subscription.active.where(created_at: Time.now.beginning_of_month..Time.now.end_of_month).count} #{content_tag :p, 'New Active Subscription'}".html_safe, class: "inner" %>
+      <%= link_to "More info #{content_tag :i, nil, class: "fa fa-arrow-circle-right"}".html_safe, admin_accounts_path(from_time: Time.now.beginning_of_month, to_time: Time.now.end_of_month), class: "small-box-footer" %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: "col-lg-3 col-xs-6" do %>
+    <%= content_tag :div, class: "small-box bg-green" do %>
+      <%= content_tag :div, "#{content_tag :h3, Ripples::Models::Transaction.where(created_at: Time.now.beginning_of_month..Time.now.end_of_month).count} #{content_tag :p, 'New Created Transaction'}".html_safe, class: "inner" %>
+      <%= link_to "More info #{content_tag :i, nil, class: "fa fa-arrow-circle-right"}".html_safe, admin_accounts_path(from_time: Time.now.beginning_of_month, to_time: Time.now.end_of_month), class: "small-box-footer" %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: "col-lg-3 col-xs-6" do %>
+    <%= content_tag :div, class: "small-box bg-red" do %>
+      <%= content_tag :div, "#{content_tag :h3,Ripples::Models::Wallet.where(created_at: Time.now.beginning_of_month..Time.now.end_of_month).count} #{content_tag :p, 'New Created Wallet Address'}".html_safe, class: "inner" %>
+      <%= link_to "More info #{content_tag :i, nil, class: "fa fa-arrow-circle-right"}".html_safe, admin_accounts_path(from_time: Time.now.beginning_of_month, to_time: Time.now.end_of_month), class: "small-box-footer" %>
+    <%- end %>
+  <%- end %>
+
+<%- end %>
+
+
+<%= content_tag :div, class: 'row' do %>
+  <%= content_tag :div, class: 'col-md-6' do %>
+    <%= box_panel style: "box-warning", use_footer: false, use_header: false do |accounts, options| %>
+      <%= _content_for(accounts, :box_panel_body) do %>
+         <%= line_chart accounts_admin_dashboards_path, title: "Accounts Charts", adapter: "highcharts", ytitle: "Registered Users", 
+                      library: {
+                        tooltip: {
+                          pointFormat: 'Register count: <b>{point.y}</b>'
+                        },
+                        yAxis: {
+                          allowDecimals: false
+                        },
+                        xAxis: {
+                          xDateFormat: '%B'
+                        }
+                      } 
+        %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+  <%= content_tag :div, class: 'col-md-6' do %>
+    <%= box_panel style: "box-default", use_footer: false, use_header: false do |subscriptions, options| %>
+      <%= _content_for(subscriptions, :box_panel_body) do %>
+        <%= line_chart subscriptions_admin_dashboards_path, title: "Subscriptions Charts", adapter: "highcharts", ytitle: "Package Count", 
+                      library: {
+                        tooltip: {
+                          pointFormat: 'Users count: <b>{point.y}</b>'
+                        },
+                        yAxis: {
+                          allowDecimals: false
+                        },
+                        xAxis: {
+                          xDateFormat: '%B'
+                        }
+                      } 
+        %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+<%- end %>

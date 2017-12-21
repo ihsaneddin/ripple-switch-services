@@ -15,7 +15,7 @@
         
         <%= content_tag :td, account.email %>
         <%= content_tag :td, account.username %>
-        <%= content_tag :td, account.active_plan.name %>
+        <%= content_tag :td, account.active_plan.try(:name) || "Expired" %>
         <%= content_tag :td, account.last_sign_in_at %>
         <%= content_tag :td do %>
       

@@ -63,7 +63,7 @@
               <%- end %>
             <%- end %>
 
-            <% if true#wallet.validated? %>
+            <% if wallet.validated? %>
               <%= link_to new_ripple_wallet_transaction_path(wallet, 
                     modal: {
                       id: "ripples-wallet-#{wallet.id}-new-transaction",

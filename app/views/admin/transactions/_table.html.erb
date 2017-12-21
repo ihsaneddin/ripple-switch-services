@@ -1,0 +1,31 @@
+
+  <%= content_tag :table, class: 'table table-hover', id: "transactions" do %>
+    <%= content_tag :thead do %>
+      <%= content_tag :tr do %>
+        <% ["Address","Destination", "TX Hash", "Status", "Amount", "Last Update", ""].each do |header| %>
+          <%= content_tag :th, header %>  
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    <%= content_tag :tbody do %>
+
+      <%= empty_table transactions, colspan=7, no_record="No record found." %>
+      <% transactions.each do |transaction| %>
+        <%= content_tag :tr, id: "tr-#{transaction.id}", class: "#{transaction.validated?? nil : "inactive"}" do %>
+          <%= content_tag :td, transaction.wallet.address %>
+          <%= content_tag :td, transaction.destination %>
+          <%= content_tag :td, transaction.tx_hash %>
+          <%= content_tag :td, transaction.status %>
+          <%= content_tag :td, transaction.amount %>
+          <%= content_tag :td, time_ago_in_words(wallet.updated_at) %>
+          <%= content_tag :td do %>
+
+          <%- end %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+<%= content_tag :div, class: "text-center" do %>
+  <%= paginate transactions, remote: true, params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] }%>
+<%- end %>

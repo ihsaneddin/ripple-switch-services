@@ -1,0 +1,57 @@
+
+  <%= content_tag :table, class: 'table table-hover', id: "wallets" do %>
+    <%= content_tag :thead do %>
+      <%= content_tag :tr do %>
+        <% ["Sequence","Label", "Address", "Status", "Balance", "Pending Received", "Last Update", ""].each do |header| %>
+          <%= content_tag :th, header %>  
+        <%- end %>
+      <%- end %>
+    <%- end %>
+    <%= content_tag :tbody do %>
+
+      <%= empty_table wallets, colspan=8, no_record="No record found." %>
+      <% wallets.each do |wallet| %>
+        <%= content_tag :tr, id: "tr-#{wallet.address}", class: "#{wallet.validated?? nil : "inactive"}" do %>
+          <%= content_tag :td, wallet.sequence, id: "td-#{wallet.address}-sequence" %>
+          <%= content_tag :td, wallet.label %>
+          <%= content_tag :td, wallet.address, class: "td-address" %>
+          <%= content_tag :td, id: "status-#{wallet.address}-address" do %>
+            <%= content_tag :span, "#{wallet.validated?? 'active' : 'inactive'}",class: "active-label label label-#{wallet.validated?? 'info' : 'default'}", title: "You can activate the wallet by deposit" %>
+          <%- end %>
+          <%= content_tag :td, wallet.balance_xrp.to_s, id: "td-#{wallet.address}-balance" %>
+          <%= content_tag :td, wallet.pending_received_transactions_count, id: "td-#{wallet.address}-pending-received" %>
+          <%= content_tag :td, time_ago_in_words(wallet.updated_at) %>
+          <%= content_tag :td do %>
+
+            <% unless wallet.deleted? %>
+              <%= link_to admin_wallet_path(wallet.id, 
+                modal: {
+                  id: "ripples-wallet-#{wallet.id}-qr",
+                  title: "",
+                  template: "admin/wallets/qrcode"
+                }
+                ), class: 'btn btn-default', remote: true do %>
+                <%= content_tag :i, "", class: 'fa fa-qrcode' %>
+              <%- end%>
+              
+              <%= link_to admin_wallet_path(wallet.id,
+                modal: {
+                  id: "ripples-wallet-#{wallet.id}",
+                  title: "Wallet Info",
+                  template: "admin/wallets/show"
+                }
+                ), class: 'btn btn-default remote-modal', remote: true, title: "View QR code" do %> 
+                <%= content_tag :i, "", class: 'fa fa-info' %>
+              <%- end %>
+              
+            <%- end %>
+
+          <%- end %>
+        <%- end %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+<%= content_tag :div, class: "text-center" do %>
+  <%= paginate wallets, remote: true, params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] }%>
+<%- end %>

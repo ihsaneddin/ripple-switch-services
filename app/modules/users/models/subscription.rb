@@ -59,10 +59,6 @@ module Users
         expire! if expired_at > DateTime.now && may_expire?
       end
 
-      def expire!
-        self.update state: true
-      end
-
       class << self
 
         def filter params={}
@@ -74,7 +70,7 @@ module Users
             res = res.where(name: params[:name])
           end
           if params[:state].present?
-            res = res.where(state: params[:state])
+            res = res.where(state: params[:state].to_s.downcase.parameterize.underscore)
           end
           if params[:to_time].present?
             to_time= DateTime.parse(params[:to_time]) rescue nil

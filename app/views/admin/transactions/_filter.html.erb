@@ -1,0 +1,35 @@
+<%= content_tag :div, class: "row" do %>
+    
+  <%= content_tag :div, class: "col-md-6" do %>
+    
+    <%= form_group_tag :address, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag "filter[address]", filter_params[:address], class: 'form-control', placeholder: 'Filter by address' %>
+    <%- end %>
+
+    <%= form_group_tag :destination, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag "filter[destination]", filter_params[:destination], class: 'form-control', placeholder: 'Filter by destination address' %>
+    <%- end %>
+
+    <%= form_group_tag :tx_hash, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag "filter[tx_hash]", filter_params[:tx_id], class: 'form-control', placeholder: 'Filter by tx id' %>
+    <%- end %>
+
+  <%- end %>
+
+  <%= content_tag :div, class: "col-md-6" do %>
+    
+    <%= form_group_tag :status, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag "filter[state]", filter_params[:name], class: 'form-control', placeholder: 'Filter by state' %>
+    <%- end %>
+
+    <%= form_group_tag :updated_to, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag 'filter[to_time]', filter_params[:to_time], class: 'form-control pick-a-date', placeholder: 'Set date' %>
+    <%- end %>
+
+    <%= form_group_tag :updated_from, { label_class: "col-sm-3" } do %>
+      <%= text_field_tag 'filter[from_time]', filter_params[:from_time], class: 'form-control pick-a-date', placeholder: 'Set date' %>
+    <%- end %>
+
+  <%- end %>
+
+<%- end %>

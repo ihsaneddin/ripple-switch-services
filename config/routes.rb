@@ -70,7 +70,12 @@ Rails.application.routes.draw do
     
     get "", to: "dashboards#index"
 
-    resources :dashboards, path: "dashboard", only: :index
+    resources :dashboards, path: "dashboard", only: :index do 
+      collection do 
+        get :accounts
+        get :subscriptions
+      end
+    end
     resources :accounts, only: [:index, :show], param: :username
     resources :plans, path: "packages", param: :name do 
       member do 
@@ -78,8 +83,17 @@ Rails.application.routes.draw do
         put :deactivate
       end
     end
-    resources :subscriptions, only: [:index, :show], param: :name
+    resources :subscriptions, only: [:index, :show], param: :name do 
+      member do 
+        put :cancel
+        put :confirm
+        put :expire
+      end
+    end
     resources :profiles, path: "profile", only: [:edit, :update]
+
+    resources :transactions, only: [:index, :show]
+    resources :wallets, only: [:index, :show]
 
   end
 

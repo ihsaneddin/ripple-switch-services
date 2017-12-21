@@ -66,7 +66,11 @@
 <%- end %>
 
 
-<%= box_panel use_footer: false, use_header: false, style: "box-primary" do |outer_template, options|%>
+<%= box_panel use_footer: false, style: "box-primary" do |outer_template, options|%>
+
+  <%= _content_for(outer_template, :box_panel_header) do %>
+    <%= content_tag :h3, "Subscribers", class: "box-title" %>
+  <%- end %>
 
   <%= _content_for(outer_template, :box_panel_body) do %>
     
@@ -100,8 +104,8 @@
     <%= box_panel body_style: "table-responsive", use_footer: false, use_header: false do |box_table, options| %>
       
       <%= _content_for(box_table, :box_panel_body) do %>
-        <%= table_container_for collection= @plan_subscriptions, resources_name: "subscriptions", template: "admin/subscriptions/table", id: "table-container-for-subscriptions" do %>
-          <%= render partial: "admin/subscriptions/table", locals: {subscriptions: @plan_subscriptions}  %>
+        <%= table_container_for collection= @plan_subscriptions, resources_name: "subscriptions", template: "admin/subscriptions/table", id: "table-container-for-subscriptions", resources_url: admin_subscriptions_path(table: { resources_name: "subscriptions", template: "admin/subscriptions/table", id: "table-container-for-subscriptions" }) do %>
+          <%= render partial: "admin/subscriptions/table", locals: {subscriptions: @plan_subscriptions, pagination_path: { controller: "admin/subscriptions", action: "index" }}  %>
         <%- end %>
       <%- end %>
 

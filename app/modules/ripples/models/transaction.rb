@@ -8,6 +8,8 @@ module Ripples
       validates :amount, :presence => true, numericality: { greater_than: 0 }
       validates :destination, presence: true
 
+      scope :completed, ->{ where(state: "closed") }
+
       after_save do 
         destination_wallet = Ripples::Models::Wallet.find_by(address: destination)
         if destination_wallet.present?

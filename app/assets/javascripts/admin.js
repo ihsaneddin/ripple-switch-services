@@ -30,6 +30,9 @@
 //= require adminLTE/js/app
 //= require iCheck/icheck
 //= require notify/notify.min
+//= require Chart.bundle
+//= require highcharts/highcharts
+//= require chartkick
 //= require iodash
 //= require ripple.min
 //= require custom
@@ -64,6 +67,8 @@ $(document).ready(function(){
 
   // toggle alement
   $(document).on("click", '.toggle', function(e){
+
+    console.log("asup")
 
     $(this).addClass('hidden');
     $($(this).attr('data-toggle')).removeClass('hidden');

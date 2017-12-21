@@ -50,6 +50,18 @@ module Ripples
           if params[:validated].present?
             res = res.where(validated: params[:validated])
           end
+          if params[:wallet_type].present?
+            cold = params[:wallet_type].to_s.downcase.eql?('hot') ? true : false
+            res = res.where(validated: cold) 
+          end
+          if params[:from_time].present?
+            from_time= DateTime.parse(params[:from_time]) rescue nil
+            res = res.where("created_at >= ?", from_time) if from_time
+          end
+          if params[:to_time].present?
+            to_time= DateTime.parse(params[:to_time]) rescue nil
+            res = res.where("created_at <= ?", to_time) if to_time
+          end
           res
         end
 

@@ -1,0 +1,8 @@
+<h4 class="text-center">
+  <%= @wallet.address %>
+</h4>
+<%= content_tag :div, class: 'container-fluid' do %>
+  <%= content_tag :div, class: 'text-center' do %>
+    <%= image_tag "https://chart.googleapis.com/chart?cht=qr&chl=#{@wallet.address}&chs=200x200&chld=L|0", class: 'qr-code img-thumbnail img-responsive' %>
+  <%- end %>
+<%- end %>

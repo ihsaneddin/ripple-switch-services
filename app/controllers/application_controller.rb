@@ -6,12 +6,29 @@ class ApplicationController < ActionController::Base
 
   layout :user_layout
 
+  include NotificationViewHelper::Concern
+
+  rescue_from AASM::InvalidTransition do |e|
+    message = e.message.html_safe
+    respond_to do |f|
+      f.html{ redirect_to previous_page, error: message }
+      f.js do 
+        params[:notification]= { message: message, type: "danger" }
+        render_notification
+      end
+    end
+  end
+
   def devise_resource(klass= Users::Models::Account)
     @resource ||= params[:id].present?? klass.find(params[:id]) : klass.new
   end
 
   def user_layout
     current_account.present?? 'account' : 'landing' 
+  end
+
+  def previous_page
+    request.env['HTTP_REFERER']
   end
 
 

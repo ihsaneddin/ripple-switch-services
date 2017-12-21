@@ -39,6 +39,23 @@
                 ), class: "btn btn-sm btn-default", remote: true, title: "Edit this package." do %>
                 <%= content_tag :i, nil, class: "fa fa-pencil-square-o" %>
             <%- end %>
+
+            <%= link_to activate_admin_plan_path(plan.name, 
+                    table: {
+                      id: "table-container-for-plans"
+                    }
+                ), class: "btn btn-sm btn-primary", remote: true, title: "Activate this package.", method: :put, data: {confirm: "Are you sure?", title: "Confirmation"} do %>
+                <%= content_tag :i, nil, class: "fa fa-exclamation-circle" %>
+            <%- end %>
+
+            <%= link_to deactivate_admin_plan_path(plan.name, 
+                    table: {
+                      id: "table-container-for-plans"
+                    }
+                ), class: "btn btn-sm btn-danger", remote: true, title: "Deactivate this package.", method: :put, data: {confirm: "Are you sure?", title: "Confirmation"} do %>
+                <%= content_tag :i, nil, class: "fa fa-remove" %>
+            <%- end %>
+
           <%- end %>
           
         <%- end %>
@@ -47,5 +64,5 @@
   <%- end %>
 
 <%= content_tag :div, class: "text-center" do %>
-  <%= paginate plans, remote: true %>
+  <%= paginate plans, remote: true , params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] } %>
 <%- end %>

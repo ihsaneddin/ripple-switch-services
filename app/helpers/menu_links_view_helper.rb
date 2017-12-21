@@ -183,6 +183,18 @@ module MenuLinksViewHelper
           is_presented: true,
           route: admin_plans_path,
           icon: "fa fa-rss-square"
+        },
+        {
+          name: "Wallets",
+          is_presented: true,
+          route: admin_wallets_path,
+          icon: "fa fa-money"
+        },
+        {
+          name: "Transactions",
+          is_presented: true,
+          route: admin_transactions_path,
+          icon: "fa fa-file"
         }
       ]
     end

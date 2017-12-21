@@ -73,7 +73,7 @@
               id: "table-container-for-#{controller_name}",
               template: "ripple/wallets/table",
               resources_name: "wallets"
-          }), remote: true, id: "unarchived-link", class: "toggle btn btn-default hidden", data: {toggle: "#archived-link"}, title: "Go to unarchived addresses" do %>
+          }), remote: true, id: "unarchived-link", class: "toggle btn btn-default", data: {toggle: "#archived-link"}, title: "Go to unarchived addresses" do %>
         <%= content_tag :i, nil, class: 'fa fa-money' %>
       <%- end %>
 

@@ -48,6 +48,8 @@ $(document).ready(function(){
 
   $('.fa-sign-out').closest('a').attr('data-method', 'delete');
 
+  
+  
   // toggle alement
   $(document).on("click", '.toggle', function(e){
 

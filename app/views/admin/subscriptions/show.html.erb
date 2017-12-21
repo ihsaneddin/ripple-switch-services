@@ -40,6 +40,7 @@
         <%- end %>
 
         <% if @subscription.waiting_confirmation? %>
+          <%= content_tag :span, @subscription.state, class: "" %>
           <%= content_tag :p, "This payment is still waiting for confirmation. You can check it #{link_to "here", @subscription.status_url}".html_safe %>
         <%- end %>
 
