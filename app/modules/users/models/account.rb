@@ -304,7 +304,7 @@ module Users
 
         def attach_to_free_plan
           subscription = Users::Models::Plan.create_subscription_for self, "Free"
-          subscription.confirm_free_plan!
+          subscription.confirm_free_plan! if subscription
         end
 
         def cached_subscriptions

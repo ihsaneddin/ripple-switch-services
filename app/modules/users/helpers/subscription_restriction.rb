@@ -10,7 +10,7 @@ module Users
 
         def restrict_address_creation options={}
           current_plan = current_account.active_plan || Users::Models::Plan.free.first
-          if current_plan.present? && (current_account.cached_with_deleted_collection.count < (current_plan.max_wallets_count || 10))
+          if current_plan.present? && (current_account.wallets.cached_with_deleted_collection.count < (current_plan.max_wallets_count || 10))
             block_given? ? yield : true 
           else
             respond_to do |f|
@@ -39,7 +39,7 @@ module Users
 
           def restrict_address_creation options={}
             current_plan = current_account.active_plan || Users::Models::Plan.free.first
-            if current_plan.present? && (current_account.cached_with_deleted_collection.count < (current_plan.max_wallets_count || 10))
+            if current_plan.present? && (current_account.wallets.cached_with_deleted_collection.count < (current_plan.max_wallets_count || 10))
               block_given? ? yield : true 
             else
               error!('Maximum address created has reached', 401)
