@@ -2,7 +2,7 @@ class SubscriptionsController < AccountController
 
   before_action :subscribing?, except: :show
 
-  self.resource_actions = [:new, :create, :show]
+  self.resource_actions = [:new, :create, :show, :cancel]
   self.identifier = :name
   self.find_by = :name
   use_resource!
