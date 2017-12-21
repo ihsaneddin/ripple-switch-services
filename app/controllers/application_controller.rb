@@ -11,7 +11,10 @@ class ApplicationController < ActionController::Base
   rescue_from AASM::InvalidTransition do |e|
     message = e.message.html_safe
     respond_to do |f|
-      f.html{ redirect_to previous_page, error: message }
+      f.html do
+        flash[:error]= message
+        redirect_back(fallback_location: root_path)
+      end
       f.js do 
         params[:notification]= { message: message, type: "danger" }
         render_notification

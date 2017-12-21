@@ -30,7 +30,10 @@ module Admin
       if @subscription.cancel!
         message="Subscription is now canceled"
         respond_to do |f|
-          f.html{ redirect_to previous_page, notice: message }
+          f.html{ 
+            flash[:notice]= message
+            redirect_back(fallback_location: root_path)
+          }
           f.js do 
             params[:notification]= { message: message }
             render_table "/shared/table/reload.js.erb" if table_params_present?
@@ -41,10 +44,13 @@ module Admin
     end
 
     def confirm
-      if @subscription.update_attribute(:state, "active")#@subscription.confirm!
+      if @subscription.confirm!
         message="Subscription is now activated"
         respond_to do |f|
-          f.html{ redirect_to previous_page, notice: message }
+          f.html{ 
+            flash[:notice]= message
+            redirect_back(fallback_location: root_path) 
+          }
           f.js do 
             params[:notification]= { message: message }
             render_table "/shared/table/reload.js.erb" if table_params_present?
@@ -58,7 +64,10 @@ module Admin
       if @subscription.expire!
         message="Subscription is now expired"
         respond_to do |f|
-          f.html{ redirect_to previous_page, notice: message }
+          f.html{ 
+            flash[:notice]= message
+            redirect_back(fallback_location: root_path)
+          }
           f.js do 
             params[:notification]= { message: message }
             

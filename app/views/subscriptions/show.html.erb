@@ -57,7 +57,7 @@
       <%= submit_buttons_wrapper divider: true do %>
 
         <%= link_to "Dashboard", root_path, class: "btn btn-primary" %>
-        <% if @subscription.draft? %>
+        <% if true#@subscription.draft? %>
           <%= link_to "Cancel Request", cancel_plan_subscription_path(plan.name, @subscription.name), method: :put, data: { confirm: "Are you sure?", title: "Cancel Subscription Request" }, class: "btn btn-danger" %>
         <%- end %>
       <%- end %>

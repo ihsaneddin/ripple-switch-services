@@ -1,6 +1,6 @@
 class SubscriptionsController < AccountController
 
-  before_action :subscribing?, except: :show
+  before_action :subscribing?, except: [:cancel, :show]
 
   self.resource_actions = [:new, :create, :show, :cancel]
   self.identifier = :name
@@ -38,10 +38,10 @@ class SubscriptionsController < AccountController
     
   end
 
-  def cancel 
+  def cancel
     @subscription.cancel!
     respond_to do |f|
-      f.html{ redirect_to plan_path, :notice => "Subscription is cancelled" }
+      f.html{ redirect_to plans_path, :notice => "Subscription is cancelled" }
     end
   end
 
