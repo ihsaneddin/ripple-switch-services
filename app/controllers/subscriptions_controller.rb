@@ -38,15 +38,10 @@ class SubscriptionsController < AccountController
     
   end
 
-  def cancel
-    begin 
-      if @subscription.cancel!
-        respond_to do |f|
-          f.html{ redirect_to plan_path, :notice => "Subscription is cancelled" }
-        end
-      end
-    rescue AASM::InvalidTransition => e
-      redirect_to plan_subscription_path(plan.name, subscription.name), error: "Can not cancel subscription."
+  def cancel 
+    @subscription.cancel!
+    respond_to do |f|
+      f.html{ redirect_to plan_path, :notice => "Subscription is cancelled" }
     end
   end
 
