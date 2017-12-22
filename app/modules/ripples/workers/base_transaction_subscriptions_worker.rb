@@ -22,7 +22,7 @@ module Ripples
           ws = Faye::WebSocket::Client.new(wss, nil, ping: 60)
 
           ws.on :open do |event|
-            p [:open]
+            p [:open, DateTime.now]
             ws.send(subscribe_params.to_json)
           end
 
@@ -98,7 +98,7 @@ module Ripples
           end
 
           ws.on :close do |event|
-            p [:close, event.code, event.reason]
+            p [:close, event.code, event.reason, DateTime.now]
             ws.send(unsubscribe_params.to_json)
             ws = nil
           end
