@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/ihsaneddin/ripple-lib-rpc-ruby
-  revision: 3018b15a9e10249df3b2b81ae07bc347f1164924
+  revision: e569632bfa2bdfd5bc3c7af4689eb3dc5b83dee6
   specs:
     ripple_lib_rpc_ruby (0.0.0)
       eventmachine
@@ -357,7 +357,7 @@ GEM
       rails (>= 3.1.1)
     groupdate (3.2.0)
       activesupport (>= 3)
-    hashie (3.5.6)
+    hashie (3.5.7)
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)

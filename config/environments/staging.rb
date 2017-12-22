@@ -140,6 +140,8 @@ Rails.application.configure do
      enable_starttls_auto: true
   }
 
+  config.action_cable.url = "ws://139.59.107.166/cable"
+
 end
 
 Rails.application.routes.default_url_options[:host] = 'http://139.59.107.166'
