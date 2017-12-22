@@ -28,4 +28,5 @@
 
 <%= content_tag :div, class: "text-center" do %>
   <%= paginate transactions, remote: true, params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] }%>
+  <%= content_tag :p, page_entries_info(transactions, entry_name: 'Transactions'), class: "text-right" %>
 <%- end %>

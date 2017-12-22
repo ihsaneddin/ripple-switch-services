@@ -65,4 +65,5 @@
 
 <%= content_tag :div, class: "text-center" do %>
   <%= paginate plans, remote: true , params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] } %>
+  <%= content_tag :p, page_entries_info(plans, entry_name: 'Packages'), class: "text-right" %>
 <%- end %>

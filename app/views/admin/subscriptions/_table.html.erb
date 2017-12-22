@@ -50,4 +50,5 @@
 
 <%= content_tag :div, class: "text-center" do %>
   <%= paginate subscriptions, remote: true, params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] } %>
+  <%= content_tag :p, page_entries_info(subscriptions, entry_name: 'Subscriptions'), class: "text-right" %>
 <%- end %>

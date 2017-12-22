@@ -93,7 +93,8 @@
   <%- end %>
 
 <%= content_tag :div, class: "text-center" do %>
-  <%= paginate @wallets, remote: true %>
+  <%= paginate wallets, remote: true, params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] } %>
+  <%= content_tag :p, page_entries_info(wallets, entry_name: 'Wallets'), class: "text-right" %>
 <%- end %>
 
 <script type="text/javascript">

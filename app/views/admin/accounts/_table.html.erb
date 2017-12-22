@@ -36,5 +36,6 @@
 <%- end %>
 
 <%= content_tag :div, class: "text-center" do %>
-  <%= paginate accounts, remote: true %>
+  <%= paginate accounts, remote: true , params: local_assigns[:pagination_path] || { controller: params[:controller], action: params[:action] } %>
+  <%= content_tag :p, page_entries_info(accounts, entry_name: 'Accounts'), class: "text-right" %>
 <%- end %>
