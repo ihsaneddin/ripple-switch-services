@@ -21,6 +21,7 @@
     <title>RippleSS<%= content_for?(:title) ? "-#{yield(:title)}" : nil %></title>
 
     <%= csrf_meta_tags %>
+    <%= action_cable_meta_tag %>
 
     <%= stylesheet_link_tag 'account', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%=  yield(:styles) %>

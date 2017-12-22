@@ -16,8 +16,10 @@ Rails.application.routes.draw do
   #    resources :sessions, only: [:create, :update], param: :token
   #  end
   #end
-
   mount Api::Base => '/'
+
+  # web socket server
+  mount ActionCable.server => '/cable'
 
   # root path
   root to: 'home#index'

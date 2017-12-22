@@ -35,6 +35,7 @@
 //= require custom
 //= require wallet
 //= require data-confirm
+//= require_tree ./channels
 
 (function(){
   // always pass csrf tokens on ajax calls

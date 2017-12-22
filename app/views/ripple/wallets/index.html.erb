@@ -10,7 +10,7 @@
       <%= content_tag :div, class: 'panel-body' do %>
         <%= content_tag :div, class: 'small-box bg-aqua' do %>
           <%= content_tag :div, class: 'text-center inner' do %>
-            <%= content_tag :h3, current_account.total_balance_xrp, id: "total-balances" %>
+            <%= content_tag :h3, current_account.total_balance_xrp, id: "total-balance-for-#{current_account.id}" %>
           <%- end %>
         <%- end %>
       <%- end %>
@@ -120,3 +120,13 @@
   
   <%- end %>
 <%- end %>
+
+
+<script type="text/javascript">
+  
+  // stream total balance
+  $(document).ready(function(){
+    streamTotalAccountBalance("<%= current_account.id %>")
+  });
+
+</script>

@@ -23,6 +23,22 @@ module Ripples
 
       self.caches_suffix_list= ['address-collection', "collection"]
 
+      #
+      # broadcast message
+      #
+      after_commit do 
+        unless updated_at == created_at
+          if Rails.env.development?
+            if previous_changes.has_key?("balance") or previous_changes.has_key?('validated')
+              ActionCable.server.broadcast "balance-#{self.account.id}", message: { total_balance: self.account.total_balance, total_balance_xrp: self.account.total_balance_xrp }.to_json
+              ActionCable.server.broadcast "wallet-#{self.address}", message: self.to_json
+            end
+          else
+            Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id) if previous_changes.has_key?("balance") or previous_changes.has_key?('validated')
+          end
+        end
+      end
+
       notify_changes_after :create
 
       def should_notify?

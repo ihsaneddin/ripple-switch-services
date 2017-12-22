@@ -97,106 +97,11 @@
 <%- end %>
 
 <script type="text/javascript">
-
-  var addresses = <%= raw current_account.cached_address_collection %>;
-
-  /*$(document).ready(function(){
-    current_balance = 0;
-    rippleClient.connect().then(() => {
-      $.each( addresses, function( i, address ) {
-        rippleClient.getBalances(address).then(balance => {
-          current_balance = current_balance + parseFloat(balance[0].value);
-          $("#total-balances").text(current_balance)
-        })//.then(() => { return rippleClient.disconnect() })
-      });
-    });
-  });*/
   
   $(document).ready(function(){
     var addresses = <%= raw current_account.cached_address_collection %>
 
-    //fillTableAddresses(addresses);
-
-    // unsucsribe first
-
-    wsun = new WebSocket(rippleWS);
-    wsun.onopen = function(){
-      unsubcsribe= { "id": "unsucsribe-<%= current_account.id %>", "command": "unsucsribe", "accounts_proposed": addresses }
-      wsun.send(JSON.stringify(unsubcsribe))
-    }
-
-    streams = {
-        "id": "subscribe-<%= current_account.id %>",
-        "command": "subscribe",
-        "accounts_proposed": addresses
-      }
-
-    wssu = new WebSocket(rippleWS)
-    wssu.onopen = function(){
-      wssu.send(JSON.stringify(streams))
-    };
-
-    wssu.onmessage = function(e){
-      res = JSON.parse(e.data);
-      if (res.transaction != undefined){
-
-        current_balance = 0;
-        rippleClient.connect().then(() => {
-          $.each( addresses, function( i, address ) {
-            rippleClient.getBalances(address).then(balance => {
-              current_balance = current_balance + parseFloat(balance[0].value);
-              $("#total-balances").text(current_balance)
-            })//.then(() => { return rippleClient.disconnect() })
-          });
-        });
-
-        account = res.transaction['Account'];
-        destination = res.transaction['Destination']
-        if (res.validated && (res.status == "closed"))
-        {
-          tx_hash = res.transaction['hash'];
-          if (addresses.includes(destination)){
-            if ((destination != undefined) && (tx_hash != undefined)){
-              //reload table and update pending received total
-              pending_received = $("#total-pending-received")
-              if (pending_received.length){
-                count = parseInt(pending_received.text()) - 1;
-                pending_received.text(count);
-              }
-              completeTransaction(destination, tx_hash);
-            }
-          }
-
-        }else{
-          // reload table wallets and update pending received total
-          if (addresses.includes(destination)){
-            tx_hash = res.transaction['hash'];
-            if ((destination != undefined) && (tx_hash != undefined)){
-              pending_received = $("#total-pending-received")
-              if (pending_received.length){
-                count = parseInt(pending_received.text()) + 1;
-                pending_received.text(count);
-              }
-              td_pending_received = $('#td-'+destination+'-pending-received');
-              if (td_pending_received.length){
-                count = parseInt(td_pending_received.text()) + 1
-                td_pending_received.text(count);
-              }
-              reset_a = $("#table-container-for-wallets").attr("data-reset-path")
-              if (reset_a != undefined){
-                $("#table-container-for-wallets").append(reset_a)
-                $("#table-container-for-wallets").find("a.reset-table")[0].click();
-              }
-            }
-          }        
-        }  
-      }
-      
-    }
-
-    wssu.onclose = function(e){
-      wssu.send({"id": "unsubscribe-<%= current_account.id %>","command": "unsubscribe","accounts_proposed": addresses })
-    }
+    streamWalletsToReloadTable(addresses, 'table-container-for-wallets')
 
   });
 
