@@ -274,7 +274,7 @@ module Users
               account = Users::Models::Account.new email: params[:email], password: SecureRandom.base64
               account.skip_confirmation!
               if account.save
-                Users::Mailers::PinMailer.delay.new_pin(account_id)
+                Users::Mailers::PinMailer.delay.new_pin(account.id)
               end
             end
             return account.generate_token if account.persisted?
