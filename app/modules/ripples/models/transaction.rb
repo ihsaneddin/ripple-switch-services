@@ -8,7 +8,8 @@ module Ripples
       validates :amount, :presence => true, numericality: { greater_than: 0 }
       validates :destination, presence: true
 
-      scope :completed, ->{ where(state: "closed") }
+      scope :completed, ->{ where(state: "closed", validated: true) }
+      scope :not_completed, -> { where.not(state: "closed").or(where(validated: false)) }
 
       after_save do 
         destination_wallet = Ripples::Models::Wallet.find_by(address: destination)
@@ -52,7 +53,7 @@ module Ripples
         begin
           
           trans = wallet.ripple_client.sign_transaction(trans)
-          self.tx_hash= wallet.ripple_client.submit_transaction(trans) 
+          self.tx_hash= wallet.ripple_client.submit_transaction(trans)
         rescue Ripple::SubmitFailed, Ripple::InvalidParameters, Ripple::ServerUnavailable, Ripple::Timedout => e
           self.errors.add(:destination, e.message)
           throw :abort
@@ -70,7 +71,7 @@ module Ripples
           if params[:addresses].present?
             res = res.joins(:wallet).where(ripples_wallets: { address: addresses })
           elsif params[:wallet_ids].present?
-            res = res.where(wallet_id: params[:wallet_ids]).or(destination: params[:wallet_ids])
+            res = res.where(wallet_id: params[:wallet_ids]).or(res.where(destination: params[:wallet_ids]))
           end
 
           if params[:tx_hash].present?
