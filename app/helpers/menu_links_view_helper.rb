@@ -210,6 +210,21 @@ module MenuLinksViewHelper
           route: '#',
           subs: [
             {
+              name: "Account Setting",
+              icon: "fa fa-lock",
+              route: edit_admin_profile_path(current_admin, modal: {
+                id: "modal-edit-profile-#{current_admin.id}",
+                title: "Account Setting",
+                template: "admin/profiles/edit",
+                use_footer: true,
+                submit_button_text: "Change",
+                cancel_button_text: "Cancel",
+                use_submit_footer_buttons: true
+                }),
+              is_presented: true,
+              options: { remote: true }
+            },
+            {
               name: "Logout",
               icon: 'fa fa-sign-out',
               route: destroy_admin_session_path(),

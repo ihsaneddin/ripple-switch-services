@@ -40,20 +40,24 @@
                 <%= content_tag :i, nil, class: "fa fa-pencil-square-o" %>
             <%- end %>
 
-            <%= link_to activate_admin_plan_path(plan.name, 
-                    table: {
-                      id: "table-container-for-plans"
-                    }
-                ), class: "btn btn-sm btn-primary", remote: true, title: "Activate this package.", method: :put, data: {confirm: "Are you sure?", title: "Confirmation"} do %>
-                <%= content_tag :i, nil, class: "fa fa-exclamation-circle" %>
+            <% if plan.may_activate? %>
+              <%= link_to activate_admin_plan_path(plan.name, 
+                      table: {
+                        id: "table-container-for-plans"
+                      }
+                  ), class: "btn btn-sm btn-primary", remote: true, title: "Activate this package.", method: :put, data: {confirm: "Are you sure?", title: "Confirmation"} do %>
+                  <%= content_tag :i, nil, class: "fa fa-exclamation-circle" %>
+              <%- end %>
             <%- end %>
 
-            <%= link_to deactivate_admin_plan_path(plan.name, 
-                    table: {
-                      id: "table-container-for-plans"
-                    }
-                ), class: "btn btn-sm btn-danger", remote: true, title: "Deactivate this package.", method: :put, data: {confirm: "Are you sure?", title: "Confirmation"} do %>
-                <%= content_tag :i, nil, class: "fa fa-remove" %>
+            <% if plan.may_deactivate? %>
+              <%= link_to deactivate_admin_plan_path(plan.name, 
+                      table: {
+                        id: "table-container-for-plans"
+                      }
+                  ), class: "btn btn-sm btn-danger", remote: true, title: "Deactivate this package.", method: :put, data: {confirm: "Are you sure?", title: "Confirmation"} do %>
+                  <%= content_tag :i, nil, class: "fa fa-remove" %>
+              <%- end %>
             <%- end %>
 
           <%- end %>

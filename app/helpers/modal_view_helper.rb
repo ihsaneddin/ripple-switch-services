@@ -13,6 +13,12 @@ module ModalViewHelper
       end
     end
 
+    def dismiss_modal
+      if modal_params_present?
+        render file: "/shared/modal/dismiss.js.erb", locals: modal_params
+      end
+    end
+
     def modal_params
       params[:modal]
     end

@@ -1,6 +1,5 @@
 <%= yield_content_for :page_title, "New Package" %>
 
-
 <% if modal_params.present? %>
   <%= form_for @plan, url: admin_plans_path(), html: { class: "form form-horizontal" }, remote: true do |f| %>
 

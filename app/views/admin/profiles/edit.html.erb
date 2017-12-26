@@ -1,0 +1,11 @@
+<%= yield_content_for :page_title, "Edit Profile" %>
+
+<% if modal_params.present? %>
+  <%= form_for current_admin, url: admin_profile_path(current_admin), html: { class: "form form-horizontal" }, remote: true do |f| %>
+
+    <%= render :partial => "admin/profiles/form", locals: { profile: current_admin, f: f } %>
+
+    <%= modal_input_params %>
+
+  <%-end %> 
+<%- end %>

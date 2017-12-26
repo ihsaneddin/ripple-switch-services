@@ -92,6 +92,7 @@ Rails.application.routes.draw do
         put :expire
       end
     end
+    
     resources :profiles, path: "profile", only: [:edit, :update]
 
     resources :transactions, only: [:index, :show]

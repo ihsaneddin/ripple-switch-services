@@ -1,5 +1,5 @@
 <%= form_group subscription, :coin, { label_class: "col-sm-2", label_name: "Select Coin" } do %>
-  <%= f.select :coin, plan_rates[plan.name].keys, { prompt: "Select..." }, { required: true, class: "form-control col-sm-9", data: { rates: plan_rates[plan.name].to_json } }  %>
+  <%= f.select :coin, plan_rates[plan.name].map{|k,v| [v.name,k] }, { prompt: "Select..." }, { required: true, class: "form-control col-sm-9", data: { rates: plan_rates[plan.name].to_json } }  %>
 <%- end %>
 
 <%= form_group subscription, :amount, { label_class: "col-sm-2" } do %>

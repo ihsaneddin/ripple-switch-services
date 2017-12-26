@@ -1,5 +1,19 @@
 <%= yield_content_for :page_title, "Upgrade or Continue Subscription" %>
 
+<% unless Rails.env.production? %>
+  <%= content_tag :div, class: 'row' do %>
+    <%= content_tag :div, class: "col-md-8 col-md-offset-2" do %>
+      <%= box_panel style: "box-warning box-solid" do |panel| %>
+
+        <%= _content_for(panel, :box_panel_body) do %>
+          <%= content_tag :p, "To submit payment in staging or development environment use Litecoin Testnet. Use #{link_to "litecoin testnet tool web", 'http://testnet.litecointools.com/'} to send payment".html_safe, class: "help-block", class: "text-center" %>
+        <%- end %>
+
+      <%- end %>
+    <%- end %>
+  <%- end %>
+<%- end %>
+
 <%= box_panel use_footer: false do |outer_template, options|%>
 
   <%= _content_for(outer_template, :box_panel_body) do %>

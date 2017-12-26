@@ -10,7 +10,7 @@ module Admin
     helper_method :plan_states
     
     def index
-      @plans = Users::Models::Plan.cached_collection.filter(filter_params).page(params[:page]).per(params[:per_page] || 2)
+      @plans = Users::Models::Plan.cached_collection.filter(filter_params).page(params[:page]).per(params[:per_page] || 10)
       respond_to do |f|
         f.html
         f.js do 

@@ -24,6 +24,7 @@ module Users
               plan_rates[plan.name.to_sym][coin_name.to_sym][:rate_btc]= info.rate_btc
               plan_price_to_btc = Float(usd.rate_btc) * Float(plan.price)
               plan_rates[plan.name.to_sym][coin_name.to_sym][:rate] = plan_price_to_btc / Float(info.rate_btc)
+              plan_rates[plan.name.to_sym][coin_name.to_sym][:name] = info.name
             end
           end
           if Rails.env.development?
