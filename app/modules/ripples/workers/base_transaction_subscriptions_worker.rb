@@ -47,6 +47,7 @@ module Ripples
                       trans = Ripples::Models::Transaction.find_or_initialize_by tx_hash: trans_json["hash"]
                       if trans.new_record?
                          trans.wallet= account
+                         trans.source= trans_json["Account"]
                          trans.destination = trans_json["Destination"]
                          trans.state = res["status"]
                          trans.amount = BigDecimal.new(trans_json["Amount"])

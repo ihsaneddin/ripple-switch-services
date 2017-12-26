@@ -12,7 +12,7 @@
       <%= empty_table transactions, colspan=7, no_record="No record found." %>
       <% transactions.each do |transaction| %>
         <%= content_tag :tr, id: "tr-#{transaction.id}", class: "#{transaction.validated?? nil : "inactive"}" do %>
-          <%= content_tag :td, transaction.wallet.address %>
+          <%= content_tag :td, transaction.wallet.try(:address) transaction.source %>
           <%= content_tag :td, transaction.destination %>
           <%= content_tag :td, transaction.tx_hash %>
           <%= content_tag :td, transaction.state %>

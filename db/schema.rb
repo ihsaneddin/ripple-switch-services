@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171220142354) do
+ActiveRecord::Schema.define(version: 20171226063557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -126,7 +126,9 @@ ActiveRecord::Schema.define(version: 20171220142354) do
     t.boolean "validated", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "source"
     t.index ["deleted_at"], name: "index_ripples_transactions_on_deleted_at"
+    t.index ["source"], name: "index_ripples_transactions_on_source"
     t.index ["tx_hash"], name: "index_ripples_transactions_on_tx_hash"
     t.index ["wallet_id"], name: "index_ripples_transactions_on_wallet_id"
   end
