@@ -29,7 +29,7 @@
             <% if wallet.deleted? %>
               <%= link_to restore_ripple_wallet_path(wallet, table: {
                   id: "table-container-for-#{controller_name}"
-                }), class: "btn btn-default", remote: true, title: "Restore this address", method: :put do %>
+                }), class: "btn btn-sm btn-warning", remote: true, title: "Restore this address", method: :put do %>
                   <%= content_tag :i, nil, class: 'fa fa-undo' %>
               <%- end %> 
             <%- end %>
@@ -41,7 +41,7 @@
                   title: "",
                   template: "ripple/wallets/qrcode"
                 }
-                ), class: 'btn btn-default', remote: true do %>
+                ), class: 'btn btn-info btn-sm', remote: true do %>
                 <%= content_tag :i, "", class: 'fa fa-qrcode' %>
               <%- end%>
               
@@ -51,14 +51,14 @@
                   title: "Wallet Info",
                   template: "ripple/wallets/show"
                 }
-                ), class: 'btn btn-default remote-modal', remote: true, title: "View QR code" do %> 
+                ), class: 'btn btn-sm btn-info remote-modal', remote: true, title: "View QR code" do %> 
                 <%= content_tag :i, "", class: 'fa fa-info' %>
               <%- end %>
               
               <%= link_to ripple_wallet_path(wallet.id, 
                 table: {
                   id: "table-container-for-#{controller_name}"
-                }), remote: true, class: 'btn btn-default', method: :delete, title: "Archive the wallet", data: { confirm: "Are you sure?", title: "Alert" } do %>
+                }), remote: true, class: 'btn btn-sm btn-danger', method: :delete, title: "Archive the wallet", data: { confirm: "Are you sure?", title: "Alert" } do %>
                   <%= content_tag :i, "", class: "fa fa-trash" %>
               <%- end %>
             <%- end %>
@@ -78,7 +78,7 @@
                     table: {
                       id: "table-container-for-#{controller_name}"
                     }
-                  ), class: "btn btn-default remote-modal", remote: true, title: "Create new transaction" do %>
+                  ), class: "btn btn-sm btn-default remote-modal", remote: true, title: "Create new transaction" do %>
 
                   <%= content_tag :i, nil, class: "fa fa-minus" %>
 

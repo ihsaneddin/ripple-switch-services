@@ -70,7 +70,7 @@ module Ripples
           if params[:addresses].present?
             res = res.joins(:wallet).where(ripples_wallets: { address: addresses })
           elsif params[:wallet_ids].present?
-            res = res.where(wallet_id: params[:wallet_ids] || [])
+            res = res.where(wallet_id: params[:wallet_ids]).or(destination: params[:wallet_ids])
           end
 
           if params[:tx_hash].present?
