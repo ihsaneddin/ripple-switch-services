@@ -8,7 +8,7 @@ module Users
         @account= Users::Models::Account.find_by_id account_id
         if @account
           @pin = @account.pin
-          mail to: account.email, subject: 'New PIN'
+          mail to: @account.email, subject: 'New PIN'
         end
       end
     

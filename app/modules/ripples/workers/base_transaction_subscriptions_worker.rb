@@ -22,12 +22,12 @@ module Ripples
           ws = Faye::WebSocket::Client.new(wss, nil, ping: 60)
 
           ws.on :open do |event|
-            p [:open, DateTime.now]
+            p [:open, self.class.name, DateTime.now]
             ws.send(subscribe_params.to_json)
           end
 
           ws.on :message do |event|
-            p [:message, event.data]
+            p [:message, self.class.name, DateTime.now, event.data]
             res = Hashie::Mash.new(JSON.parse(event.data))
             
             if res.id.present? && res.id == unsubscribe_params[:id]

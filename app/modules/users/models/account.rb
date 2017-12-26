@@ -54,7 +54,7 @@ module Users
       def change_pin
         new_pin = generate_pin
         if save
-          Users::Mailers::PinMailer.new_pin(self, new_pin).deliver
+          Users::Mailers::PinMailer.delay.new_pin(account.id)
           new_pin
         else
           return false
