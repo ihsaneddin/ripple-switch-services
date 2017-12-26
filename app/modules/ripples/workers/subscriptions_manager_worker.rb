@@ -40,13 +40,11 @@ module Ripples
               break
             end
           end
-          worker_class.perform_async(ENV["WRIPPLED_SERVER"])
-          
           #
           # check if worker_class is running then terminate the other
           #
-
           pro.try(:stop!)
+          worker_class.perform_async(ENV["WRIPPLED_SERVER"])
         
           Signal.trap("INT")  { break }
           Signal.trap("TERM") { break }
