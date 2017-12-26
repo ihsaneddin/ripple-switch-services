@@ -1,3 +1,5 @@
+require 'hashie/mash'
+
 module Connection
   class Request
 
@@ -33,7 +35,7 @@ module Connection
 
     def response
       if @response.present?
-        return parser.parse @response.response.body
+        return Hashie::Mash.new(parser.parse(@response.response.body))
       end
     end
 

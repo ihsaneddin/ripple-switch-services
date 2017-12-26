@@ -41,6 +41,11 @@ Rails.application.routes.draw do
         put :active
         put :restore
       end
+      collection do 
+        unless Rails.env.production?
+          post :generate_xrp_testnet_wallet
+        end
+      end
       resources :transactions, only: [:new, :create] do 
         member do 
           put :complete

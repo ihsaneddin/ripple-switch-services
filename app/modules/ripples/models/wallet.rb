@@ -5,11 +5,13 @@ module Ripples
       self.object_caches_suffix= ['transactions', "received-transactions", "sent-transactions", 
                                   "with-deleted-collection", "with-only-deleted-collection"]
       
-      before_validation :generate_address, on: :create
+      before_validation :generate_address, on: :create, unless: :skip_generate_address
       before_validation :set_sequence, on: :create
       before_validation :generate_label, on: :create
 
       attr_encrypted :secret, key: ENV['ENCRYPT_SECRET_KEY']
+
+      attr_accessor :skip_generate_address
 
       #
       # pg_search implementation

@@ -1,3 +1,5 @@
+require 'connection/request'
+
 module Ripple
   class WalletsController < AccountController 
   
@@ -136,6 +138,37 @@ module Ripple
           end
         end
       else
+      end
+    end
+
+    def generate_xrp_testnet_wallet
+      connection = ::Connection::Request.new :post, "https://faucet.altnet.rippletest.net/accounts", {}, true
+      connection.invoke
+      if connection.success?
+        wallet = resource_class_constant.create!(
+                                                  address: connection.response.account.address, 
+                                                  secret: connection.response.account.secret, 
+                                                  balance: BigDecimal.new(connection.response.balance) * 1000000,
+                                                  validated: true,
+                                                  account: current_account,
+                                                  skip_generate_address: true
+                                                )
+        respond_to do |f|
+          message = "Wallet is successfully created."
+          f.html { redirect_to ripple_wallets_path, notice: message }
+          f.js {
+            render_table "/shared/table/reload.js.erb"
+          }
+        end
+      else
+        message = "Connection failure."
+        respond_to do |f|
+          f.html { redirect_to ripple_wallets_path, error: message }
+          f.js {
+            params[:notification] = { message: message, type: "error" }
+            dismiss_modal
+          }
+        end
       end
     end
 

@@ -36,6 +36,7 @@ module RippleSwitchServices
     #
     config.paths.add "app/services", glob: "**/*.rb"
     config.autoload_paths += Dir["#{Rails.root}/app/services/*"]
+    config.autoload_paths += Dir["#{Rails.root}/app/helpers/connection/*"]
 
     #
     # request throttling
