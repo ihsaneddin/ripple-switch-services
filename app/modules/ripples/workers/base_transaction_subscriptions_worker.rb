@@ -98,13 +98,13 @@ module Ripples
           end
 
           ws.on :close do |event|
-            p [:close, event.code, event.reason, DateTime.now]
+            p [:close, self.class.name, event.code, event.reason, DateTime.now]
             ws.send(unsubscribe_params.to_json)
             ws = nil
           end
 
           ws.onerror = lambda do |error|
-            p [:error, error.message]
+            p [:error, self.class.name, error.message]
             # restart job if connection reset from server
             if ["Errno::ENETUNREACH", "Errno::ECONNRESET", "Errno::ETIMEDOUT"].include?(error.message)
               Ripples::Workers::TransactionSubscriptions1Worker.perform_async(wss) if Rails.env.production?
