@@ -5,6 +5,7 @@ function streamWalletsToReloadTable(wallet_addresses, table_id){
     App["wallet-"+wallet_address+""] = App.cable.subscriptions.create({channel: "WalletChannel", wallet_address: wallet_address}, 
                                                                     {
                                                                       received: function(data){
+                                                                        console.log(data);
                                                                         table_container= $("div#"+table_id+"");
                                                                         if (table_container.length)
                                                                         {
@@ -21,7 +22,7 @@ function streamWalletsToReloadTable(wallet_addresses, table_id){
                                                                       setWalletAddress: function(wallet_address){
                                                                         this.walletAddress= wallet_address
                                                                       }
-                                                                    })
+                                                                    });
   });
   
 }

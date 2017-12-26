@@ -69,7 +69,7 @@ module Ripples
           res = cached_collection
           if params[:addresses].present?
             res = res.joins(:wallet).where(ripples_wallets: { address: addresses })
-          else
+          elsif params[:wallet_ids].present?
             res = res.where(wallet_id: params[:wallet_ids] || [])
           end
 
