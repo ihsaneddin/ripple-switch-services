@@ -31,12 +31,13 @@ module Ripples
       after_commit do 
         unless updated_at == created_at
           if Rails.env.development?
-            if previous_changes.has_key?("balance") or previous_changes.has_key?('validated')
-              ActionCable.server.broadcast "balance-#{self.account.id}", message: { total_balance: self.account.total_balance, total_balance_xrp: self.account.total_balance_xrp }.to_json
-              ActionCable.server.broadcast "wallet-#{self.address}", message: self.to_json
-            end
+            ActionCable.server.broadcast "balance-#{self.account.id}", message: 
+                                                                                { total_balance: self.account.total_balance, 
+                                                                                  total_balance_xrp: self.account.total_balance_xrp, 
+                                                                                  wallets_pending_transactions_count: self.account.wallets_pending_transactions_count 
+                                                                                }.to_json
           else
-            Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id) if previous_changes.has_key?("balance") or previous_changes.has_key?('validated')
+            Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id) 
           end
         end
       end
@@ -150,7 +151,7 @@ module Ripples
 
         def cached_received_transactions
           Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-received-transactions", expires_in: 1.day) do 
-            cached_transactions.where(destination: self.address).load
+            Ripples::Models::Transaction.where(destination: self.address).load
           end
         end
 

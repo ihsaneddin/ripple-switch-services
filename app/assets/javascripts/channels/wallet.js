@@ -27,14 +27,26 @@ function streamWalletsToReloadTable(wallet_addresses, table_id){
   
 }
 
-function streamTotalAccountBalance(account_id){
+function streamTotalAccountBalance(account_id, table_id){
   App["balance-"+account_id+""] = App.cable.subscriptions.create({ channel: "BalanceChannel", account_id: account_id },
                                                                   {
                                                                     received: function(data){
-                                                                      console.log(data)
                                                                       message = JSON.parse(data.message)
                                                                       console.log(message)
                                                                       $("#total-balance-for-"+account_id+"").text(message.total_balance_xrp)
+                                                                      $("#total-pending-received").text(message.wallets_pending_transactions_count)
+                                                                      table_container= $("div#"+table_id+"");
+                                                                      if (table_container.length)
+                                                                      {
+                                                                        reload_path= table_container.attr("data-reload-path");
+                                                                        if (reload_path.length)
+                                                                        {
+                                                                          if (table_container.find("a.reload-table").length == 0) {
+                                                                            table_container.append(reload_path);
+                                                                          }
+                                                                          table_container.find('a.reload-table')[0].click();
+                                                                        }
+                                                                      }
                                                                     }
                                                                   }
                                                                 )

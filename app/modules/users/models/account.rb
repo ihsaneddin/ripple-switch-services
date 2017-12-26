@@ -194,7 +194,7 @@ module Users
 
         def cached_wallets_received_pending_transactions
           Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-wallets-received-pending-transactions", expires_in: 1.day) do
-            cached_wallets_pending_transactions.where(destination: cached_wallet_collection.map(&:address)).load
+            cached_wallets_received_transactions.where(validated: false).load
           end
         end
 
