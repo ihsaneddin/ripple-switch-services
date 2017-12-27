@@ -92,44 +92,6 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  #
-  # smtp configuration
-  # for now using sendgrid
-  #
-  #config.action_mailer.smtp_settings = {
-  #  :address              => 'smtp.sendgrid.net',
-  #  :port                 => 587,
-  #  :domain               => 'rss.com',
-  #  :user_name            => 'ihsaneddin',
-  #  :password             => 'l4wliett',
-  #  :authentication       => 'plain',
-  #  :enable_starttls_auto => true
-  #}
-
-#  config.action_mailer.default_url_options = { :host => "http://139.59.107.166" }
-#    config.action_mailer.delivery_method = :smtp
-#    config.action_mailer.smtp_settings = {
-#    :address => 'smtp-relay.sendinblue.com',
-#    :port => 587,
-#    :domain => 'rss.com',
-#    :user_name => 'ihsaneddin@gmail.com',
-#    :password => 'l4wliett',
-#    :authentication => 'login',
-#    :enable_starttls_auto => true
-#  }
-
-#  config.action_mailer.smtp_settings = {
-#    :address              => 'smtp.sendgrid.net',
-#    :port                 => 587,
-#    :domain               => '139.59.107.166',
-#    :user_name            => 'ihsaneddin',
-#    :password             => 'l4wliett',
-#    :authentication       => 'plain',
-#    :enable_starttls_auto => true
-#  }
-
-
-
   config.action_mailer.smtp_settings = {
      address:              'smtp.gmail.com',
      port:                 587,
@@ -143,5 +105,6 @@ Rails.application.configure do
   config.action_cable.url = "ws://139.59.107.166/cable"
 
 end
-Rails.application.config.action_cable.disable_request_forgery_protection = true
+#Rails.application.config.action_cable.disable_request_forgery_protection = true
+Rails.application.config.action_cable.allowed_request_origins = ['http://139.59.107.166']
 Rails.application.routes.default_url_options[:host] = 'http://139.59.107.166'
