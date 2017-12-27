@@ -126,8 +126,8 @@ module Ripples
           end
 
 
-          Signal.trap("INT")  { EventMachine.stop }
-          Signal.trap("TERM") { EventMachine.stop }
+          Signal.trap("INT")  { EventMachine.try(:stop) }
+          Signal.trap("TERM") { EventMachine.try(:stop) }
 
         }
       end
