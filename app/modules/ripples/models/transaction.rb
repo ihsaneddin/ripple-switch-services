@@ -1,3 +1,6 @@
+#
+# Amount XRP is in drops
+#
 module Ripples
   module Models
     class Transaction < ::ApplicationRecord
@@ -11,36 +14,73 @@ module Ripples
       scope :completed, ->{ where(state: "closed", validated: true) }
       scope :not_completed, -> { where.not(state: "closed").or(where(validated: false)) }
 
-      after_save do 
-        destination_wallet = Ripples::Models::Wallet.find_by(address: destination)
-        if destination_wallet.present?
-          destination_wallet.touch
-          destination_wallet.try(:account).touch
+      #
+      # sync wallet balance if transaction is validated
+      #
+      after_commit do 
+        if saved_change_to_validated? && validated?
+          source_wallet.try(:sync_balance)
+          destination_wallet.try(:sync_balance)
         end
       end
 
-      after_save do 
-        wallet.try(:account).try(:touch)
+      #
+      # insert source address as wallet if source address present in wallets table
+      #
+      before_create do 
+        if self.source.present?
+          self.wallet||= Ripples::Models::Wallet.select("id", "address", "deleted_at").with_deleted.find_by_address(self.source)
+        end
       end
 
       before_create :submit, unless: :skip_submit
 
       attr_accessor :issuer, :skip_submit
 
+      #
+      # default attrs before submitting transaction
+      #
       def default_attrs
         self.source_currency||= "XRP"
         self.destination_currency||= "XRP"
         self.destination.transaction_type||= "Payment"
       end
 
+      #
+      # alias method for `wallet`
+      #
+      def source_wallet
+        wallet
+      end
+
+      #
+      # get destination wallet object if exists
+      #
+      def destination_wallet
+        @destination_wallet||= Ripples::Models::Wallet.cached_collection.find_by_address(destination)
+      end
+
+      #
+      # change state of transaction to complete
+      #
       def complete!
-        update(state: "closed")
+        update(state: "closed", validated: true)
       end
 
       def completed?
-        state == 'closed'
+        validated || (state == 'closed')
       end
 
+      #
+      # check whether transaction is validated
+      #
+      def validated?
+        validated
+      end
+
+      #
+      # submit new transaction to ledger
+      #
       def submit
         destination_amount = wallet.ripple_client.new_amount(value: "#{self.amount.floor}", currency: self.destination_currency || 'XRP', issuer: self.issuer || self.destination )
         
@@ -60,18 +100,39 @@ module Ripples
         end
       end
 
+      #
+      # get xrp amount of transaction
+      #
       def xrp_amount
-        (self.amount * 1000000).floor
+        (self.amount / 1000000).floor
+      end
+
+      #
+      # get amount and its currency
+      #
+      def amount_with_currency
+        if destination_currency.blank? || destination_currency.eql?('XRP')
+          "#{xrp_amount} XRP"
+        else
+          "#{amount} #{destination_currency}"
+        end
       end
 
       class << self
 
+        #
+        # filter records
+        #
         def filter(params={})
           res = cached_collection
           if params[:addresses].present?
             res = res.joins(:wallet).where(ripples_wallets: { address: addresses })
           elsif params[:wallet_ids].present?
             res = res.where(wallet_id: params[:wallet_ids]).or(res.where(destination: params[:wallet_ids]))
+          end
+
+          if params[:address].present?
+            res = res.where(source: params[:address])
           end
 
           if params[:tx_hash].present?

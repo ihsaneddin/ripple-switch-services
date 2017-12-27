@@ -45,6 +45,7 @@ class SetupRipples < ActiveRecord::Migration[5.1]
 
     add_index :ripples_transactions, :wallet_id
     add_index :ripples_transactions, :tx_hash
+    add_index :ripples_transactions, :destination
 
   end
 

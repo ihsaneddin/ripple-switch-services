@@ -16,7 +16,7 @@
           <%= content_tag :td, transaction.destination %>
           <%= content_tag :td, transaction.tx_hash %>
           <%= content_tag :td, transaction.state %>
-          <%= content_tag :td, transaction.amount %>
+          <%= content_tag :td, transaction.amount_with_currency %>
           <%= content_tag :td, time_ago_in_words(transaction.updated_at) %>
           <%= content_tag :td do %>
 

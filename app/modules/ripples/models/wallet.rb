@@ -1,3 +1,7 @@
+#
+# Balance is in drops XRP
+#
+
 module Ripples
   module Models
     class Wallet < ::ApplicationRecord
@@ -30,30 +34,56 @@ module Ripples
       #
       after_commit do 
         unless updated_at == created_at
-          if Rails.env.development?
-            ActionCable.server.broadcast "balance-#{self.account.id}", message: 
-                                                                                { total_balance: self.account.total_balance, 
-                                                                                  total_balance_xrp: self.account.total_balance_xrp, 
-                                                                                  wallets_pending_transactions_count: self.account.wallets_pending_transactions_count 
-                                                                                }.to_json
-          else
-            Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id) 
+          if saved_change_to_balance?
+            if Rails.env.development?
+              ActionCable.server.broadcast "balance-#{self.account.id}", message: 
+                                                                                  { total_balance: self.account.total_balance, 
+                                                                                    total_balance_xrp: self.account.total_balance_xrp, 
+                                                                                    wallets_pending_transactions_count: self.account.wallets_pending_transactions_count 
+                                                                                  }.to_json
+            else
+              Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id) 
+            end
           end
         end
       end
 
+      #
+      # notify channel after new record is inserted to table
+      #
       notify_changes_after :create
 
+      #
+      # notify if only object is new record
+      #
       def should_notify?
         self.created_at == self.updated_at
       end
 
+      #
+      # generate random url safe label if label is not providerd
+      #
       def generate_label
         self.label||= SecureRandom.urlsafe_base64(nil, false)
       end
 
+      #
+      # reload balance on wallet with ripple net
+      #
+      def sync_balance
+        begin
+          synced_balance = BigDecimal.new(ripple_client.xrp_balance)
+          update balance: synced_balance, validated: true
+        rescue => e
+          nil # raise custom error here
+        end
+      end
+
       class << self
 
+        #
+        # for filtering records
+        #
         def filter(params={})
           if params[:archived]
             res = only_deleted
@@ -108,10 +138,16 @@ module Ripples
 
       end
 
+      #
+      # get sequence number
+      #
       def set_sequence
         self.sequence= self.class.where(account: self.account).count
       end
 
+      #
+      # generate address and its secret
+      #
       def generate_address
         if Rails.env.development?
           resp = $rippleClient.dev_wallet_propose
@@ -128,13 +164,19 @@ module Ripples
         end
       end
 
+      #
+      # initialize ripple client with its credential
+      #
       def ripple_client(opts ={})
         @ripple_client ||= $rippleClient
-        @ripple_client.client_account= self.address
-        @ripple_client.client_secret= self.secret
+        @ripple_client.client_account= opts[:address] || self.address
+        @ripple_client.client_secret= opts[:secret] || self.secret
         @ripple_client
       end
 
+      #
+      # 
+      #
       def balance_xrp
         (self.balance / 1000000).floor
       end

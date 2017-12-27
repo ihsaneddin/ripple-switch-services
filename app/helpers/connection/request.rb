@@ -76,9 +76,15 @@ module Connection
       end
 
       def net_request
-        request = net_http.new(uri, header)
-        request["Authorization"] = authentication if @authentication
-        request.body = options[:params].to_json if options[:params].present?
+        if method.to_sym == :get
+          get_uri = uri
+          get_uri.query = URI.encode_www_form( options[:params] ) if options[:params].present?
+          request = net_http.new(get_uri, header)
+        else
+          request = net_http.new(uri, header)
+          request["Authorization"] = authentication if @authentication
+          request.body = options[:params].to_json if options[:params].present?
+        end
         request
       end
 

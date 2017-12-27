@@ -38,19 +38,28 @@ module Ripples
               
               begin
                 ActiveRecord::Base.transaction do
-
-                  if res.engine_result_code == 0
+                  #process only validated transaction
+                  if res.engine_result == 'tesSUCCESS'
                     trans_json = res.transaction
                     if trans_json.present?
-                      account = Ripples::Models::Wallet.find_by_address trans_json["Account"]
+                      #account = Ripples::Models::Wallet.find_by_address trans_json["Account"]
 
+                      # get or initialize transaction object by tx_hash
                       trans = Ripples::Models::Transaction.find_or_initialize_by tx_hash: trans_json["hash"]
+                        
                       if trans.new_record?
-                         trans.wallet= account
+                         # if transaction object is new record then store it on database
+                         #trans.wallet= account
                          trans.source= trans_json["Account"]
                          trans.destination = trans_json["Destination"]
                          trans.state = res["status"]
-                         trans.amount = BigDecimal.new(trans_json["Amount"])
+                         if trans_json["Amount"].kind_of?(String)
+                          trans.amount = BigDecimal.new(trans_json["Amount"]) # all transaction amount xrp is using drops
+                          trans.destination_currency = "XRP"
+                         else
+                          transaction.amount = BigDecimal.new(trans_json.tx.Amount.value)
+                          transaction.destination_currency = trans_json.tx.Amount.currency
+                         end
                          trans.transaction_date = trans_json['date']
                          trans.validated = res["validated"]
                          trans.transaction_type = res["type"]
@@ -60,30 +69,34 @@ module Ripples
                           raise ActiveRecord::RecordInvalid
                          end
                       else
+                        #else if transaction object is exist then updated it by trans_json response
                         trans.update state: res["status"], validated: res["validated"]
                       end
-                      if trans.validated && trans.completed?
-                        counter_parties = res.meta.AffectedNodes
-                        if counter_parties.kind_of? Array
-                          counter_parties.each do |node|
-                            modified_node= node.ModifiedNode
-                            address = modified_node.try(:FinalFields).try(:Account)
-                            unless address
-                               modified_node= node.CreatedNode
-                               address = modified_node.try(:NewFields).try(:Account)
-                               next unless address
-                            end
-                            affectedAccount = Ripples::Models::Wallet.find_by_address address
-
-                            if affectedAccount.present?
-                              puts affectedAccount
-                              new_balance = modified_node.try(:FinalFields).try(:Balance) || modified_node.try(:NewFields).try(:Balance)
-                              puts new_balance
-                              affectedAccount.update balance: new_balance, validated: true
-                            end  
-                          end
-                        end
-                      end
+                      #if trans.validated? #&& trans.completed?
+                        #if transaction object is validated then synchronize balance
+                        #trans.source_wallet.try(:sync_balance)
+                        #trans.destination_wallet.try(:sync_balance)
+                        #counter_parties = res.meta.AffectedNodes
+                        #if counter_parties.kind_of? Array
+                        #  counter_parties.each do |node|
+                        #    modified_node= node.ModifiedNode
+                        #    address = modified_node.try(:FinalFields).try(:Account)
+                        #    unless address
+                        #       modified_node= node.CreatedNode
+                        #       address = modified_node.try(:NewFields).try(:Account)
+                        #       next unless address
+                        #    end
+                        #    affectedAccount = Ripples::Models::Wallet.find_by_address address
+                        #
+                        #    if affectedAccount.present?
+                        #      puts affectedAccount
+                        #      new_balance = modified_node.try(:FinalFields).try(:Balance) || modified_node.try(:NewFields).try(:Balance)
+                        #      puts new_balance
+                        #      affectedAccount.update balance: new_balance, validated: true
+                        #    end  
+                        #  end
+                        #end
+                      #end
                       
                     end
                   end
