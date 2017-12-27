@@ -359,7 +359,7 @@
               element.closest('.modal').find('form').append(hpin);
               element.addClass('confirmed');
               element.removeAttr('data-confirm');
-              element.trigger('click');
+              //element.trigger('click');
             }else{
               if (element.closest('form').length)
               {

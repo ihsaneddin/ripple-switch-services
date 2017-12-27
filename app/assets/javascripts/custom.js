@@ -27,6 +27,7 @@ $(document).ready(function(){
         currentModal.find('form button.modal-form-submit').trigger("click");
       }
       // check if data-confirm is present
+      console.log($(this).is('[data-confirm]'));
       if ($(this).is('[data-confirm]')){//attr('data-confirmation')){
          e.preventDefault();
       }

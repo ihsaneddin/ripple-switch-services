@@ -29,7 +29,7 @@ module Ripples
       #
       before_create do 
         if self.source.present?
-          self.wallet||= Ripples::Models::Wallet.select("id", "address", "deleted_at").with_deleted.find_by_address(self.source)
+          self.wallet||= Ripples::Models::Wallet.with_deleted.find_by_address(self.source)
         end
       end
 
@@ -96,8 +96,8 @@ module Ripples
           self.tx_hash= wallet.ripple_client.submit_transaction(trans)
         rescue Ripple::SubmitFailed, Ripple::InvalidParameters, Ripple::ServerUnavailable, Ripple::Timedout => e
           self.errors.add(:destination, e.message)
-          throw :abort
         end
+        throw(:abort) if errors.any?
       end
 
       #
