@@ -102,8 +102,9 @@ Rails.application.configure do
      enable_starttls_auto: true
   }
 
-  config.action_cable.allowed_request_origins = ['http://139.59.107.166']
+  #config.action_cable.mount_path = nil
   config.action_cable.url = "ws://139.59.107.166/cable"
+  config.action_cable.allowed_request_origins = [ 'http://139.59.107.166' ]
 
 end
 #Rails.application.config.action_cable.disable_request_forgery_protection = true
