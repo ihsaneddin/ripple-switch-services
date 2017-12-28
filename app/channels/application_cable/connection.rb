@@ -14,7 +14,7 @@ module ApplicationCable
           current_account
         else
           Rails.logger.info "Unverified"
-          reject_unauthorized_connection
+          #reject_unauthorized_connection
         end
       end
 
