@@ -9,7 +9,8 @@ module ApplicationCable
 
     protected
       def find_verified_account
-        if current_account = verified_user = env['warden'].user
+        if current_account = env['warden'].user
+          Rails.logger.info "Verified #{current_account}"
           current_account
         else
           reject_unauthorized_connection
