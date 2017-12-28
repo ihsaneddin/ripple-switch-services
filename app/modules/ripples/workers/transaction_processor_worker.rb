@@ -18,7 +18,8 @@ module Ripples
             if tx.present?
 
               # get or initialize transaction object by tx_hash
-              trans = Ripples::Models::Transaction.find_or_initialize_by tx_hash: tx["hash"]
+              tx_hash = res["tx_hash"] || tx["hash"]
+              trans = Ripples::Models::Transaction.find_or_initialize_by(tx_hash: tx["hash"])
                 
               if trans.new_record?
                  # if transaction object is new record then store it on database

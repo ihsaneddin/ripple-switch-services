@@ -36,6 +36,8 @@ module Ripples
 
             res = Hashie::Mash.new(JSON.parse(event.data))
             filtered(res) do
+              # Hashie::Mash override key with name `hash` so we have to store on another key first before serialize to json
+              res.tx_hash= res.transaction["hash"] rescue nil
               p [:process, event.data]
               process_transaction(res)
             end

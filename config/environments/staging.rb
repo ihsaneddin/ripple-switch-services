@@ -105,6 +105,6 @@ Rails.application.configure do
   config.action_cable.url = "ws://139.59.107.166/cable"
 
 end
-#Rails.application.config.action_cable.disable_request_forgery_protection = true
-Rails.application.config.action_cable.allowed_request_origins = ['http://139.59.107.166']
+Rails.application.config.action_cable.disable_request_forgery_protection = true
+#Rails.application.config.action_cable.allowed_request_origins = ['http://139.59.107.166']
 Rails.application.routes.default_url_options[:host] = 'http://139.59.107.166'
