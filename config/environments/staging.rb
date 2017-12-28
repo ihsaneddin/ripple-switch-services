@@ -102,7 +102,7 @@ Rails.application.configure do
      enable_starttls_auto: true
   }
 
-  Rails.application.config.action_cable.allowed_request_origins = ['http://139.59.107.166']
+  config.action_cable.allowed_request_origins = ['http://139.59.107.166']
   config.action_cable.url = "ws://139.59.107.166/cable"
 
 end
