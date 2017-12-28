@@ -2,7 +2,7 @@
 lock "~> 3.10.0"
 
 set :application, "rss"
-set :repo_url, "git@github.com:ihsaneddin/ripple-switch-services.git"
+set :repo_url, "git@gitlab.com:ihsanoeddin/ripple-switch-services.git"
 set :rvm_ruby_version, '2.4.1@ripple-switch-services'
 
 # Default branch is :master
