@@ -68,16 +68,16 @@ namespace :deploy do
   #after 'puma:restart', 'nginx:restart'
 
   desc 'Start SubscriptionsManagerWorker class'
-  task :start_subscriptions_manager_worker do
+  task :start_transactions_subscription_worker do
     on roles(:all) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :rake, 'subscriptions_manager_worker:start'
+          execute :rake, 'subscription:transactions:start_transactions_subscription_worker'
         end
       end
     end
   end
 
-  after :publishing, :start_subscriptions_manager_worker
+  after :publishing, :start_transactions_subscription_worker
 
 end

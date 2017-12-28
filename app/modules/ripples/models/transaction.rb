@@ -15,6 +15,11 @@ module Ripples
       scope :not_completed, -> { where.not(state: "closed").or(where(validated: false)) }
 
       #
+      # map tx_hash as key and id as value to redis hash
+      #
+      map_attributes key: :tx_hash, value: :id, callback: :after_create
+
+      #
       # sync wallet balance if transaction is validated
       #
       after_commit do 
@@ -33,6 +38,10 @@ module Ripples
         end
       end
 
+
+      #
+      # submit transaction to ripple server unless skip_submit is present
+      #
       before_create :submit, unless: :skip_submit
 
       attr_accessor :issuer, :skip_submit

@@ -82,8 +82,8 @@ Rails.application.configure do
       'Cache-Control' => 'public, max-age=172800'
     }
   else
-    config.action_controller.perform_caching = false
-
+    config.action_controller.perform_caching = true
+    config.cache_store= :redis_store, "redis://localhost:6379/2"
     #config.cache_store = :null_store
     #config.cache_store = :dalli_store, 'localhost:11211', { namespace: "staging_rss", :pool_size => 25, compress: true, :value_max_bytes => 100.megabytes }
     #config.identity_cache_store = config.cache_store

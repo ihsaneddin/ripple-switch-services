@@ -4,17 +4,13 @@ require 'eventmachine'
 module Ripples
   module Workers
 
-    class BaseTransactionSubscriptionsWorker 
+    class BaseTransactionAccountsSubscriptionsWorker 
 
       include Sidekiq::Worker
 
-      sidekiq_options :queue => :subscriptions1, :retry => true, :backtrace => true
+      def perform(wss=nil)
 
-      def perform(wss)
-
-        subscribe_params = { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.cached_address_collection, command: "subscribe"}
-
-        unsubscribe_params = { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.cached_address_collection, command: "unsubscribe"}
+        wss||= ENV["WRIPPLED_SERVER"]
 
         return if subscribe_params[:accounts_proposed].blank?
 
@@ -33,81 +29,10 @@ module Ripples
             if res.id.present? && res.id == unsubscribe_params[:id]
               ws= nil
             elsif res.status == 'error'
+              ws= nil
               perform(wss)
             else
-              
-              begin
-                ActiveRecord::Base.transaction do
-                  #process only validated transaction
-                  if res.engine_result == 'tesSUCCESS'
-                    trans_json = res.transaction
-                    if trans_json.present?
-                      #account = Ripples::Models::Wallet.find_by_address trans_json["Account"]
-
-                      # get or initialize transaction object by tx_hash
-                      trans = Ripples::Models::Transaction.find_or_initialize_by tx_hash: trans_json["hash"]
-                        
-                      if trans.new_record?
-                         # if transaction object is new record then store it on database
-                         #trans.wallet= account
-                         trans.source= trans_json["Account"]
-                         trans.destination = trans_json["Destination"]
-                         trans.state = res["status"]
-                         if trans_json["Amount"].kind_of?(String)
-                          trans.amount = BigDecimal.new(trans_json["Amount"]) # all transaction amount xrp is using drops
-                          trans.destination_currency = "XRP"
-                         else
-                          transaction.amount = BigDecimal.new(trans_json.tx.Amount.value)
-                          transaction.destination_currency = trans_json.tx.Amount.currency
-                         end
-                         trans.transaction_date = trans_json['date']
-                         trans.validated = res["validated"]
-                         trans.transaction_type = res["type"]
-                         trans.skip_submit= true
-                         unless trans.save
-                          puts trans.errors.full_messages
-                          raise ActiveRecord::RecordInvalid
-                         end
-                      else
-                        #else if transaction object is exist then updated it by trans_json response
-                        trans.update state: res["status"], validated: res["validated"]
-                      end
-                      #if trans.validated? #&& trans.completed?
-                        #if transaction object is validated then synchronize balance
-                        #trans.source_wallet.try(:sync_balance)
-                        #trans.destination_wallet.try(:sync_balance)
-                        #counter_parties = res.meta.AffectedNodes
-                        #if counter_parties.kind_of? Array
-                        #  counter_parties.each do |node|
-                        #    modified_node= node.ModifiedNode
-                        #    address = modified_node.try(:FinalFields).try(:Account)
-                        #    unless address
-                        #       modified_node= node.CreatedNode
-                        #       address = modified_node.try(:NewFields).try(:Account)
-                        #       next unless address
-                        #    end
-                        #    affectedAccount = Ripples::Models::Wallet.find_by_address address
-                        #
-                        #    if affectedAccount.present?
-                        #      puts affectedAccount
-                        #      new_balance = modified_node.try(:FinalFields).try(:Balance) || modified_node.try(:NewFields).try(:Balance)
-                        #      puts new_balance
-                        #      affectedAccount.update balance: new_balance, validated: true
-                        #    end  
-                        #  end
-                        #end
-                      #end
-                      
-                    end
-                  end
-
-                end
-              rescue => e 
-                puts e.message
-                puts e.backtrace
-                raise ActiveRecord::Rollback
-              end
-
+              process_transaction(res)
             end
           end
 
@@ -121,7 +46,7 @@ module Ripples
             p [:error, self.class.name, error.message]
             # restart job if connection reset from server
             if ["Errno::ENETUNREACH", "Errno::ECONNRESET", "Errno::ETIMEDOUT"].include?(error.message)
-              Ripples::Workers::TransactionSubscriptions1Worker.perform_async(wss) if Rails.env.production?
+              Ripples::Workers::AccountsSubscription1Worker.perform_async(wss) if Rails.env.production?
             end
           end
 
@@ -130,6 +55,61 @@ module Ripples
           Signal.trap("TERM") { EventMachine.try(:stop) }
 
         }
+      end
+
+      def subcribe_params
+        { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.cached_address_collection, command: "subscribe"}
+      end
+
+      def unsubcribe_params
+        { id: SecureRandom.urlsafe_base64(nil, false), accounts_proposed: Ripples::Models::Wallet.cached_address_collection, command: "unsubscribe"}   
+      end
+
+      def process_transaction res
+        begin
+          ActiveRecord::Base.transaction do
+            #process only validated transaction
+            if res.engine_result == 'tesSUCCESS'
+              trans_json = res.transaction
+              if trans_json.present?
+
+                # get or initialize transaction object by tx_hash
+                trans = Ripples::Models::Transaction.find_or_initialize_by tx_hash: trans_json["hash"]
+                  
+                if trans.new_record?
+                   # if transaction object is new record then store it on database
+                   #trans.wallet= account
+                   trans.source= trans_json["Account"]
+                   trans.destination = trans_json["Destination"]
+                   trans.state = res["status"]
+                   if trans_json["Amount"].kind_of?(String)
+                    trans.amount = BigDecimal.new(trans_json["Amount"]) # all transaction amount xrp is using drops
+                    trans.destination_currency = "XRP"
+                   else
+                    transaction.amount = BigDecimal.new(trans_json.tx.Amount.value)
+                    transaction.destination_currency = trans_json.tx.Amount.currency
+                   end
+                   trans.transaction_date = trans_json['date']
+                   trans.validated = res["validated"]
+                   trans.transaction_type = res["type"]
+                   trans.skip_submit= true
+                   unless trans.save
+                    puts trans.errors.full_messages
+                    raise ActiveRecord::RecordInvalid
+                   end
+                else
+                  #else if transaction object is exist then updated it by trans_json response
+                  trans.update state: res["status"], validated: res["validated"]
+                end
+              end
+            end
+
+          end
+        rescue => e 
+          puts e.message
+          puts e.backtrace
+          raise ActiveRecord::Rollback unless Rails.env.production?
+        end
       end
 
 

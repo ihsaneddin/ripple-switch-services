@@ -36,12 +36,12 @@ module Ripples
           to = to.strftime("%Y-%m-%dT%H:%M:%SZ")
           marker = nil
           opts = { 
-                    params: {
-                              start: from,
-                              end: to,
-                              result: "tesSUCCESS",
-                              limit: 100,
-                              type: "Payment"
+                    "params" => {
+                              "start" => from,
+                              "end" => to,
+                              "result" => "tesSUCCESS",
+                              "limit" => 100,
+                              "type" => "Payment"
                             } 
                   }
         else
@@ -59,7 +59,7 @@ module Ripples
         
         # querying to https://data.ripple.com/v2/transactions until last page
         loop do 
-          opts[:params][:marker]= marker
+          opts["params"]["marker"]= marker
           data = fetch_data(opts)
 
           #if error happen when querying transactions then perform the job again
@@ -108,18 +108,19 @@ module Ripples
             transaction.save if transaction.changed?
 
           end
-          count += opts[:params][:limit]
+          count += opts["params"]["limit"]
           # break loop when transactions blank or the last page has been reached
           break if transactions.blank?
         end
 
         # update addresses balance
-        if need_sync_addresses.compact.present?
-          need_sync_addresses = need_sync_addresses.uniq.compact
-          Ripples::Models::Wallet.select("id", "address", "deleted_at", "balance", "encrypted_secret", "encrypted_secret_iv").with_deleted.where(address: need_sync_addresses ).each do |wallet|
-            wallet.sync_balance
-          end
-        end
+        # no need for these lines of code again
+        #if need_sync_addresses.compact.present?
+        #  need_sync_addresses = need_sync_addresses.uniq.compact
+        #  Ripples::Models::Wallet.select("id", "address", "deleted_at", "balance", "encrypted_secret", "encrypted_secret_iv").with_deleted.where(address: need_sync_addresses ).each do |wallet|
+        #    wallet.sync_balance
+        #  end
+        #end
 
         #schedule the job again at `to` + specified interval
         self.class.perform_at(to.to_datetime + self.class.interval)

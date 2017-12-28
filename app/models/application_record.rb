@@ -4,7 +4,7 @@ class ApplicationRecord < ActiveRecord::Base
   # declare all record to implement soft deletion
   acts_as_paranoid column: :deleted_at
 
-  include Supports::Cacheable, Supports::TableChangeNotification
+  include Supports::Cacheable, Supports::TableChangeNotification, Supports::RedisAttributesMapping
 
   scope :recent, -> { order("updated_at DESC") }
   scope :asc, -> { order("created_at ASC") }

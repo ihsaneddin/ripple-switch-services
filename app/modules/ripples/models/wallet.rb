@@ -30,6 +30,11 @@ module Ripples
       self.caches_suffix_list= ['address-collection', "collection"]
 
       #
+      # map address as key and id as value to redis hash
+      #
+      map_attributes key: :address, value: :id, callback: :after_create
+
+      #
       # broadcast message
       #
       after_commit do 
@@ -47,6 +52,14 @@ module Ripples
           end
         end
       end
+
+      #
+      # set redis key for newly created wallet for faster searching when subscribes to ripple web socket 
+      #
+      after_create do 
+        $redis.set("wallet-#{self.address}", self.id)
+      end
+
 
       #
       # notify channel after new record is inserted to table

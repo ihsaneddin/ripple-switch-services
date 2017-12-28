@@ -12,7 +12,7 @@ module Connection
       @port = uri.port.nil?? port : uri.port
       @method = method.to_s
       @use_ssl = ssl
-      @options = options
+      @options = options.symbolize_keys
       @header = @options.delete(:header)
       @authentication = @options.delete(:authentication)
       @net = ::Net::HTTP

@@ -1,0 +1,11 @@
+default:
+  host: localhost
+  port: 6379
+development:
+  db: 0
+staging:
+  db: 1
+production:
+  db: 2
+test:
+  db: 3
