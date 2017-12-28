@@ -50,7 +50,7 @@ staging:
   adapter: postgresql
   encoding: unicode
   database: ripple_switch_services_staging
-  pool: 5
+  pool: 10
   username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>
 
@@ -58,6 +58,6 @@ production:
   adapter: postgresql
   encoding: unicode
   database: ripple_switch_services_production
-  pool: 5
+  pool: 20
   username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>
