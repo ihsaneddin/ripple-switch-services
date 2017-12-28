@@ -19,6 +19,7 @@ module Ripples
 
               # get or initialize transaction object by tx_hash
               tx_hash = res["tx_hash"] || tx["hash"]
+              p [:tx_hash, tx_hash]
               trans = Ripples::Models::Transaction.find_or_initialize_by(tx_hash: tx["hash"])
                 
               if trans.new_record?
