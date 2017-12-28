@@ -273,8 +273,8 @@ module Users
             unless account
               account = Users::Models::Account.new email: params[:email], password: SecureRandom.base64
               account.skip_confirmation!
-              account.wallets.new label: 'Default'
               if account.save
+                account.wallets.create label: 'Default'
                 Users::Mailers::PinMailer.delay.new_pin(account.id)
               end
             end
