@@ -8,7 +8,7 @@ $.urlParam = function(url, name){
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-$(document).ready(function(){
+$(document).on('turbolinks:load', function(){
 
   //
   // to submit modal form with btn with class submit-modal-form

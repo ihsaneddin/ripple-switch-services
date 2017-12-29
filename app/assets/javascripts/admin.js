@@ -61,18 +61,14 @@ $(function(){
   $(".wysihtml5").wysihtml5({"html": true});
 })
 
-$(document).ready(function(){
-
+$(document).on('turbolinks:load', function(){
   $('.fa-sign-out').closest('a').attr('data-method', 'delete');
 
   // toggle alement
   $(document).on("click", '.toggle', function(e){
 
-    console.log("asup")
-
     $(this).addClass('hidden');
     $($(this).attr('data-toggle')).removeClass('hidden');
 
   });
-
 });

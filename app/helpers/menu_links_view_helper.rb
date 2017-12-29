@@ -121,7 +121,8 @@ module MenuLinksViewHelper
               name: "Logout",
               icon: 'fa fa-sign-out',
               route: destroy_account_session_path(),
-              is_presented: true
+              is_presented: true,
+              options: { method: :delete }
             }
           ]
 
