@@ -173,3 +173,6 @@ gem 'acts_as_list'
 gem 'groupdate'
 gem 'chartkick'
 gem 'active_median'
+
+# validate url
+gem "validate_url"
