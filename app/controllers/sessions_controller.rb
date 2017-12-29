@@ -35,8 +35,9 @@ class SessionsController < ::Devise::SessionsController
           f.html{ redirect_to root_path, notice: "Welcome", status: 301 }
         end
       else
+        flash[:error]= "The link has been expired."
         respond_to do |f|
-          f.html{ redirect_to root_path, error: "The link has been expired.", status: 301 }
+          f.html{ redirect_to root_path, status: 301 }
         end
       end
     end
