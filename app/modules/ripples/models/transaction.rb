@@ -10,7 +10,7 @@ module Ripples
       #validates :wallet_id, presence: true
       validates :amount, :presence => true, numericality: { greater_than: 0 }
       validates :destination, presence: true
-      validates :tx_hash, uniqueness: { allow_blank: true }
+      #validates :tx_hash, uniqueness: { allow_blank: true }
 
       scope :completed, ->{ where(state: "closed", validated: true) }
       scope :not_completed, -> { where.not(state: "closed").or(where(validated: false)) }
