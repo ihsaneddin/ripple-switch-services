@@ -11,10 +11,21 @@ module Supports
         serialize :options, Hash
 
         #
-        # generate option_#{option key} accessors
+        # generate option_#{option key} accessors like `option_ipn_key`
         # set option keys validations if present so the validations on options attribute is dynamic
         #
         after_initialize do
+          initialize_options
+        end
+
+        after_save do
+          initialize_options
+        end
+
+        #
+        # initialize options keys as attr_accessor
+        # 
+        def initialize_options
           if options.present?
             opts = options.except(:validations)
             self.class.send(:attr_accessor, *opts.keys.map{|key| "option_#{key}" })

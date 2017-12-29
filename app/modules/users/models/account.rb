@@ -38,7 +38,7 @@ module Users
 
       #
       # include setting module thus an account has setting
-      # for now an account has ipn_key setting option
+      # for now an account has ipn_key and ipn_url setting option
       #
       include Supports::Settingable::Helpers::HasSetting
       define_setting name: "setting", options: { ipn_key: nil, ipn_url: nil }, validations: { ipn_key: { length: { minimum: 10, allow_blank: true } } }

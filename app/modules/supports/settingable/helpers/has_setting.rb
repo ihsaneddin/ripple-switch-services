@@ -32,7 +32,6 @@ module Supports
                 clear_cache! caches_suffix_list= [], object_caches_suffix=["setting"]
               end
             end
-            setting_options = self.class.setting_initialization_options
             parameterize_name = setting_options[:name].downcase.parameterize.underscore
             setting_options[:options].except(:validations).keys.each do |opt_key|
               send("#{parameterize_name}_#{opt_key}=", cached_setting.get_setting_of(opt_key))
@@ -40,8 +39,10 @@ module Supports
           end
         end
 
+        #
+        # create setting object for settingable object
+        #
         def create_setting
-          setting_options = self.class.setting_initialization_options
           if setting_options.is_a?(Hash)
             setting_options[:options][:validations] = setting_options[:validations]
             setting = Supports::Settingable::Models::Setting.new name: setting_options[:name]
@@ -50,6 +51,33 @@ module Supports
             setting.save
           end
         end
+
+        #
+        # save changes of setting key on settingable object to setting object options
+        #
+        def reinitialize_setting
+          if setting.present?
+            setting_options[:options].keys.each do |opt|
+              setting.options[opt.to_sym]= send("#{setting_name}_#{opt}")
+            end
+            unless setting.save
+              setting_options[:options].keys.each do |key|
+                self.errors.add("#{setting_name}_#{key}".to_sym, setting.errors["option_#{key}".to_sym]) if setting.errors["option_#{key}"].any?
+              end
+              throw(:abort)
+            end
+          end
+        end
+
+        protected
+
+          def setting_options
+            self.class.setting_initialization_options
+          end
+
+          def setting_name
+            "#{setting_options[:name].to_s.downcase.parameterize.underscore}"
+          end
 
         module ClassMethods
 
@@ -63,6 +91,7 @@ module Supports
             #define setting object relation
             has_one :setting, class_name: "Supports::Settingable::Models::Setting", :as => :settingable
             accepts_nested_attributes_for :setting, allow_destroy: false, reject_if: :all_blank
+
             # if settingable object implement Supports::Cacheable module
             if respond_to?(:object_caches_suffix)
               self.object_caches_suffix += ['setting']
@@ -71,9 +100,12 @@ module Supports
             #define attr_accessor for setting options
             parameterize_name = opts[:name].downcase.parameterize.underscore
             attr_accessor *opts[:options].keys.map{|opt_key| "#{parameterize_name}_#{opt_key}"}
-            
+            # flag to determine whether changed setting key is pushed to setting object
+            attr_accessor :save_changed_setting
+
             send(:after_initialize, :initialize_setting)
             send(:after_create, :create_setting)
+            send(:after_update, *[:reinitialize_setting, { if: :save_changed_setting }])
           end
 
         end

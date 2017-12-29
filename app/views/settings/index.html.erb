@@ -4,6 +4,28 @@
   
   <%= _content_for outer_template, :box_panel_body do %>
     <%= tab_panel list: ["Account", "Instance Payment Notification"], active: params[:active_tab] do %>
+    
+      <%= content_for(:tab_content_for_account) do %>
+          
+        <%= tag :br %>
+        <%= form_for current_account, url: settings_path, html: { class: 'form form-horizontal' } do |f| %>  
+          <%= hidden_field_tag :active_tab, "Account" %>
+
+          <%= render partial: 'settings/account_form', locals: { resource_form: f, account: current_account } %>          
+          
+          <%= submit_buttons_wrapper divider: true do %>
+            <%= link_to root_path, class: 'btn btn-default btn-flat' do %>
+              <%= content_tag :i, "Cancel", class: 'fa fa-arrow-left' %>
+            <%- end %>
+            <%= button_tag :type => :submit, class: 'btn btn-primary btn-flat', value: "update-account" do %>
+              <%= content_tag :i, "Update", class: 'fa fa-save' %>
+            <%- end %>
+          <%- end %>
+
+        <%- end %>
+      
+      <%- end %>
+
     <%- end %>
   <%- end %>
 <%- end %>
