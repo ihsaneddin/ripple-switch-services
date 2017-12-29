@@ -15,7 +15,9 @@
         
         <%= content_tag :td, account.email %>
         <%= content_tag :td, account.username %>
-        <%= content_tag :td, account.active_plan.try(:name) || "Expired" %>
+        <%= content_tag :td do %>
+          <%= label_tag account.active_plan.try(:name) || "Expired", label_class: account.active_plan.try(:free?) ? "label-warning" : "label-primary" %>
+        <%- end %>
         <%= content_tag :td, account.last_sign_in_at %>
         <%= content_tag :td do %>
       
@@ -25,7 +27,7 @@
                 title: "Account Info",
                 template: "admin/accounts/show"
               }
-              ), class: 'btn btn-sm btn-default remote-modal', remote: true, title: "View account's info" do %> 
+              ), class: 'btn btn-sm btn-default remote-modal btn-info', remote: true, title: "View account's info" do %> 
               <%= content_tag :i, "", class: 'fa fa-info' %>
           <%- end %>
 

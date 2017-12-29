@@ -15,7 +15,9 @@
           <%= content_tag :td, transaction.wallet.try(:address) || transaction.source %>
           <%= content_tag :td, transaction.destination %>
           <%= content_tag :td, transaction.tx_hash %>
-          <%= content_tag :td, transaction.state %>
+          <%= content_tag :td do %>
+            <%= label_tag transaction.state, label_class: transaction.completed?? 'label-primary' : 'label-warning' %>
+          <%- end %>
           <%= content_tag :td, transaction.amount_with_currency %>
           <%= content_tag :td, time_ago_in_words(transaction.updated_at) %>
           <%= content_tag :td do %>

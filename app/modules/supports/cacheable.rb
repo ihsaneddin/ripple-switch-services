@@ -54,13 +54,17 @@ module Supports
       #
       # clear cache if present
       #
-      def clear_cache!
-        self.class.caches_suffix_list.each do |cache_suffix|
+      def clear_cache! caches_suffix_list= [], object_caches_suffix=[]
+        object_caches_suffix= object_caches_suffix.blank?? self.class.object_caches_suffix : object_caches_suffix
+        caches_suffix_list = caches_suffix_list.blank?? self.class.caches_suffix_list : caches_suffix_list
+
+        caches_suffix_list.each do |cache_suffix|
           Rails.cache.delete("#{self.class.cached_name}-#{cache_suffix}")            
         end
-        self.class.object_caches_suffix.each do |cache_suffix|
+        object_caches_suffix.each do |cache_suffix|
           Rails.cache.delete("#{cache_prefix}-#{cache_suffix}")            
         end
+
       end
     
   end

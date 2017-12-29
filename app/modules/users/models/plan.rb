@@ -37,18 +37,11 @@ module Users
 
       end
 
-      #acts_as_list
-
       attr_accessor :display_order
 
       after_initialize do 
         self.display_order||= self.position
       end
-
-      def reorder_position
-        insert_at(self.display_order) if Integer(self.display_order) != self.position
-      end
-
 
       def set_default_features
         self.features||=  {}

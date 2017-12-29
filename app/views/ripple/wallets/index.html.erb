@@ -104,19 +104,19 @@
       <%- end %>
 
       <%= link_to new_ripple_wallet_path(
-        modal: {
-          id: "ripples-wallet-new",
-          title: "New Wallet",
-          template: "ripple/wallets/new",
-          use_footer: true,
-          use_submit_footer_buttons: true,
-          cancel_button_text: "Cancel",
-          submit_button_text: "Save"
-        },
-        table: {
-          id: "table-container-for-#{controller_name}"
-        }
-      ), class: 'btn btn-default remote-modal', remote: true, title: "Create new ripple wallet" do %> 
+          modal: {
+            id: "ripples-wallet-new",
+            title: "New Wallet",
+            template: "ripple/wallets/new",
+            use_footer: true,
+            use_submit_footer_buttons: true,
+            cancel_button_text: "Cancel",
+            submit_button_text: "Save"
+          },
+          table: {
+            id: "table-container-for-#{controller_name}"
+          }
+        ), class: 'btn btn-default remote-modal', remote: true, title: "Create new ripple wallet" do %> 
         <%= content_tag :i, "", class: 'fa fa-plus' %>
       <%- end %>
 

@@ -13,7 +13,8 @@ module Users
              :rememberable, 
              :trackable, 
              :validatable, 
-             :confirmable, :authentication_keys => [:login]
+             :confirmable, 
+             :authentication_keys => [:login]
 
       #
       # define attribute for username/email login
@@ -34,6 +35,13 @@ module Users
       has_many :subscriptions, class_name: "Users::Models::Subscription"
       has_one :subscription_active, -> { where(state: "active") }, class_name: "Users::Models::Subscription"
       has_many :plans, class_name: "Users::Models::Plan", through: :subscriptions
+
+      #
+      # include setting module thus an account has setting
+      # for now an account has ipn_key setting option
+      #
+      include Supports::Settingable::Helpers::HasSetting
+      define_setting name: "setting", options: { ipn_key: nil, ipn_url: nil }, validations: { ipn_key: { length: { minimum: 10, allow_blank: true } } }
 
       #
       # pg_search implementation

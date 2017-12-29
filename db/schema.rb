@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171226063557) do
+ActiveRecord::Schema.define(version: 20171229054823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20171226063557) do
     t.datetime "updated_at", null: false
     t.string "source"
     t.index ["deleted_at"], name: "index_ripples_transactions_on_deleted_at"
+    t.index ["destination"], name: "index_ripples_transactions_on_destination"
     t.index ["source"], name: "index_ripples_transactions_on_source"
     t.index ["tx_hash"], name: "index_ripples_transactions_on_tx_hash"
     t.index ["wallet_id"], name: "index_ripples_transactions_on_wallet_id"
@@ -151,6 +152,18 @@ ActiveRecord::Schema.define(version: 20171226063557) do
     t.index ["deleted_at"], name: "index_ripples_wallets_on_deleted_at"
     t.index ["label"], name: "index_ripples_wallets_on_label"
     t.index ["validated"], name: "index_ripples_wallets_on_validated"
+  end
+
+  create_table "settingable_settings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.string "settingable_type"
+    t.uuid "settingable_id"
+    t.text "options"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_settingable_settings_on_deleted_at"
+    t.index ["settingable_type", "settingable_id"], name: "settingable_settings_type_and_setingable_id"
   end
 
   create_table "users_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

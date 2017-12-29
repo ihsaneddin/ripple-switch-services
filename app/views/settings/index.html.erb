@@ -1,0 +1,9 @@
+<%= yield_content_for :page_title, "Setting" %>
+
+<%= box_panel use_footer: false do |outer_template, options|%>
+  
+  <%= _content_for outer_template, :box_panel_body do %>
+    <%= tab_panel list: ["Account", "Instance Payment Notification"], active: params[:active_tab] do %>
+    <%- end %>
+  <%- end %>
+<%- end %>

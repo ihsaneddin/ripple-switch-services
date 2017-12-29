@@ -35,7 +35,7 @@ module Ripples
             end
 
             res = Hashie::Mash.new(JSON.parse(event.data))
-            filtered(res) do
+            is_transaction_will_be_processed?(res) do
               # Hashie::Mash override key with name `hash` so we have to store on another key first before serialize to json
               res.tx_hash= res.transaction["hash"] rescue nil
               p [:process, event.data]
@@ -86,7 +86,7 @@ module Ripples
       # return boolean to determine whether transaction will be processed or not
       # MUST BE FAST!
       #
-      def filtered(res)
+      def is_transaction_will_be_processed?(res)
         if res.engine_result == 'tesSUCCESS' && res.transaction.try(:TransactionType) == "Payment"
           if Ripples::Models::Wallet.get(res.transaction.try(:Account)) || Ripples::Models::Wallet.get(res.transaction.try(:Destination))
             block_given?? yield : true

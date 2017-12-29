@@ -14,13 +14,17 @@
         <%= content_tag :tr, id: "tr-#{plan.id}" do %>
           
           <%= content_tag :td, plan.name %>
-          <%= content_tag :td, plan.free ? "Free" : "Paid" %>
+          <%= content_tag :td do %>
+            <%= label_tag plan.free?? "Free" : "Paid", label_class: plan.free?? "label-warning" : "label-primary" %>
+          <%- end %> 
           <%= content_tag :td, number_to_currency(plan.price) %>
-          <%= content_tag :td, plan.state %>
+          <%= content_tag :td do %>
+            <%= label_tag plan.state, label_class: plan.active?? 'label-primary' : 'label-danger' %>
+          <%- end %>
           <%= content_tag :td, plan.display_order %>
           <%= content_tag :td, plan.updated_at %>
           <%= content_tag :td do %>
-            <%= link_to admin_plan_path(plan.name), class: "btn btn-sm btn-default" do %>
+            <%= link_to admin_plan_path(plan.name), class: "btn btn-sm btn-info" do %>
               <%= content_tag :i, nil, class: "fa fa-info", title: "Go to this package details." %>
             <%- end %>
             <%= link_to edit_admin_plan_path(plan.name, 
@@ -36,7 +40,7 @@
                     table: {
                       id: "table-container-for-#{controller_name}"
                     }
-                ), class: "btn btn-sm btn-default", remote: true, title: "Edit this package." do %>
+                ), class: "btn btn-sm btn-warning", remote: true, title: "Edit this package." do %>
                 <%= content_tag :i, nil, class: "fa fa-pencil-square-o" %>
             <%- end %>
 

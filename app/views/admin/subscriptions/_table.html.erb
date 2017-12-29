@@ -16,7 +16,9 @@
         <%= content_tag :td, subscription.name %>
         <%= content_tag :td, subscription.txn_id %>
         <%= content_tag :td, "#{subscription.amount} #{subscription.coin}" %>
-        <%= content_tag :td, subscription.state %>
+        <%= content_tag :td do %>
+          <%= label_tag subscription.state, label_class: subscription.active?? 'label-primary' : 'label-danger' %>
+        <%- end %>
         <%= content_tag :td, subscription.updated_at %>
         <%= content_tag :td do %>
       
@@ -26,7 +28,7 @@
                 title: "Subscription Info",
                 template: "admin/subscriptions/show"
               }
-              ), class: 'btn btn-sm btn-default remote-modal', remote: true, title: "View subscription's info" do %> 
+              ), class: 'btn btn-sm btn-info remote-modal', remote: true, title: "View subscription's info" do %> 
               <%= content_tag :i, "", class: 'fa fa-info' %>
           <%- end %>
 
@@ -34,12 +36,16 @@
               <%= content_tag :i, "", class: 'fa fa-remove' %>
           <%- end %>
 
-          <%= link_to confirm_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to activate this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-primary remote-modal', title: "Activate subscription" do %> 
-              <%= content_tag :i, "", class: 'fa fa-check-square-o' %>
+          <% if subscription.may_confirm? %>
+            <%= link_to confirm_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to activate this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-primary remote-modal', title: "Activate subscription" do %> 
+                <%= content_tag :i, "", class: 'fa fa-check-square-o' %>
+            <%- end %>
           <%- end %>
 
-          <%= link_to expire_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to expiry this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-danger remote-modal', title: "Expiry subscription" do %> 
-              <%= content_tag :i, "", class: 'fa-exclamation-circle' %>
+          <% if subscription.may_expire? %>
+            <%= link_to expire_admin_subscription_path(subscription.name, table: { id: "table-container-for-subscriptions", resources_name: "subscriptions", template: "admin/subscriptions/table" }), method: :put, remote: true, data: { confirm: "Are you sure want to expiry this subscription?", title: "Confirmation!" }, class: 'btn btn-sm btn-danger remote-modal', title: "Expiry subscription" do %> 
+                <%= content_tag :i, "", class: 'fa-exclamation-circle' %>
+            <%- end %>
           <%- end %>
 
         <%- end %>

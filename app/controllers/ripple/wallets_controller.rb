@@ -4,7 +4,7 @@ module Ripple
   class WalletsController < AccountController 
   
     self.context_resource_class= "Ripples::Models::Wallet"
-    self.resource_actions = [:new, :create, :active, :show, :destroy]
+    #self.resource_actions = [:new, :create, :active, :show, :destroy]
     use_resource!
 
     include Users::Helpers::SubscriptionRestriction::Controller
@@ -83,7 +83,7 @@ module Ripple
     end
 
     def update
-      if @wallet.save
+      if @wallet.update wallet_params
         respond_to do |f|
           f.html { redirect_to ripple_wallets_path, notice: "Success" }
           f.js do 

@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   end
 
   namespace :ripple do 
-    resources :wallets, except: [:edit, :update] do 
+    resources :wallets do 
       member do 
         put :active
         put :restore
@@ -63,6 +63,12 @@ Rails.application.routes.draw do
   end
 
   resources :pins, only: [:update]
+
+  resources :settings, path: "setting", only: [:index] do 
+    collection do 
+      put :update
+    end
+  end
 
   # static pages
   get "/pages/*page" => "pages#show", as: :page

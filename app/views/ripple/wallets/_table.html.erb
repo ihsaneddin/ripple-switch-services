@@ -41,7 +41,7 @@
                   title: "",
                   template: "ripple/wallets/qrcode"
                 }
-                ), class: 'btn btn-info btn-sm', remote: true do %>
+                ), class: 'btn btn-info btn-sm', remote: true, title: "View QR code" do %>
                 <%= content_tag :i, "", class: 'fa fa-qrcode' %>
               <%- end%>
               
@@ -51,8 +51,25 @@
                   title: "Wallet Info",
                   template: "ripple/wallets/show"
                 }
-                ), class: 'btn btn-sm btn-info remote-modal', remote: true, title: "View QR code" do %> 
+                ), class: 'btn btn-sm btn-info remote-modal', remote: true, title: "View wallet details" do %> 
                 <%= content_tag :i, "", class: 'fa fa-info' %>
+              <%- end %>
+
+              <%= link_to edit_ripple_wallet_path( wallet,
+                  modal: {
+                    id: "ripples-wallet-edit-#{wallet.id}",
+                    title: "Edit Wallet",
+                    template: "ripple/wallets/edit",
+                    use_footer: true,
+                    use_submit_footer_buttons: true,
+                    cancel_button_text: "Cancel",
+                    submit_button_text: "Update"
+                  },
+                  table: {
+                    id: "table-container-for-wallets"
+                  }
+                ), class: 'btn btn-warning btn-sm remote-modal', remote: true, title: "Edit this ripple wallet label" do %> 
+                <%= content_tag :i, "", class: 'fa fa-edit' %>
               <%- end %>
               
               <%= link_to ripple_wallet_path(wallet.id, 

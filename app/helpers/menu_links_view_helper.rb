@@ -118,6 +118,15 @@ module MenuLinksViewHelper
           route: '#',
           subs: [
             {
+              name: "Setting",
+              icon: "fa fa-wrench",
+              is_presented: true,
+              route: settings_path
+            },
+            {
+              name: 'divider'
+            },
+            {
               name: "Logout",
               icon: 'fa fa-sign-out',
               route: destroy_account_session_path(),
