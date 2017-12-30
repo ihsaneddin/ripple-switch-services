@@ -60,7 +60,7 @@ module Ripples
                 end
                 trans.state= res["status"]
                 trans.validated= res["validated"]
-                if trans.save
+                unless trans.save
                   p [:unable_to_save_existed_transaction, trans.errors.full_messages]
                 end
               end
