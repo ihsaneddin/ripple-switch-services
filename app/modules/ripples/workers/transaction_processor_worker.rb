@@ -62,6 +62,14 @@ module Ripples
                 trans.validated= res["validated"]
                 unless trans.save
                   p [:unable_to_save_existed_transaction, trans.errors.full_messages]
+                  # handle same record that saved twice because sidekiq process it at exact same time
+                  trans.class.where(tx_hash: trans.tx_hash).each do |d_trans|
+                    trans.validated= d_trans.validated if d_trans.validated
+                    trans.state = d_trans.state if d_trans.state == 'close'
+                    trans.amount = d_trans.amount if d_trans.amount > trans.amount
+                    d_trans.really_destroy!
+                  end
+                  p [:unable_to_save_existed_transaction_again, trans.errors.full_messages] unless trans.save
                 end
               end
             end
