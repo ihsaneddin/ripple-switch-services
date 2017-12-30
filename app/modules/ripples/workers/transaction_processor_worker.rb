@@ -12,19 +12,23 @@ module Ripples
       def perform(res=nil)
         res = Hashie::Mash.new(JSON.parse(res))
         begin
-          ActiveRecord::Base.transaction do
+          #ActiveRecord::Base.transaction do
 
             tx = res.transaction
             if tx.present?
 
               # get or initialize transaction object by tx_hash
               tx_hash = res["tx_hash"] || tx["hash"]
+              # for now just skip if tx_hash is not present
+              return unless tx_hash
+              
               p [:tx_hash, tx_hash]
               trans = Ripples::Models::Transaction.find_or_initialize_by(tx_hash: tx_hash.to_s.strip)
                 
               if trans.new_record?
                  # if transaction object is new record then store it on database
                  #trans.wallet= account
+                 p [:info, "transaction with hash #{trans.tx_hash} is new transaction"]
                  trans.source= tx["Account"]
                  trans.destination = tx["Destination"]
                  trans.state = res["status"]
@@ -40,20 +44,24 @@ module Ripples
                  trans.transaction_type = res["type"]
                  trans.skip_submit= true
                  unless trans.save
-                  puts trans.errors.full_messages
-                  raise ActiveRecord::RecordInvalid
+                  # display error message if error happen
+                  p [:unable_to_save_new_transaction, trans.errors.full_messages]
+                  #raise ActiveRecord::RecordInvalid
                  end
               else
                 #else if transaction object is exist then updated it by tx response
-                trans.update state: res["status"], validated: res["validated"]
+                p [:info, "transaction with hash #{trans.tx_hash} is exited"]
+                unless trans.update state: res["status"], validated: res["validated"]
+                  p [:unable_to_save_existed_transaction, trans.errors.full_messages]
+                end
               end
             end
 
-          end
+          #end
         rescue => e 
-          puts e.message
-          puts e.backtrace
-          raise ActiveRecord::Rollback unless Rails.env.production?
+          p [:rescue, e.message]
+          p [:backtrace, e.backtrace]
+          #raise ActiveRecord::Rollback unless Rails.env.production?
         end
       end
 

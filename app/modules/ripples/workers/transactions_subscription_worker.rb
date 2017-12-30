@@ -26,7 +26,7 @@ module Ripples
           end
 
           ws.on :message do |event|
-            p [:message, self.class.name, DateTime.now]
+            #p [:message, self.class.name, DateTime.now]
             
             if sync_opts.present? && Rails.env.production?
               sync_opts[:params][:end]= DateTime.now.strftime("%Y-%m-%dT%H:%M:%SZ")
