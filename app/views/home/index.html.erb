@@ -8,7 +8,7 @@
         <%= box_panel style: "box-warning box-solid" do |panel| %>
 
           <%= _content_for(panel, :box_panel_body) do %>
-            <%= content_tag :p, "use mailinator to generate email for testing. eg: user@mailinator. then head to <a href='https://www.mailinator.com/v2/inbox.jsp?zone=public&query=user'>https://www.mailinator.com/v2/inbox.jsp?zone=public&query=user</a> to get login url".html_safe, class: "help-block", class: "text-center" %>
+            <%= content_tag :p, "use mailinator to generate email for testing. eg: user@mailinator. then head to <a href='https://www.mailinator.com/v2/inbox.jsp?zone=public&query=user'>https://www.mailinator.com/v2/inbox.jsp?zone=public&query=user</a> to get login url".html_safe, class: "help-block text-center" %>
           <%- end %>
 
         <%- end %>
