@@ -50,8 +50,17 @@ module Ripples
                  end
               else
                 #else if transaction object is exist then updated it by tx response
-                p [:info, "transaction with hash #{trans.tx_hash} is exited"]
-                unless trans.update state: res["status"], validated: res["validated"]
+                p [:info, "transaction with hash #{trans.tx_hash} is existed"]
+                if tx["Amount"].kind_of?(String)
+                  trans.amount = BigDecimal.new(tx["Amount"]) # all transaction amount xrp is using drops
+                  trans.destination_currency = "XRP"
+                 else
+                  transaction.amount = BigDecimal.new(tx.Amount.try(:value))
+                  transaction.destination_currency = tx.Amount.try(:currency)
+                end
+                trans.state= res["status"]
+                trans.validated= res["validated"]
+                if trans.save
                   p [:unable_to_save_existed_transaction, trans.errors.full_messages]
                 end
               end

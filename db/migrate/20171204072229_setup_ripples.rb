@@ -31,7 +31,7 @@ class SetupRipples < ActiveRecord::Migration[5.1]
     create_table :ripples_transactions, id: :uuid do |t|
       t.uuid :wallet_id
       t.string :destination
-      t.string :tx_hash
+      t.string :tx_hash, unique: true
       t.decimal :amount, :default => 0.0, :precision => 15, :scale => 2
       t.string :source_currency
       t.string :destination_currency
