@@ -45,8 +45,9 @@
 });
 
 
-$(document).on('turbolinks:load', function(){
-
+//$(document).on('turbolinks:load', function(){
+$(document).ready(function(){
+  
   $('.fa-sign-out').closest('a').attr('data-method', 'delete');
 
   

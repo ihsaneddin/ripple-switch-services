@@ -141,11 +141,7 @@
   
   // stream total balance
   $(document).ready(function(){
-    //streamTotalAccountBalance("<%= current_account.id %>", 'table-container-for-wallets')
-  });
-
-  $(document).on('turbolinks:load', function(){
     streamTotalAccountBalance("<%= current_account.id %>", 'table-container-for-wallets')
-  })
+  });
 
 </script>

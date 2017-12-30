@@ -25,8 +25,9 @@ $(function () {
   });
 });
 
-$(document).on('turbolinks:load', function(){
+//$(document).on('turbolinks:load', function(){
   // toggle alement
+$(document).ready(function(){
   $(document).on("click", '.toggle', function(e){
 
     $(this).addClass('hidden');
