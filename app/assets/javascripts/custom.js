@@ -10,6 +10,15 @@ $.urlParam = function(url, name){
 
 //$(document).on('turbolinks:load', function(){
 $(document).ready(function(){
+
+  // toggle alement
+  $(document).on("click", '.toggle', function(e){
+
+    $(this).addClass('hidden');
+    $($(this).attr('data-toggle')).removeClass('hidden');
+
+  });
+  
   //
   // to submit modal form with btn with class submit-modal-form
   //
@@ -27,7 +36,7 @@ $(document).ready(function(){
         currentModal.find('form button.modal-form-submit').trigger("click");
       }
       // check if data-confirm is present
-      console.log($(this).is('[data-confirm]'));
+      //console.log($(this).is('[data-confirm]'));
       if ($(this).is('[data-confirm]')){//attr('data-confirmation')){
          e.preventDefault();
       }
@@ -40,7 +49,7 @@ $(document).ready(function(){
   //
   $(document).on("click", "a.remote-modal", function(e){
     modal_id = $.urlParam(decodeURIComponent($(this).attr('href')), 'modal[id]');
-    console.log(modal_id)
+    //console.log(modal_id)
     if ((modal_id != null) && (modal_id.trim()) )
     {
       if ($("div#"+modal_id+"").length > 0){
