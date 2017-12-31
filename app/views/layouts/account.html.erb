@@ -32,7 +32,7 @@
   </head>
 
   <!-- begin body -->
-  <%= content_tag :body, class: 'hold-transition skin-purple sidebar-mini', data: { "rails-ws" => ENV["WEB_RIPPLED_SERVER"] } do %>
+  <%= content_tag :body, class: 'hold-transition skin-purple sidebar-mini', data: { "rails-ws" => ENV["WEB_RIPPLED_SERVER"], account: respond_to?(:current_account) ? current_account.try(:id) : nil } do %>
 
     <!-- start wrapper -->
     <%= content_tag :div, class: 'wrapper' do %>
