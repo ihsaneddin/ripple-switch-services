@@ -53,7 +53,8 @@ function streamTotalAccountBalance(account_id, table_id){
 }
 
 // stream total balance
-$(document).ready(function(){ 
+//$(document).ready(function(){ 
+$(document).on('turbolinks:load', function() {
   account_id = $(document).find("body:first").attr("data-account");
   if (account_id != undefined){
     streamTotalAccountBalance(account_id, 'table-container-for-wallets')
