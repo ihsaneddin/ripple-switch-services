@@ -103,7 +103,7 @@ set :puma_daemonize, true
 #set :sidekiq_timeout => 10
 #set :sidekiq_role => :app
 set :sidekiq_processes, 3
-set :sidekiq_options_per_process, ["--queue transactions_subscriptions", "-queue ipn", "--queue critical --queue default --queue low --queue mailers"]
+set :sidekiq_options_per_process, ["--queue transactions_subscriptions", "--queue ipn", "--queue critical --queue default --queue low --queue mailers"]
 set :sidekiq_concurrency => 15#nil
 #set :sidekiq_monit_templates_path => 'config/deploy/templates'
 #set :sidekiq_monit_conf_dir => '/etc/monit/conf.d'
