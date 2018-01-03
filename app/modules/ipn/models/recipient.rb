@@ -98,7 +98,7 @@ module IPN
           end
         end
 
-        private
+        #private
 
           #
           # prepare header for request
