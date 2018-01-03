@@ -124,7 +124,7 @@ module Ripples
             
             trans = wallet.ripple_client.sign_transaction(trans)
             self.tx_hash= wallet.ripple_client.submit_transaction(trans)
-          rescue Ripple::SubmitFailed, Ripple::InvalidParameters, Ripple::ServerUnavailable, Ripple::Timedout => e
+          rescue Ripple::SubmitFailed, Ripple::InvalidParameters, Ripple::ServerUnavailable, Ripple::Timedout, Ripple::MalformedTransaction => e
             self.errors.add(:destination, e.message)
           end
           throw(:abort) if errors.any?
