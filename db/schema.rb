@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171229054823) do
+ActiveRecord::Schema.define(version: 20180102040441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,37 @@ ActiveRecord::Schema.define(version: 20171229054823) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "ipn_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "notifiable_type"
+    t.uuid "notifiable_id"
+    t.string "title"
+    t.text "message"
+    t.datetime "deleted_at"
+    t.string "serializer_class"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_ipn_notifications_on_deleted_at"
+    t.index ["notifiable_type", "notifiable_id"], name: "ipn_notifications_notifiable_type_and_notifiable_id"
+  end
+
+  create_table "ipn_recipients", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "notification_id"
+    t.string "recipient_type"
+    t.uuid "recipient_id"
+    t.string "state"
+    t.integer "retry", default: 0
+    t.integer "retry_count", default: 0
+    t.string "result"
+    t.datetime "scheduled_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_ipn_recipients_on_deleted_at"
+    t.index ["notification_id"], name: "index_ipn_recipients_on_notification_id"
+    t.index ["recipient_type", "recipient_id"], name: "ipn_recipients_recipient_type_and_recipient_id"
+    t.index ["state"], name: "index_ipn_recipients_on_state"
   end
 
   create_table "oauth_access_grants", force: :cascade do |t|

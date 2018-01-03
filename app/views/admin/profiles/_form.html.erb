@@ -1,3 +1,7 @@
+<%= form_group profile, :email, { label_class: "col-sm-2" } do %>
+  <%= f.email_field :email, class: 'form-control', placeholder: 'New email' %>
+<%- end %>
+
 <%= form_group profile, :password, { label_class: "col-sm-2" } do %>
   <%= f.password_field :password, class: 'form-control', placeholder: 'New password', required: true %>
 <%- end %>

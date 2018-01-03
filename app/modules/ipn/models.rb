@@ -1,5 +1,5 @@
-module Ripples::Models
+module IPN::Models
   def self.table_name_prefix
-    'ripples_'
+    'ipn_'
   end
 end

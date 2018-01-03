@@ -39,6 +39,11 @@ module Ripples
         end
       end
 
+      include IPN::Helpers::Notify
+      notify recipients: :notification_recipients, 
+             retry: 5, 
+             on: :after_commit,
+             if: :notify?
 
       #
       # submit transaction to ripple server unless skip_submit is present or tx_hash is present
@@ -54,6 +59,20 @@ module Ripples
         self.source_currency||= "XRP"
         self.destination_currency||= "XRP"
         self.destination.transaction_type||= "Payment"
+      end
+
+      #
+      # check whether transaction will be notified or not
+      #
+      def notify?
+        self.saved_change_to_validated? && self.validated
+      end
+
+      #
+      # set notification for
+      #
+      def notification_recipients
+        [self.source_wallet.try(:account), self.destination_wallet.try(:account)].uniq.compact.map{|account| account if BooleanValue.from_string(account.setting_ipn_state.to_s) }.uniq.compact
       end
 
       #

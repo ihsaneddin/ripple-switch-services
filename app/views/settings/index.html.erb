@@ -3,22 +3,43 @@
 <%= box_panel use_footer: false do |outer_template, options|%>
   
   <%= _content_for outer_template, :box_panel_body do %>
-    <%= tab_panel list: ["Account", "Instance Payment Notification"], active: params[:active_tab] do %>
+    <%= tab_panel list: ["Account", "Instant Payment Notification"], active: params[:active_tab] do |tab, tab_options| %>
     
-      <%= content_for(:tab_content_for_account) do %>
+      <%= _content_for(tab, :tab_content_for_account) do %>
           
         <%= tag :br %>
-        <%= form_for current_account, url: settings_path, html: { class: 'form form-horizontal' } do |f| %>  
+        <%= form_for current_account, url: settings_path, html: { class: 'form form-horizontal' }, method: :put do |f| %>  
           <%= hidden_field_tag :active_tab, "Account" %>
 
-          <%= render partial: 'settings/account_form', locals: { resource_form: f, account: current_account } %>          
+          <%= render partial: 'settings/account_form', locals: { f: f, account: current_account } %>          
           
-          <%= submit_buttons_wrapper divider: true do %>
-            <%= link_to root_path, class: 'btn btn-default btn-flat' do %>
-              <%= content_tag :i, "Cancel", class: 'fa fa-arrow-left' %>
+          <%= submit_buttons_wrapper divider: false do %>
+            <%= link_to root_path, class: 'btn btn-danger' do %>
+              <%= content_tag :i, "Cancel", class: 'fa fa-remove' %>
             <%- end %>
-            <%= button_tag :type => :submit, class: 'btn btn-primary btn-flat', value: "update-account" do %>
-              <%= content_tag :i, "Update", class: 'fa fa-save' %>
+            <%= button_tag :type => :submit, class: 'btn btn-primary', value: "update-account" do %>
+              <%= content_tag :i, "Update", class: 'fa fa-edit' %>
+            <%- end %>
+          <%- end %>
+
+        <%- end %>
+      
+      <%- end %>
+
+      <%= _content_for(tab, :tab_content_for_instant_payment_notification) do %>
+          
+        <%= tag :br %>
+        <%= form_for current_account, url: settings_path, html: { class: 'form form-horizontal' }, method: :put do |f| %>  
+          <%= hidden_field_tag :active_tab, "Instant Payment Notification" %>
+
+          <%= render partial: 'settings/ipn_form', locals: { f: f, account: current_account } %>          
+          
+          <%= submit_buttons_wrapper divider: false do %>
+            <%= link_to root_path, class: 'btn btn-danger' do %>
+              <%= content_tag :i, "Cancel", class: 'fa fa-remove' %>
+            <%- end %>
+            <%= button_tag :type => :submit, class: 'btn btn-primary', value: "update-account" do %>
+              <%= content_tag :i, "Update", class: 'fa fa-edit' %>
             <%- end %>
           <%- end %>
 

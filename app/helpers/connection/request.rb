@@ -39,6 +39,12 @@ module Connection
       end
     end
 
+    def status
+      if @response.present?
+        @response.status
+      end
+    end
+
     def header
       @header = @header.nil?? {'Content-Type' =>'application/json', "Accept" => "application/json"} : @header
     end

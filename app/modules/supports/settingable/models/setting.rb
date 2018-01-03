@@ -27,15 +27,20 @@ module Supports
         # 
         def initialize_options
           if options.present?
-            opts = options.except(:validations)
+            opts = setting_options[:options]
             self.class.send(:attr_accessor, *opts.keys.map{|key| "option_#{key}" })
             opts.keys.each {|key| send("option_#{key}=", options[key]) }
-            if options[:validations].present?
-              options[:validations].each do |att, validation_opts|
+            validations = setting_options[:validations] || options[:validations]
+            if validations.present?
+              validations.each do |att, validation_opts|
                 self.class.send(:validates, *[ "option_#{att}", validation_opts ])
               end
             end
           end
+        end
+
+        def setting_options
+          settingable_type.constantize.setting_initialization_options
         end
 
         #

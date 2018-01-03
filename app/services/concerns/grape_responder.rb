@@ -11,7 +11,8 @@ module GrapeResponder
       #
       # return message
       #
-      def message options={ status: "ok"}
+      def message options={}
+        options = {status: "ok"}.merge!(options)
         status options[:status].to_sym || 201
         message||= options.delete(:message)
         {

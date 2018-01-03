@@ -26,7 +26,7 @@ Rails.application.routes.draw do
 
   # account's routes
 
-  devise_for :accounts, path: 'auth', skip: [:confirmations, :registrations, :passwords], class_name: "Users::Models::Account",
+  devise_for :accounts, path: 'auth', skip: [:registrations, :passwords], class_name: "Users::Models::Account",
              path_names: {sign_in: 'login', sign_out: 'logout',},
              controllers: {sessions: 'sessions',}
 

@@ -38,15 +38,34 @@ module Users
 
       #
       # include setting module thus an account has setting
-      # for now an account has ipn_key and ipn_url setting option
+      # for now an account has ipn_key, ipn_url, and ipn_state setting option
       #
       include Supports::Settingable::Helpers::HasSetting
-      define_setting name: "setting", options: { ipn_key: nil, ipn_url: nil }, validations: { ipn_key: { length: { minimum: 10, allow_blank: true } } }
+      define_setting name: "setting", options: { ipn_key: nil, ipn_url: nil, ipn_state: false }, 
+                     validations: { 
+                                    ipn_key: { length: { minimum: 10, allow_blank: true }, presence: { if: :option_ipn_state } }, 
+                                    ipn_url: { url: { allow_blank: true }, presence: { if: :option_ipn_state } }, 
+                                    ipn_state: { inclusion: { in: [true, false, '1', 1, '', nil, 0, '0'] } } 
+                                  }
 
       #
       # pg_search implementation
       #
       pg_search_scope :search_by_login, :against => [:email, :username]
+
+      #
+      # include has_notifications module
+      #
+      include IPN::Helpers::HasNotifications
+      has_notifications
+
+      def ipn_url
+        setting_ipn_url
+      end
+
+      def ipn_key
+        setting_ipn_key
+      end
 
       def generate_pin
         while true

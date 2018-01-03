@@ -56,8 +56,10 @@ module Supports
         # save changes of setting key on settingable object to setting object options
         #
         def reinitialize_setting
+          create_setting if setting.blank?
           if setting.present?
-            setting_options[:options].keys.each do |opt|
+            setting_options[:options].except(:validations).keys.each do |opt|
+              setting.send("option_#{opt}=", send("#{setting_name}_#{opt}"))
               setting.options[opt.to_sym]= send("#{setting_name}_#{opt}")
             end
             unless setting.save
@@ -105,7 +107,7 @@ module Supports
 
             send(:after_initialize, :initialize_setting)
             send(:after_create, :create_setting)
-            send(:after_update, *[:reinitialize_setting, { if: :save_changed_setting }])
+            send(:before_update, *[:reinitialize_setting, { if: :save_changed_setting }])
           end
 
         end

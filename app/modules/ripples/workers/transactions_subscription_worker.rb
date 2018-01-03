@@ -52,6 +52,7 @@ module Ripples
             end
             ws.send(unsubscribe_params.to_json)
             ws = nil
+            EM.stop_event_loop
           end
 
           ws.onerror = lambda do |error|

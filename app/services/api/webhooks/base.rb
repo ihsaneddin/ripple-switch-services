@@ -5,6 +5,7 @@ module Api
       version "webhooks", using: :path
 
       mount Coinspayment
+      mount TestIPN
 
     end
   end

@@ -7,6 +7,9 @@ module Users
         extend ActiveSupport::Concern
 
         def authorize_transaction options={}
+          #if Rails.env.development?
+          #  return block_given?? yield : true
+          #end
           pin = options[:pin] || params[:pin]
           if current_account.pin.eql?(pin)
             yield if block_given?

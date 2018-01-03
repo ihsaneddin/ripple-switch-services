@@ -34,7 +34,7 @@ module Admin
     end
 
     def profile_params
-      params.require(:administration_models_admin).permit(:password, :password_confirmation)
+      params.require(:administration_models_admin).permit(:password, :password_confirmation, :email)
     end
 
     def profile

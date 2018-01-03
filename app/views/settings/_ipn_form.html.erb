@@ -1,0 +1,20 @@
+<%= form_group account, :setting_ipn_key, { label_class: "col-sm-2", label_name: "Your IPN key" } do %>
+  <%= f.text_field :setting_ipn_key, class: 'form-control', placeholder: 'Must be minimum 10 characters', required: false %>
+  <%= content_tag :span, "Your IPN key must be a random string. We recommend you to define more than 10 characters for your key", class: "help-block" %>
+<%- end %>
+
+<%= form_group account, :setting_ipn_url, { label_class: "col-sm-2", label_name: "IPN URL" } do %>
+  <%= f.url_field :setting_ipn_url, class: 'form-control', placeholder: 'Set url to receive your instance payment notification', required: false %>
+<%- end %>
+
+<%= form_group account, :setting_ipn_state, { label_class: "col-sm-2", label_name: "Enable/Disable IPN" } do %>
+  <%= content_tag :div, class: 'checkbox icheck' do %>
+    <%= content_tag :label do %>
+      <%= f.check_box :setting_ipn_state, value: account.setting_ipn_state || false %>
+    <%- end %>
+  <%- end %>
+<%- end %>
+
+
+
+<%= f.hidden_field :save_changed_setting, value: true %>
