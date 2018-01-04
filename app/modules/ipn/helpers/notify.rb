@@ -4,22 +4,10 @@ module IPN
       
       extend ActiveSupport::Concern
 
-#      included do 
-#        
-#        class_attribute :_notification_builders, instance_writer: false
-#        self._notification_builders= Hash.new { |h, k| h[k] = [] }
-
-#        attr_accessor :notification_builder_context
-
-#        after_initialize do 
-#          prepend_notification_builder
-#        end
-
-#      end
-
       #
       # prepare methods for defined callbacks
       # and set callbacks for each called #notify
+      # insert the self object to notification_builder#record= to sync changed attrs
       #
       def prepend_notification_builder
         self.class._notification_builders.keys.each do |_callback|
@@ -70,6 +58,9 @@ module IPN
               prepend_notification_builder
             end
 
+            #
+            # have to do this as event destroy, really_destroy! do not call before_validation callback
+            #
             before_destroy do 
               self.class._notification_builders.keys.each do |_callback|
                 unless respond_to?("_#{_callback}_create_notification".to_sym)
@@ -98,6 +89,10 @@ module IPN
             [:if, :unless, :title, :message, :recipients, :notifiable, :retry, :on, :serializer_class]
           end
 
+          #
+          # only the record has been create the notification can be build
+          # if not it cause loop forever error stack
+          #
           def valid_callbacks
             [:after_create, :after_save, :after_update, :after_commit]
           end

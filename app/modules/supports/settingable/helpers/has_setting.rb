@@ -59,12 +59,12 @@ module Supports
           create_setting if setting.blank?
           if setting.present?
             setting_options[:options].except(:validations).keys.each do |opt|
-              setting.send("option_#{opt}=", send("#{setting_name}_#{opt}"))
+              setting.send("#{setting._options_prefix}_#{opt}=", send("#{setting_name}_#{opt}"))
               setting.options[opt.to_sym]= send("#{setting_name}_#{opt}")
             end
             unless setting.save
               setting_options[:options].keys.each do |key|
-                self.errors.add("#{setting_name}_#{key}".to_sym, setting.errors["option_#{key}".to_sym]) if setting.errors["option_#{key}"].any?
+                self.errors.add("#{setting_name}_#{key}".to_sym, setting.errors["#{setting._options_prefix}_#{key}".to_sym]) if setting.errors["#{setting._options_prefix}_#{key}"].any?
               end
               throw(:abort)
             end

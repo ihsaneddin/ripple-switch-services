@@ -39,12 +39,18 @@ module Ripples
         end
       end
 
-      include IPN::Helpers::Notify
-      notify recipients: :notification_recipients, 
-             retry: 5, 
-             on: :after_commit,
-             if: :notify?
+      #include IPN::Helpers::Notify
+      #notify recipients: :notification_recipients, 
+      #       retry: 5,
+      #       on: :after_commit,
+      #       if: :notify?
+             # type: { ipn: { ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, ipn_url: Proc.new{|recipient| recipient.setting_ipn_url} } } }
 
+      include Supports::Notifications::Helpers::Notify
+      notify recipients: :notification_recipients,
+             on: :after_commit,
+             if: :notify?,
+             ipn: { option_ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url }, option_retry: 5 }
       #
       # submit transaction to ripple server unless skip_submit is present or tx_hash is present
       #

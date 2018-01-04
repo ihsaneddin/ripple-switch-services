@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180102040441) do
+ActiveRecord::Schema.define(version: 20180104032709) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -195,6 +195,49 @@ ActiveRecord::Schema.define(version: 20180102040441) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_settingable_settings_on_deleted_at"
     t.index ["settingable_type", "settingable_id"], name: "settingable_settings_type_and_setingable_id"
+  end
+
+  create_table "supports_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "notifiable_type"
+    t.uuid "notifiable_id"
+    t.string "sender_type"
+    t.uuid "sender_id"
+    t.string "code"
+    t.string "subject", default: ""
+    t.text "body"
+    t.string "state"
+    t.datetime "deleted_at"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_supports_notifications_on_code"
+    t.index ["deleted_at"], name: "index_supports_notifications_on_deleted_at"
+    t.index ["notifiable_type", "notifiable_id"], name: "supports_notifications_notifiable_type_and_notifiable_id"
+    t.index ["sender_type", "sender_id"], name: "supports_notifications_sender"
+    t.index ["type"], name: "index_supports_notifications_on_type"
+  end
+
+  create_table "supports_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "notification_id"
+    t.string "recipient_type"
+    t.uuid "recipient_id"
+    t.string "state"
+    t.boolean "is_read"
+    t.boolean "is_trashed"
+    t.string "mailbox_type"
+    t.text "options"
+    t.datetime "scheduled_at"
+    t.datetime "deleted_at"
+    t.string "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_supports_receipts_on_deleted_at"
+    t.index ["is_read"], name: "index_supports_receipts_on_is_read"
+    t.index ["is_trashed"], name: "index_supports_receipts_on_is_trashed"
+    t.index ["notification_id"], name: "index_supports_receipts_on_notification_id"
+    t.index ["recipient_type", "recipient_id"], name: "supports_receipts_recipient"
+    t.index ["state"], name: "index_supports_receipts_on_state"
+    t.index ["type"], name: "index_supports_receipts_on_type"
   end
 
   create_table "users_accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

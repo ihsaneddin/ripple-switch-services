@@ -17,23 +17,34 @@ module IPN
 
       aasm column: :state do 
 
+        # initial state, after the object created, it will push worker to send notification to #recipient_ipn_url
         state :scheduled, initial: true
+
+        # this state indicates that the notification is successfully sent to #recipient_ipn_url
         state :sent
+        
+        # this state indicates that notification is being retried 
         state :retried
+
+        # this state indicats that push notification is failed after retried based on #can_still_retry?
         state :failed
 
+        # event to change state to `sent` 
         event :invoke do 
           transitions from: [:scheduled, :retried], to: :sent
         end
 
+        # this event is used to retry failed push notification
         event :push_again, after: :retry_push do 
           transitions from: [:scheduled], to: :retried
         end
 
+        # this event is used to initialize push_notification_worker
         event :schedule, after: :init_worker do 
           transitions from: [:retried], to: :scheduled
         end
 
+        # this event is used to indicate the notification is failed to send
         event :fail do 
           transitions from: [:scheduled, :retried], to: :failed
         end
@@ -98,7 +109,7 @@ module IPN
           end
         end
 
-        #private
+        private
 
           #
           # prepare header for request
@@ -124,10 +135,9 @@ module IPN
           #
           def serialized_attrs
             if notification.serializer_class.present?
-              @serialized_attrs||= notification.serializer_class.constantize.new(notification.notifiable)
-            else
-              @serialized_attrs||= { title: notification.title, message: notification.message }.merge!(notification.notifiable.attributes)
+              @serialized_attrs||= notification.serializer_class.constantize.new(notification.notifiable).serializable_hash rescue nil
             end
+            @serialized_attrs||= { title: notification.title, message: notification.message }.merge!(notification.notifiable.attributes)
           end
 
           #

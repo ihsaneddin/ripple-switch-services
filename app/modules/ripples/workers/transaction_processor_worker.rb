@@ -41,7 +41,7 @@ module Ripples
                  end
                  trans.transaction_date = tx['date']
                  trans.validated = res["validated"]
-                 trans.transaction_type = res["type"]
+                 trans.transaction_type = tx["TransactionType"]
                  trans.skip_submit= true
                  unless trans.save
                   # display error message if error happen

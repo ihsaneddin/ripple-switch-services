@@ -14,28 +14,43 @@ module Users
       include AASM
 
       aasm column: :state do
+        
+        # this state indicate that subscription is proposed by account
         state :draft, initial: true
+
+        # this state indicate that subscription is canceled
         state :canceled
+
+        # this state indicate that subscription payment is on process
         state :waiting_confirmation
+
+        # this state indicate that subscription active for account
         state :active
+
+        # this state indicate that subscription has been expired and its features can not be used 
         state :expired
 
+        # this event is used to cancel a subscription
         event :cancel do
           transitions to: :canceled, from: [:draft, :waiting_confirmation]
         end
 
+        # this event is called when coinspayment webhook is trigger for the first time for this subscription
         event :wait_for_confirmation do 
           transitions to: :waiting_confirmation, from: :draft
         end
 
+        # this event is used to confirm subscription. In other word change subscription to active
         event :confirm, after: :void_previous_subscription_and_set_expired_time do 
           transitions to: :active, from: :waiting_confirmation
         end
 
+        # this event is used to confirm a #free proposed subscription
         event :confirm_free_plan, guard: :free? do 
           transitions from: [:draft, :waiting_confirmation], to: :active
         end
 
+        # this event is used to expiry subscription
         event :expire do
           transitions :from => :active, :to => :expired
         end
