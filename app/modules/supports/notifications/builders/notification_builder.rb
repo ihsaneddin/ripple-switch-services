@@ -8,20 +8,15 @@ module Supports
 
         NOTIFICATION_CLASS= Supports::Notifications::Models::Notification
 
+        #
+        # append opts to attr_accessors
+        #
         def initialize opts={}
-          self.sender = opts[:sender]
-          self.notifiable= opts[:notifiable]
-          self.recipients= opts[:recipients]
-          self.subject= opts[:subject]
-          self.message= opts[:message]
-          self.on= opts[:on] || :after_create
-          self.condition_unless= opts[:unless]
-          self.condition_if= opts[:if]
-          self.ipn= opts[:ipn]
-          self.mail= opts[:mail]
-          self.common= opts[:common]
-          self.code= opts[:code]
-          self.common= {} if self.mail.blank? && self.ipn.blank?
+          opts.each do |key, opt|
+            self.send("#{key}=", opt) if respond_to?(key.to_sym)
+          end
+          self.on||= :after_create
+          self.common= { option_broadcast: false } if self.mail.blank? && self.ipn.blank?
 
           [:sender, :recipients, :message, :subject, :code].each do |_key|
             class_eval %{
@@ -41,6 +36,9 @@ module Supports
 
         end
 
+        #
+        # set callback for model
+        #
         def set_callbacks model=nil
           self.record||= model
           if record.kind_of?(ActiveRecord::Base)
@@ -48,6 +46,10 @@ module Supports
           end
         end
 
+        #
+        # check if options :if or :unless present
+        # if present then check whether notification is created or not
+        #
         def allow_notify?
           condition = self.condition_if || self.condition_unless
           return true if condition.nil?
@@ -65,6 +67,9 @@ module Supports
           result
         end
 
+        #
+        # set notifiable object
+        #
         def notifiable
           _notifiable= instance_variable_get("@notifiable")
           case _notifiable
@@ -77,6 +82,9 @@ module Supports
           end
         end
 
+        #
+        # define receipt class based on key options
+        #
         def receipt_class name
           case name.to_sym
           when :mail
@@ -88,6 +96,9 @@ module Supports
           end
         end
 
+        #
+        # check if receipt allowed to be created
+        #
         def receipt_condition recipient, opts={}
           cond = opts[:if] || opts[:unless]
           result= true
@@ -106,6 +117,9 @@ module Supports
           result
         end
 
+        #
+        # set receipt options
+        #
         def receipt_options(recipient, opts={})
           return {} if opts.blank?
           _opts = { recipient: recipient }
@@ -122,6 +136,9 @@ module Supports
           _opts
         end
 
+        #
+        # get receipts list for notifications
+        #
         def receipts_list
           receipts = []
           { ipn: self.ipn, mail: self.mail, common: self.common}.compact.each do |name, opts|
@@ -135,13 +152,29 @@ module Supports
           receipts.compact.uniq
         end
 
+        #
+        # create notification
+        #
         def create
           if allow_notify?
             notification = NOTIFICATION_CLASS.new notifiable: notifiable, body: message, subject: subject, code: code
-            if notification.save
-              receipts_list.each do |rec|
-                rec.notification= notification
-                rec.save
+            receipts= receipts_list
+            if receipts.present?
+              begin
+                ActiveRecord::Base.transaction do
+                  if notification.save
+                    receipts.each do |rec|
+                      rec.notification= notification
+                      unless rec.save
+                        p rec.errors.full_messages
+                        raise ActiveRecord::Rollback
+                      end
+                    end
+                  end
+                end
+              rescue => e
+                p e.message
+                p e.backtrace
               end
             end
           end

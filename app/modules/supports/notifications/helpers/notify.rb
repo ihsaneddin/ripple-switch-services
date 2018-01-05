@@ -112,6 +112,9 @@ module Supports
               [:after_create, :after_save, :after_update, :after_commit]
             end
 
+            #
+            # valid receipt types options
+            #
             def valid_types
               [:common, :email, :ipn]
             end

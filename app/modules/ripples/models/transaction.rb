@@ -49,8 +49,7 @@ module Ripples
              ipn: { 
                     option_ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, 
                     option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url }, 
-                    option_retry: 5, 
-                    if: Proc.new{|tx, rec| BooleanValue.from_string(rec.setting_ipn_state.to_s) } 
+                    option_retry: 5 
                   }
       #
       # submit transaction to ripple server unless skip_submit is present or tx_hash is present
@@ -79,8 +78,8 @@ module Ripples
       # set notification for
       #
       def notification_recipients
-        #[self.source_wallet.try(:account), self.destination_wallet.try(:account)].uniq.compact.map{|account| account if BooleanValue.from_string(account.setting_ipn_state.to_s) }.uniq.compact
-        [self.source_wallet.try(:account), self.destination_wallet.try(:account)].compact.uniq
+        [self.source_wallet.try(:account), self.destination_wallet.try(:account)].uniq.compact.map{|account| account if BooleanValue.from_string(account.setting_ipn_state.to_s) }.uniq.compact
+        #[self.source_wallet.try(:account), self.destination_wallet.try(:account)].compact.uniq
       end
 
       #
