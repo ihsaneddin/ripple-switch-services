@@ -4,7 +4,7 @@ module Supports
       class Notification < ApplicationRecord
 
         belongs_to :notifiable, :polymorphic => true
-        belongs_to :sender, polymorphic: true
+        belongs_to :sender, polymorphic: true, optional: true
         has_many :receipts, class_name: "Supports::Notifications::Models::Receipt", dependent: :destroy
         has_many :ipns, class_name: "Supports::Notifications::Models::ReceiptTypes::IPN", dependent: :destroy
         has_many :commons, class_name: "Supports::Notifications::Models::ReceiptTypes::Common", dependent: :destroy

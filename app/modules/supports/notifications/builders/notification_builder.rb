@@ -17,6 +17,8 @@ module Supports
           end
           self.on||= :after_create
           self.common= { option_broadcast: false } if self.mail.blank? && self.ipn.blank?
+          self.condition_if= opts[:if]
+          self.condition_unless= opts[:unless]
 
           [:sender, :recipients, :message, :subject, :code].each do |_key|
             class_eval %{
