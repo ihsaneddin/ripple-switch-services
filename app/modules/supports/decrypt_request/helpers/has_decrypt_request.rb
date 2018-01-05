@@ -20,7 +20,7 @@ module Supports
           end
         end
 
-        def decrypt_for(key, )
+        def decrypt_for(key)
           
         end
 
