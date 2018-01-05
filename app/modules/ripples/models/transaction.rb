@@ -39,18 +39,23 @@ module Ripples
         end
       end
 
-      #include IPN::Helpers::Notify
-      #notify recipients: :notification_recipients, 
-      #       retry: 5,
-      #       on: :after_commit,
-      #       if: :notify?
-             # type: { ipn: { ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, ipn_url: Proc.new{|recipient| recipient.setting_ipn_url} } } }
-
+      #
+      # send Instant Payment Notification to wallet/address owner after transaction is validated
+      #
       include Supports::Notifications::Helpers::Notify
       notify recipients: :notification_recipients,
              on: :after_commit,
              if: :notify?,
-             ipn: { option_ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url }, option_retry: 5 }
+             ipn: { 
+                    option_ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, 
+                    option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url }, 
+                    option_retry: 5, 
+                    if: Proc.new{|tx, rec| BooleanValue.from_string(rec.setting_ipn_state.to_s) } 
+                  },
+             mail: { 
+                    option_email: Proc.new{|recipient| recipient.email },
+                    if: Proc.new{|tx, rec| rec.email.present? }
+                   }
       #
       # submit transaction to ripple server unless skip_submit is present or tx_hash is present
       #
@@ -78,7 +83,8 @@ module Ripples
       # set notification for
       #
       def notification_recipients
-        [self.source_wallet.try(:account), self.destination_wallet.try(:account)].uniq.compact.map{|account| account if BooleanValue.from_string(account.setting_ipn_state.to_s) }.uniq.compact
+        #[self.source_wallet.try(:account), self.destination_wallet.try(:account)].uniq.compact.map{|account| account if BooleanValue.from_string(account.setting_ipn_state.to_s) }.uniq.compact
+        [self.source_wallet.try(:account), self.destination_wallet.try(:account)].compact.uniq
       end
 
       #

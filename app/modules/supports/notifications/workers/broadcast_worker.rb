@@ -1,7 +1,7 @@
 module Supports
   module Notifications
     module Workers
-      class InstantPaymentNotificationWorker
+      class BroadcastWorker 
         
         include Sidekiq::Worker
 
@@ -14,10 +14,10 @@ module Supports
           end
         end
 
-        private
+        protected
 
           def receipt_class
-            Supports::Notifications::Models::ReceiptTypes::IPN          
+            Supports::Notifications::Models::ReceiptTypes::Common 
           end
 
       end

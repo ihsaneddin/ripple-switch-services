@@ -8,6 +8,7 @@ module Api
       resources "test" do 
 
         post do 
+          debugger
           p "#{request.body.read}"
           p headers
           message message: "Ok"

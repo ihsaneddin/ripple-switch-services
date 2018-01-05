@@ -17,10 +17,9 @@ module Supports
 
           if _options_field.present?
             
-            fields = _options_mapping_fields
+            fields = _options_mapping_fields || {}
             prefix= self.class._options_mapping[:prefix]
-            validations= _options_mapping_validations
-
+            validations= _options_mapping_validations || {}
             fields.keys.each do |key|
                unless respond_to?("#{prefix}_#{key}")
                 self.class.send(:attr_accessor, "#{prefix}_#{key}")            
@@ -48,7 +47,7 @@ module Supports
 
         def _sync_options
           _options_field.except(:validations).keys.each do |_key|
-            send("#{_options_column}")[_key]= send("#{_options_prefix}_#{_key}")
+            send("#{_options_column}")[_key]= send("#{_options_prefix}_#{_key}") if respond_to?("#{_options_prefix}_#{_key}".to_sym)
           end
         end
 

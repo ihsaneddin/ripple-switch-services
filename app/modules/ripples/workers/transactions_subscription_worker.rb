@@ -47,8 +47,10 @@ module Ripples
           ws.on :close do |event|
             p [:close, self.class.name, event.code, event.reason, DateTime.now]
             #if the reason of terminating worker not from host restart the worker
-            if (Integer(event.code) > 1000)
-              self.class.perform_async(url, DateTime.now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+            if (Integer(event.code) < 1000)
+              if Rails.env.production?
+                self.class.perform_async(url, DateTime.now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+              end
             end
             ws.send(unsubscribe_params.to_json)
             ws = nil

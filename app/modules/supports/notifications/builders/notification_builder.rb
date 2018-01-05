@@ -78,7 +78,7 @@ module Supports
 
         def receipt_class name
           case name.to_sym
-          when :email
+          when :mail
             Supports::Notifications::Models::ReceiptTypes::Mail
           when :ipn
             Supports::Notifications::Models::ReceiptTypes::IPN
@@ -87,10 +87,28 @@ module Supports
           end
         end
 
+        def receipt_condition recipient, opts={}
+          cond = opts[:if] || opts[:unless]
+          result= true
+          return result if cond.nil?
+          case cond
+          when Proc
+            result = cond.call(record, recipient)
+          when Symbol, String
+            result = record.send(cond)
+          else
+            cond
+          end
+          if opts[:unless]
+            return !result
+          end
+          result
+        end
+
         def receipt_options(recipient, opts={})
           return {} if opts.blank?
           _opts = { recipient: recipient }
-          opts.each do |_key, arg|
+          opts.except(:if, :unless).each do |_key, arg|
             case arg
             when Proc
              _opts[_key]= arg.call(recipient)
@@ -107,8 +125,10 @@ module Supports
           receipts = []
           { ipn: self.ipn, mail: self.mail, common: self.common}.compact.each do |name, opts|
             Array(self.recipients).flatten.uniq.compact.each do |recipient|
-              attrs= receipt_options(recipient, opts)
-              receipts << receipt_class(name).new(attrs) if attrs.present?  
+              if receipt_condition(recipient, opts)
+                attrs= receipt_options(recipient, opts)
+                receipts << receipt_class(name).new(attrs) if attrs.present?  
+              end
             end
           end
           receipts.compact.uniq

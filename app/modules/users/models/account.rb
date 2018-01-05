@@ -56,7 +56,7 @@ module Users
       #
       # include has_notifications module
       #
-      include IPN::Helpers::HasNotifications
+      include Supports::Notifications::Helpers::HasNotifications::Models
       has_notifications
 
       def ipn_url

@@ -20,11 +20,12 @@ class SetupSupportsNotificationsModule < ActiveRecord::Migration[5.1]
       t.references :notification, type: :uuid
       t.references :recipient, polymorphic: true, type: :uuid, index: { name: "supports_receipts_recipient" }
       t.string :state
-      t.boolean :is_read
-      t.boolean :is_trashed
+      t.boolean :is_read, default: false
+      t.boolean :is_trashed, default: false
       t.string :mailbox_type
       t.text :options
       t.datetime :scheduled_at
+      t.datetime :expired_at
       t.datetime :deleted_at, index: true
       t.string :type
       t.timestamps null: false

@@ -4,10 +4,35 @@ module Supports
       class Notification < ApplicationRecord
 
         belongs_to :notifiable, :polymorphic => true
+        belongs_to :sender, polymorphic: true
         has_many :receipts, class_name: "Supports::Notifications::Models::Receipt", dependent: :destroy
         has_many :ipns, class_name: "Supports::Notifications::Models::ReceiptTypes::IPN", dependent: :destroy
         has_many :commons, class_name: "Supports::Notifications::Models::ReceiptTypes::Common", dependent: :destroy
         has_many :mails, class_name: "Supports::Notifications::Models::ReceiptTypes::Mail", dependent: :destroy
+
+        module Common
+
+          extend ActiveSupport::Concern
+
+          included do 
+
+            scope :recipient, lambda { |recipient|
+                                      joins(:commons).where(:commons => { :recipient_id  => recipient.id, :recipient_type => recipient.class.name })
+                                   }
+            scope :with_object, lambda { |obj|
+                                          where(:notified_object_id => obj.id, :notified_object_type => obj.class.to_s)
+                                       }
+            scope :not_trashed, lambda {
+                                        joins(:commons).where(commons: { is_trashed: false })
+                                      }
+            scope :unread, lambda {
+                                    joins(:commons).where(commons: { is_read: false })
+                                  }
+
+
+          end
+
+        end
 
         attr_accessor :recipients_list
 

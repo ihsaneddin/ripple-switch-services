@@ -8,6 +8,9 @@ module Supports
 
         include Supports::Settingable::Helpers::HasOptions
 
+        include PgSearch
+        pg_search_scope :search, associated_against: { notification: { subject: 'A', body: 'B' } }, using: :tsearch
+
       end
     end
   end

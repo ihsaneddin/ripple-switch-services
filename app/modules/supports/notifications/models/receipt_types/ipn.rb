@@ -11,7 +11,7 @@ module Supports
       module ReceiptTypes
         class IPN < Supports::Notifications::Models::Receipt
 
-          has_options fields: { ipn_key: nil, ipn_url: nil, retry: 5, retry_count: 0 },
+          has_options fields: { ipn_key: nil, ipn_url: nil, retry: 5, retry_count: 0, :serializer_class => nil },
                       validations: { 
                                       ipn_key: { presence: true, length: { minimum: 10 } }, 
                                       ipn_url: { presence: true, url: true }
@@ -66,14 +66,15 @@ module Supports
           # start worker to push notification at 1 minute from DateTime.now
           #
           def init_worker(from= DateTime.now)
-            Supports::Notifications::Workers::InstantPaymentNotificationWorker.perform_at(from + 1.minute, self.id)
+            Supports::Notifications::Workers::InstantPaymentNotificationWorker.perform_async(self.id)
+            #Supports::Notifications::Workers::InstantPaymentNotificationWorker.perform_at(from + 1.minute, self.id)
           end
 
           #
           # this callback is called after aasm #retry event
           #
           def retry_push
-            self.update_attribute :retry_count, self.retry_count + 1
+            self.update option_retry_count: self.option_retry_count.to_i + 1
             self.schedule!
           end
 
@@ -105,11 +106,7 @@ module Supports
               end
               
               unless self.sent?
-                if self.still_can_retry?
-                  self.fail!
-                else
-                  self.push_again!
-                end
+                self.still_can_retry?? self.push_again! : self.fail!
               end
             end
 
@@ -141,7 +138,7 @@ module Supports
                 if option_serializer_class.present?
                   @serialized_attrs||= option_serializer_class.constantize.new(notification.notifiable).serializable_hash rescue nil
                 end
-                @serialized_attrs||= { title: notification.title, message: notification.message }.merge!(notification.notifiable.attributes)
+                @serialized_attrs||= { subject: notification.subject, message: notification.body }.merge!(notification.notifiable.attributes)
               end
 
               #
