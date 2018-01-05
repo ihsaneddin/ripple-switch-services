@@ -3,7 +3,7 @@ module Supports
     module Builders
       class NotificationBuilder
         
-        attr_accessor :sender, :notifiable, :recipients, :subject, :message, :title, :condition_if, 
+        attr_accessor :sender, :notifiable, :recipients, :subject, :message, :code, :title, :condition_if, 
                       :condition_unless, :on, :record, :mail, :ipn, :common
 
         NOTIFICATION_CLASS= Supports::Notifications::Models::Notification
@@ -20,9 +20,10 @@ module Supports
           self.ipn= opts[:ipn]
           self.mail= opts[:mail]
           self.common= opts[:common]
+          self.code= opts[:code]
           self.common= {} if self.mail.blank? && self.ipn.blank?
 
-          [:sender, :recipients, :message, :subject].each do |_key|
+          [:sender, :recipients, :message, :subject, :code].each do |_key|
             class_eval %{
               def #{_key}
                 #{_key}= instance_variable_get("@#{_key}")
@@ -136,7 +137,7 @@ module Supports
 
         def create
           if allow_notify?
-            notification = NOTIFICATION_CLASS.new notifiable: notifiable, body: message, subject: subject    
+            notification = NOTIFICATION_CLASS.new notifiable: notifiable, body: message, subject: subject, code: code
             if notification.save
               receipts_list.each do |rec|
                 rec.notification= notification

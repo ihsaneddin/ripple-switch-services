@@ -51,11 +51,7 @@ module Ripples
                     option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url }, 
                     option_retry: 5, 
                     if: Proc.new{|tx, rec| BooleanValue.from_string(rec.setting_ipn_state.to_s) } 
-                  },
-             mail: { 
-                    option_email: Proc.new{|recipient| recipient.email },
-                    if: Proc.new{|tx, rec| rec.email.present? }
-                   }
+                  }
       #
       # submit transaction to ripple server unless skip_submit is present or tx_hash is present
       #
