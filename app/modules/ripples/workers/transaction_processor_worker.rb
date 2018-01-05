@@ -49,6 +49,8 @@ module Ripples
                   #raise ActiveRecord::RecordInvalid
                  end
               else
+                # just return nil if transaction object is already validated
+                return if trans.validated
                 #else if transaction object is exist then updated it by tx response
                 p [:info, "transaction with hash #{trans.tx_hash} is existed"]
                 if tx["Amount"].kind_of?(String)
