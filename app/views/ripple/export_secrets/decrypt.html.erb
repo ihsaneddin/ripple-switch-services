@@ -1,0 +1,29 @@
+<%= yield_content_for :page_title, "Export Wallet's Secret" %>
+
+<%= box_panel use_footer: false do |outer_template, options|%>
+  <%= _content_for(outer_template, :box_panel_body) do %>
+    <%= content_tag :div, class: "col-md-8 col-md-offset-2" do %>
+
+      <%= content_tag :div, class: "col-md-6" do %>
+        <%= content_tag :div, class: "thumbnail" do %>
+          <%= image_tag "https://chart.googleapis.com/chart?cht=qr&chl=#{encrypted_request.context.address}&chs=500x500&chld=L|0", class: 'qr-code img-thumbnail img-responsive' %>
+          <%= content_tag :div, class: "text-center" do %>
+            <%= content_tag :h4, "Address" %>
+            <%= content_tag :code, encrypted_request.context.address %>
+          <%- end %>
+        <%- end %>
+      <%- end %>
+
+      <%= content_tag :div, class: "col-md-6" do %>
+        <%= content_tag :div, class: "thumbnail" do %>
+          <%= image_tag "https://chart.googleapis.com/chart?cht=qr&chl=#{@message}&chs=500x500&chld=L|0", class: 'qr-code img-thumbnail img-responsive' %>
+          <%= content_tag :div, class: "text-center" do %>
+            <%= content_tag :h4, "Secret" %>
+            <%= content_tag :code, @message %>
+          <%- end %>
+        <%- end %>
+      <%- end %>
+
+    <%- end %>
+  <%- end %>
+<%- end %>

@@ -6,7 +6,7 @@ module Ripples
     class Transaction < ::ApplicationRecord
 
       belongs_to :wallet, class_name: "Ripples::Models::Wallet", touch: true, optional: true
-    
+
       #validates :wallet_id, presence: true
       validates :amount, :presence => true, numericality: { greater_than: 0 }
       validates :destination, presence: true
@@ -23,7 +23,7 @@ module Ripples
       #
       # sync wallet balance if transaction is validated
       #
-      after_commit do 
+      after_commit do
         if saved_change_to_validated? && validated?
           source_wallet.try(:sync_balance)
           destination_wallet.try(:sync_balance)
@@ -33,7 +33,7 @@ module Ripples
       #
       # insert source address as wallet if source address present in wallets table
       #
-      before_create do 
+      before_create do
         if self.source.present?
           self.wallet||= Ripples::Models::Wallet.with_deleted.find_by_address(self.source)
         end
@@ -46,10 +46,10 @@ module Ripples
       notify recipients: :notification_recipients,
              on: :after_commit,
              if: :notify?,
-             ipn: { 
-                    option_ipn_key: Proc.new{|recipient| recipient.setting_ipn_key }, 
-                    option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url }, 
-                    option_retry: 5 
+             ipn: {
+                    option_ipn_key: Proc.new{|recipient| recipient.setting_ipn_key },
+                    option_ipn_url: Proc.new{|recipient| recipient.setting_ipn_url },
+                    option_retry: 5
                   }
       #
       # submit transaction to ripple server unless skip_submit is present or tx_hash is present
@@ -120,15 +120,15 @@ module Ripples
       def submit
         if self.tx_hash.blank?
           destination_amount = wallet.ripple_client.new_amount(value: "#{self.amount.floor}", currency: self.destination_currency || 'XRP', issuer: self.issuer || self.destination )
-          
+
           if destination_amount.currency == "XRP"
             destination_amount.value= "#{(self.amount * 1000000).floor}" # 1 xrp == 1 million drops
           end
 
-          trans = wallet.ripple_client.new_transaction destination_account: self.destination.to_s.strip, destination_amount: destination_amount, 
+          trans = wallet.ripple_client.new_transaction destination_account: self.destination.to_s.strip, destination_amount: destination_amount,
                                           source_currency: self.destination_currency || 'XRP'
           begin
-            
+
             trans = wallet.ripple_client.sign_transaction(trans)
             self.tx_hash= wallet.ripple_client.submit_transaction(trans)
           rescue Ripple::SubmitFailed, Ripple::InvalidParameters, Ripple::ServerUnavailable, Ripple::Timedout, Ripple::MalformedTransaction => e
@@ -201,7 +201,7 @@ module Ripples
             to_time= DateTime.parse(params[:to_time]) rescue nil
             res = res.where("created_at <= ?", to_time) if to_time
           end
-          
+
           res
         end
 

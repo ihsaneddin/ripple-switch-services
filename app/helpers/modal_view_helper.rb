@@ -27,12 +27,20 @@ module ModalViewHelper
 
   end
 
-  def modal options={}
+  def modal options={}, &block
     suffix= suffix_template
     options = {suffix: suffix, class: nil, id: "modal-#{suffix}", title: "Modal", submit_data: {}, use_footer: false, use_submit_footer_buttons: false, cancel_button_text: "Cancel", submit_button_text: "Submit" }.merge!(options)
-    render layout: options[:layout] || default_modal_layout, template: modal_template, locals: options do 
+    render layout: options[:layout] || default_modal_layout, template: options[:template] || modal_template, locals: options do
+      yield(current_modal= options[:suffix])
+    end
+  end
+
+  def modal_box options={}
+    suffix = suffix_template
+    options= {suffix: suffix, class: nil, id: "modal-#{suffix}", title: "Modal", submit_data: {}, use_footer: false, use_submit_footer_buttons: false, cancel_button_text: "Cancel", submit_button_text: "Submit" }.merge!(options)
+    render layout: options[:layout] || default_modal_layout, locals: options do
       yield if block_given?
-    end 
+    end
   end
 
   #
@@ -47,12 +55,12 @@ module ModalViewHelper
   # include this method on any form tag that represented inside modal
   #
   def modal_input_params
-    content_tag(:div, class: "params-modal") do 
+    content_tag(:div, class: "params-modal") do
       inputs = []
       modal_params.each do |k,v|
         if v.is_a?(String)
           inputs << hidden_field_tag("modal[#{k}]",v)
-        else 
+        else
           has = v.try(:permit!).try(:to_h)
           if has.is_a? Hash
             v.each do |ke, va|
@@ -69,7 +77,7 @@ module ModalViewHelper
     if modal_params[:resource_names].blank?
       {}
     else
-      modal_params[:resource_names].split(",").each_with_object({}){| resource_name, hash | hash[resource_name.to_sym]= instance_variable_get(resource_name) } 
+      modal_params[:resource_names].split(",").each_with_object({}){| resource_name, hash | hash[resource_name.to_sym]= instance_variable_get(resource_name) }
     end
   end
 
@@ -86,22 +94,22 @@ module ModalViewHelper
   #
   module NotImplemented
     #
-    # 
+    #
     #
     def simple_modal_for
-      
+
     end
 
     #
     # initialize modal for resource template
     #
     def modal_for options={}
-      options = options.merge!({ 
+      options = options.merge!({
                                 title: nil, footer: nil, use_header: true,
                                 use_footer: true, use_submit_footer_buttons: true,
                                 cancel_button_text: "Cancel", submit_button_text: "Submit"
                               })
-      render layout: '/shared/modal/modal' do 
+      render layout: '/shared/modal/modal' do
         yield if block_given?
       end
     end
@@ -109,8 +117,8 @@ module ModalViewHelper
     #
     # modal params
     # store any modal params
-    # modal_params is consisted of : 
-    # `modal_class`, `modal_id`, `use_header`, `use_footer`, 
+    # modal_params is consisted of :
+    # `modal_class`, `modal_id`, `use_header`, `use_footer`,
     # `title`, `use_form`, `resource`, `content_template`, `form_url`,
     # `use_submit_footer_buttons`, ``
     #
@@ -123,7 +131,7 @@ module ModalViewHelper
     # include this method on any form tag that represented inside modal
     #
     def modal_input_params
-      content_tag(:div, class: "params-modal") do 
+      content_tag(:div, class: "params-modal") do
         inputs = []
         modal_params.each do |k,v|
           inputs << hidden_field_tag("modal[#{k}]",v)

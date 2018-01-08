@@ -6,9 +6,9 @@ module Ripples
   module Models
     class Wallet < ::ApplicationRecord
 
-      self.object_caches_suffix= ['transactions', "received-transactions", "sent-transactions", 
+      self.object_caches_suffix= ['transactions', "received-transactions", "sent-transactions",
                                   "with-deleted-collection", "with-only-deleted-collection"]
-      
+
       before_validation :generate_address, on: :create, unless: :skip_generate_address
       before_validation :set_sequence, on: :create
       before_validation :generate_label, on: :create
@@ -30,6 +30,12 @@ module Ripples
       self.caches_suffix_list= ['address-collection', "collection"]
 
       #
+      # allow #secret exported via encrypted_request
+      #
+      include Supports::EncryptedRequests::Helpers::EncryptRequest::Model
+      encrypt_request_for :secret, key: Proc.new{|wallet| wallet.account.pin }, data: :secret, requester: :account
+
+      #
       # map address as key and id as value to redis hash
       #
       map_attributes key: :address, value: :id, callback: :after_create
@@ -37,26 +43,26 @@ module Ripples
       #
       # broadcast message
       #
-      after_commit do 
+      after_commit do
         unless updated_at == created_at
           if saved_change_to_balance?
             if Rails.env.development?
-              ActionCable.server.broadcast "balance-#{self.account.id}", message: 
-                                                                                  { total_balance: self.account.total_balance, 
-                                                                                    total_balance_xrp: self.account.total_balance_xrp, 
-                                                                                    wallets_pending_transactions_count: self.account.wallets_pending_transactions_count 
+              ActionCable.server.broadcast "balance-#{self.account.id}", message:
+                                                                                  { total_balance: self.account.total_balance,
+                                                                                    total_balance_xrp: self.account.total_balance_xrp,
+                                                                                    wallets_pending_transactions_count: self.account.wallets_pending_transactions_count
                                                                                   }.to_json
             else
-              Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id) 
+              Ripples::Workers::WalletBroadcasterWorker.perform_async(self.id)
             end
           end
         end
       end
 
       #
-      # set redis key for newly created wallet for faster searching when subscribes to ripple web socket 
+      # set redis key for newly created wallet for faster searching when subscribes to ripple web socket
       #
-      after_create do 
+      after_create do
         $redis.set("wallet-#{self.address}", self.id)
       end
 
@@ -114,7 +120,7 @@ module Ripples
           end
           if params[:wallet_type].present?
             cold = params[:wallet_type].to_s.downcase.eql?('hot') ? true : false
-            res = res.where(validated: cold) 
+            res = res.where(validated: cold)
           end
           if params[:from_time].present?
             from_time= DateTime.parse(params[:from_time]) rescue nil
@@ -132,19 +138,19 @@ module Ripples
         end
 
         def cached_address_collection
-          Rails.cache.fetch("#{self.cached_name}-address-collection", expires_in: 1.day) do 
+          Rails.cache.fetch("#{self.cached_name}-address-collection", expires_in: 1.day) do
             select('address', 'deleted_at').map(&:address).compact
           end
         end
 
         def cached_with_deleted_collection
-          Rails.cache.fetch("#{self.cached_name}-with-deleted-collection", expires_in: 1.day) do 
+          Rails.cache.fetch("#{self.cached_name}-with-deleted-collection", expires_in: 1.day) do
             self.with_deleted.load
           end
         end
 
         def cached_only_deleted_collection
-          Rails.cache.fetch("#{self.cached_name}-with-only-deleted-collection", expires_in: 1.day) do 
+          Rails.cache.fetch("#{self.cached_name}-with-only-deleted-collection", expires_in: 1.day) do
             self.only_deleted.load
           end
         end
@@ -188,7 +194,7 @@ module Ripples
       end
 
       #
-      # 
+      #
       #
       def balance_xrp
         (self.balance / 1000000).floor
@@ -199,19 +205,19 @@ module Ripples
         extend ActiveSupport::Concern
 
         def cached_transactions
-          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-transactions", expires_in: 1.day) do 
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-transactions", expires_in: 1.day) do
             transactions.load
           end
         end
 
         def cached_received_transactions
-          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-received-transactions", expires_in: 1.day) do 
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-received-transactions", expires_in: 1.day) do
             Ripples::Models::Transaction.where(destination: self.address).load
           end
         end
 
         def cached_sent_transactions
-          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-sent-transactions", expires_in: 1.day) do 
+          Rails.cache.fetch("#{self.class.cached_name}-#{self.id}-sent-transactions", expires_in: 1.day) do
             cached_transactions.where(wallet_id: self.id).load
           end
         end

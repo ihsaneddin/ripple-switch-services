@@ -1,0 +1,13 @@
+<%= form_group_tag :salt, { label_class: "col-sm-2" } do %>
+
+  <%= text_field_tag :salt, nil, class: 'form-control', placeholder: 'Random string that you received via email', autocomplete: "off" %>
+
+<%- end %>
+
+<%= form_group_tag :pin, { label_class: "col-sm-2" } do %>
+
+  <%= password_field_tag :pin, nil, class: 'form-control', placeholder: 'Your PIN', autocomplete: "off" %>
+
+<%- end %>
+
+

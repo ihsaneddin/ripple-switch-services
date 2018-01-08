@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  
+
   protect_from_forgery with: :exception
 
   helper_method :devise_resource
@@ -15,9 +15,18 @@ class ApplicationController < ActionController::Base
         flash[:error]= message
         redirect_back(fallback_location: root_path)
       end
-      f.js do 
+      f.js do
         params[:notification]= { message: message, type: "danger" }
         render_notification
+      end
+    end
+  end
+
+  rescue_from ActiveRecord::RecordNotFound do |e|
+    respond_to do |f|
+      f.html do
+        flash[:error]= "Page not found!"
+        redirect_to root_path
       end
     end
   end
@@ -27,7 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_layout
-    current_account.present?? 'account' : 'landing' 
+    current_account.present?? 'account' : 'landing'
   end
 
   def previous_page

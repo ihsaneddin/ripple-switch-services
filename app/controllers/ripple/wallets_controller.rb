@@ -1,10 +1,10 @@
 require 'connection/request'
 
 module Ripple
-  class WalletsController < AccountController 
-  
+  class WalletsController < AccountController
+
     self.context_resource_class= "Ripples::Models::Wallet"
-    #self.resource_actions = [:new, :create, :active, :show, :destroy]
+    self.resource_actions = [:new, :create, :edit, :update, :show, :destroy, :active, :import_secret]
     use_resource!
 
     include Users::Helpers::SubscriptionRestriction::Controller
@@ -18,7 +18,7 @@ module Ripple
       @wallets = @wallets.where(account: current_account).order("updated_at DESC").page(params[:page]).per(20)
       respond_to do |f|
         f.html
-        f.js do 
+        f.js do
           render_table
         end
       end
@@ -41,7 +41,7 @@ module Ripple
         if @wallet.save
           respond_to do |f|
             f.html { redirect_to ripple_wallets_path, notice: "Success" }
-            f.js do 
+            f.js do
               params[:notification]= { message: "Wallet created!" }
               render_table "/shared/table/reload.js.erb"
             end
@@ -49,7 +49,7 @@ module Ripple
         else
           respond_to do |f|
             f.html { render :new }
-            f.js do 
+            f.js do
               if modal_params_present?
                 params[:notification]= { message: "Failed to create wallet!", type: "danger" }
                 render_modal
@@ -86,7 +86,7 @@ module Ripple
       if @wallet.update wallet_params
         respond_to do |f|
           f.html { redirect_to ripple_wallets_path, notice: "Success" }
-          f.js do 
+          f.js do
             params[:notification]= { message: "Wallet updated!" }
             render_table "/shared/table/reload.js.erb"
           end
@@ -94,7 +94,7 @@ module Ripple
       else
         respond_to do |f|
           f.html { render :new }
-          f.js do 
+          f.js do
             if modal_params_present?
               params[:notification]= { message: "Failed to update wallet!", type: "danger" }
               render_modal
@@ -108,7 +108,7 @@ module Ripple
       if @wallet.destroy
         respond_to do |f|
           f.html { redirect_to ripple_wallets_path, notice: "Wallet is archived!" }
-          f.js do 
+          f.js do
             if table_params_present?
               params[:notification]= { message: "Wallet is sent to archive" }
               render_table "/shared/table/reload.js.erb"
@@ -130,7 +130,7 @@ module Ripple
       if resource_class_constant.restore(params[:id])
         respond_to do |f|
           f.html{ redirect_to ripple_wallets_path(archived: true), notice: "Wallet is restored" }
-          f.js do 
+          f.js do
             if table_params_present?
               params[:notification]= { message: "Wallet restored!" }
               render_table "/shared/table/reload.js.erb"
@@ -146,8 +146,8 @@ module Ripple
       connection.invoke
       if connection.success?
         wallet = resource_class_constant.create!(
-                                                  address: connection.response.account.address, 
-                                                  secret: connection.response.account.secret, 
+                                                  address: connection.response.account.address,
+                                                  secret: connection.response.account.secret,
                                                   balance: BigDecimal.new(connection.response.balance) * 1000000,
                                                   validated: true,
                                                   account: current_account,
@@ -170,6 +170,10 @@ module Ripple
           }
         end
       end
+    end
+
+    def import_secret
+      encrypted_request =
     end
 
     def wallet_params

@@ -1,0 +1,52 @@
+<style>
+ table { table-layout: fixed; }
+ table th, table td {  word-wrap: break-word; }
+</style>
+
+<%= content_tag :div, class: "modal #{ local_assigns[:style] || modal_params[:class]}", id: "#{ local_assigns[:id] || modal_params[:id]}" do %>
+
+  <%= content_tag :div, class: "modal-dialog" do %>
+    <%= content_tag :div, class: 'modal-content' do %>
+      <!-- if modal use header start here -->
+      <%= content_tag :div, class: 'modal-header' do %>
+        <%= content_tag :button, "×", class: "close", data: { dismiss: "modal" }, aria: { label: "Close" } %>
+        <%= content_tag :h4, class: "modal-title" do %>
+          <%= "#{ local_assigns[:title] || modal_params[:title]}" %>
+          <%= yield(:modal_header) %>
+        <%- end %>
+      <%- end %>
+      <!-- end of modal header -->
+
+      <%= content_tag :div, class: "modal-body" do %>
+        <!-- if modal use form -->
+        <%= yield %>
+        <!-- end of modal body -->
+      <%- end %>
+
+      <% if local_assigns[:use_footer] %>
+        <%= content_tag :div, class: 'modal-footer' do %>
+        <!-- if modal use default buttons footer start here -->
+          <%= content_tag :p, class: 'text-center' do %>
+            <% if local_assigns[:use_submit_footer_buttons] %>
+              <%= content_tag :button, "#{local_assigns[:submit_button_text]}", class: "submit-modal-form btn #{local_assigns[:submit_button_style] || 'btn-info'}", data: local_assigns[:submit_data].try(:permit!).try(:to_h) %>
+              <%= content_tag :button, "#{local_assigns[:cancel_button_text]}", class: "btn #{local_assigns[:cancel_button_style] || 'btn-default'}", data: { dismiss: "modal" } %>
+            <%- end %>
+          <%- end %>
+
+          <%= yield(:modal_footer) %>
+
+        <%- end %>
+        <!-- end of modal footer -->
+      <%- end %>
+
+    <%- end %>
+  <%- end %>
+
+<%- end %>
+
+<% if local_assigns[:display] %>
+  <script type="text/javascript">
+    $("#<%= local_assigns[:id] %>").modal("show");
+    $("#<%= local_assigns[:id] %> form input:first").focus();
+  </script>
+<%- end %>

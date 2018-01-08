@@ -1,0 +1,9 @@
+<%= content_tag :h3 do %>
+  Hi, <%= @receipt.recipient.email %>
+<%- end %>
+
+<%= content_tag :p do %>
+  Use this salt : `<%= @opts[:given_salt] %>` and your pin to export your wallet secret <%= link_to "here", ripple_export_secret_url(@receipt.notification.notifiable) %>.
+<%- end %>
+
+<small> The link will be expired in 5 minutes </small>

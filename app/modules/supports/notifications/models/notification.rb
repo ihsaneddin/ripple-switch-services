@@ -14,7 +14,7 @@ module Supports
 
           extend ActiveSupport::Concern
 
-          included do 
+          included do
 
             scope :recipient, lambda { |recipient|
                                       joins(:commons).where(:commons => { :recipient_id  => recipient.id, :recipient_type => recipient.class.name })
@@ -28,11 +28,30 @@ module Supports
             scope :unread, lambda {
                                     joins(:commons).where(commons: { is_read: false })
                                   }
+            scope :read, lambda {
+                                  joins(:commons).where(commons: { is_read: true })
+                                }
 
+          end
+
+          module ClassMethods
+
+            def filter(params={})
+              res = cached_collection
+              if params[:unread].present?
+                res = res.unread
+              end
+              if params[:read].present?
+                res = res.read
+              end
+              res
+            end
 
           end
 
         end
+
+        include Supports::Notifications::Models::Notification::Common
 
         attr_accessor :recipients_list
 

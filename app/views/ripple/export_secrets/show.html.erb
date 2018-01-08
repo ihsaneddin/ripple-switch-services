@@ -1,0 +1,14 @@
+<%= yield_content_for :page_title, "Export Wallet's Secret" %>
+
+<%= modal_box title: "Export Your Wallet's Secret", id: "new-export-wallet-secret", use_footer: true, display: true do %>
+
+  <%= form_tag decrypt_ripple_export_secret_path(encrypted_request), class: "form form-horizontal", method: :put do %>
+    <%= render partial: "ripple/export_secrets/form" %>
+    <%= content_for :modal_footer do %>
+      <%= content_tag :p, class: 'text-center' do %>
+        <%= content_tag :button, "Decrypt", class: "submit-modal-form btn btn-info", remote: false %>
+      <%- end %>
+    <%- end %>
+  <%- end %>
+
+<%- end %>

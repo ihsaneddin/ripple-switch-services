@@ -10,7 +10,7 @@
 // then display modal
 
 <% if respond_to?(:modal_params) && modal_params.present? %>
-  
+
   if ($('body #modals').length == 0)
   {
     $('body').append("<div id='modals'></div>");
@@ -29,7 +29,7 @@
   //append modal params and table params if form is found
   //useful when you want to reload or replace table after a form submitted
   $("div#<%= modal_params[:id] %> form").each(function(){
-    $(this).find('div.params-modal').remove();    
+    $(this).find('div.params-modal').remove();
     $(this).append("<%= escape_javascript(modal_input_params) %>");
     <% if respond_to?(:table_params) %>
       $(this).find('div.params-table').remove();

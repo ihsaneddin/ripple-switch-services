@@ -2,7 +2,7 @@ module Supports
   module Notifications
     module Helpers
       module HasNotifications
-        
+
         extend ActiveSupport::Concern
 
         module Models
@@ -26,20 +26,35 @@ module Supports
           extend ActiveSupport::Concern
 
           def index
-            
+            @notifications = Supports::Notifications::Models::Notification.filter(filter_params).desc.recipient(recipient).page(params[:page]).per(params[:per_page] || 20)
+            respond_to do |f|
+              f.html{}
+              f.js{}
+              f.json{}
+            end
           end
 
           def read
-            
+
           end
 
           def trash
-            
+
           end
 
           def untrash
-            
+
           end
+
+          protected
+
+            def recipient
+              try(:current_account)
+            end
+
+            def filter_params
+              params[:filter] || {}
+            end
 
         end
 

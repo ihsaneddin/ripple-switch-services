@@ -1,7 +1,7 @@
 module Users
   module Models
     class Token < ApplicationRecord
-    
+
       belongs_to :account, class_name: "Users::Models::Account"
 
       before_create :generate_token
@@ -23,7 +23,7 @@ module Users
       end
 
       def expiring!
-        self.delete if expired? 
+        self.delete if expired?
       end
 
       def expire!

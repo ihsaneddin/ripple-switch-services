@@ -9,14 +9,20 @@ module Supports
       module ReceiptTypes
         class Mail < Supports::Notifications::Models::Receipt
 
-          has_options fields: { email: nil, subject: nil, :title => nil, body: nil },
-                      validations: { 
+          has_options fields: { email: nil, subject: nil, :title => nil, body: nil, :template_name => nil, template_path: nil, append_view_path: nil, push_immediately: false },
+                      validations: {
                                       email: { presence: true }
                                     }
 
           include AASM
 
-          aasm column: :state do 
+          attr_accessor :mailer_options
+
+          after_initialize do
+            self.mailer_options||= {}
+          end
+
+          aasm column: :state do
 
             state :scheduled, initial: true
             state :sent
@@ -31,12 +37,20 @@ module Supports
 
           end
 
-          after_create do 
-            init_worker
+          after_create do
+            init_worker_or_deliver_immediately
           end
 
-          def init_worker
-            Supports::Notifications::Workers::NotificationMailerWorker.perform_async(self.id)
+          def init_worker_or_deliver_immediately
+            if option_push_immediately
+              self.push
+            else
+              Rails.env.development?? Supports::Notifications::Workers::NotificationMailerWorker.new.perform(self.id) : Supports::Notifications::Workers::NotificationMailerWorker.perform_async(self.id)
+            end
+          end
+
+          def mail_template
+            Pathname.new ["#{option_append_view_path}", "#{option_template_path}", "#{option_template_name}"].compact.join('/')
           end
 
           module Mailer
@@ -49,7 +63,7 @@ module Supports
             end
 
             def mailer
-              Supports::Notifications::Mailers::NotificationMailer.notify(self)
+              Supports::Notifications::Mailers::NotificationMailer.notify(self, mailer_options)
             end
 
           end

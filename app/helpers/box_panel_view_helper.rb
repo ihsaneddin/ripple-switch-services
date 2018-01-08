@@ -12,9 +12,9 @@ module BoxPanelViewHelper
     options= { suffix: suffix_template, header: nil, footer: nil, use_footer: true, use_header: true, body_style: nil, id: nil}.merge!(options)
     box_panel_params(options[:suffix])
     instance_variable_set("@box_panel_params_#{options[:suffix]}", options)
-    render layout: '/shared/box_panel/box_panel', locals: options do 
+    render layout: '/shared/box_panel/box_panel', locals: options do
       yield(current_box= options[:suffix], options)
-    end 
+    end
   end
 
   #
@@ -23,7 +23,7 @@ module BoxPanelViewHelper
   def box_panel_links options={ remove: false, collapse: false }
     content_tag :div, class: 'box-tools' do
       yield if block_given?
-      concat(content_tag(:button, class: 'btn btn-box-tool', data: { widget: "collapse" }) do 
+      concat(content_tag(:button, class: 'btn btn-box-tool', data: { widget: "collapse" }) do
         content_tag :i, "", class: 'fa fa-minus'
       end) if options[:collapse]
       concat(content_tag(:button, class: "btn btn-box-tool", data: { widget: "remove" }) do
@@ -43,7 +43,7 @@ module BoxPanelViewHelper
   # to store box_panel_header content
   #
   def box_panel_header(suffix=nil)
-    box_panel_params(suffix)[:header] 
+    box_panel_params(suffix)[:header]
   end
 
   #
@@ -90,7 +90,7 @@ module BoxPanelViewHelper
   def box_panel_use_footer?(suffix)
     box_panel_params(suffix)[:use_footer]
   end
-  
+
   #
   # to determine box_panel should use header or not
   #
@@ -98,4 +98,4 @@ module BoxPanelViewHelper
     box_panel_params(suffix)[:use_header]
   end
 
-end  
+end

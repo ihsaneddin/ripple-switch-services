@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180104032709) do
+ActiveRecord::Schema.define(version: 20180105081816) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -164,6 +164,22 @@ ActiveRecord::Schema.define(version: 20180104032709) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_settingable_settings_on_deleted_at"
     t.index ["settingable_type", "settingable_id"], name: "settingable_settings_type_and_setingable_id"
+  end
+
+  create_table "supports_encrypted_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "requester_type"
+    t.uuid "requester_id"
+    t.string "context_type"
+    t.uuid "context_id"
+    t.text "encrypted_data"
+    t.string "state"
+    t.datetime "expired_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["context_type", "context_id"], name: "supports_encrypted_requests_context"
+    t.index ["deleted_at"], name: "index_supports_encrypted_requests_on_deleted_at"
+    t.index ["requester_type", "requester_id"], name: "supports_encrypted_requests_requester"
   end
 
   create_table "supports_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

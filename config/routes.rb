@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   # api routes
-    #namespace :api do 
+    #namespace :api do
   #  namespace :v1 do
       #
       # oauth2 implementation routes for grant password and refresh_token
@@ -35,28 +35,31 @@ Rails.application.routes.draw do
     get 'sessions/token', to: "sessions#token", as: :token_session_account
   end
 
-  namespace :ripple do 
-    resources :wallets do 
-      member do 
+  namespace :ripple do
+    resources :wallets do
+      member do
         put :active
         put :restore
       end
-      collection do 
+      collection do
         unless Rails.env.production?
           post :generate_xrp_testnet_wallet
         end
       end
-      resources :transactions, only: [:new, :create] do 
-        member do 
+      resources :transactions, only: [:new, :create] do
+        member do
           put :complete
         end
       end
     end
+    resources :export_secrets, only: :show, path: "secrets" do
+      member { put(:decrypt) }
+    end
   end
 
-  resources :plans, only: [:index], param: :name do 
-    resources :subscriptions, only: [:new, :create, :show], param: :name do 
-      member do 
+  resources :plans, only: [:index], param: :name do
+    resources :subscriptions, only: [:new, :create, :show], param: :name do
+      member do
         put :cancel
       end
     end
@@ -64,8 +67,8 @@ Rails.application.routes.draw do
 
   resources :pins, only: [:update]
 
-  resources :settings, path: "setting", only: [:index] do 
-    collection do 
+  resources :settings, path: "setting", only: [:index] do
+    collection do
       put :update
     end
   end
@@ -79,31 +82,31 @@ Rails.application.routes.draw do
               path_names: { sign_in: "login", sign_out:  "logout"},
               controllers: { sessions: "admin/sessions", passwords: "admin/profile" }
 
-  namespace :admin, path: "administrator" do 
-    
+  namespace :admin, path: "administrator" do
+
     get "", to: "dashboards#index"
 
-    resources :dashboards, path: "dashboard", only: :index do 
-      collection do 
+    resources :dashboards, path: "dashboard", only: :index do
+      collection do
         get :accounts
         get :subscriptions
       end
     end
     resources :accounts, only: [:index, :show], param: :username
-    resources :plans, path: "packages", param: :name do 
-      member do 
+    resources :plans, path: "packages", param: :name do
+      member do
         put :activate
         put :deactivate
       end
     end
-    resources :subscriptions, only: [:index, :show], param: :name do 
-      member do 
+    resources :subscriptions, only: [:index, :show], param: :name do
+      member do
         put :cancel
         put :confirm
         put :expire
       end
     end
-    
+
     resources :profiles, path: "profile", only: [:edit, :update]
 
     resources :transactions, only: [:index, :show]

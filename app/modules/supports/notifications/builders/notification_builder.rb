@@ -2,8 +2,8 @@ module Supports
   module Notifications
     module Builders
       class NotificationBuilder
-        
-        attr_accessor :sender, :notifiable, :recipients, :subject, :message, :code, :title, :condition_if, 
+
+        attr_accessor :sender, :notifiable, :recipients, :subject, :message, :code, :title, :condition_if,
                       :condition_unless, :on, :record, :mail, :ipn, :common
 
         NOTIFICATION_CLASS= Supports::Notifications::Models::Notification
@@ -20,7 +20,7 @@ module Supports
           self.condition_if= opts[:if]
           self.condition_unless= opts[:unless]
 
-          [:sender, :recipients, :message, :subject, :code].each do |_key|
+         [ :sender, :recipients, :message, :subject, :code].each do |_key|
             class_eval %{
               def #{_key}
                 #{_key}= instance_variable_get("@#{_key}")
@@ -129,9 +129,9 @@ module Supports
             case arg
             when Proc
              _opts[_key]= arg.call(recipient)
-            when Hash, String
+            when Symbol
               _opts[_key]= record.send(arg)
-            else
+            when String, TrueClass, FalseClass
               _opts[_key]= arg
             end
           end
@@ -147,7 +147,7 @@ module Supports
             Array(self.recipients).flatten.uniq.compact.each do |recipient|
               if receipt_condition(recipient, opts)
                 attrs= receipt_options(recipient, opts)
-                receipts << receipt_class(name).new(attrs) if attrs.present?  
+                receipts << receipt_class(name).new(attrs) if attrs.present?
               end
             end
           end

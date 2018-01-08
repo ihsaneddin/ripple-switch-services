@@ -2,7 +2,7 @@ module Supports
   module Notifications
     module Helpers
       module Notify
-      
+
         extend ActiveSupport::Concern
 
         #
@@ -51,20 +51,20 @@ module Supports
               has_many :notifications, class_name: "Supports::Notifications::Models::Notification", as: :notifiable
               accepts_nested_attributes_for :notifications, allow_destroy: false, reject_if: :all_blank
             end
-            
+
             unless respond_to?(:_notification_builders)
               class_attribute :_notification_builders, instance_writer: false
               self._notification_builders= Hash.new { |h, k| h[k] = [] }
               attr_accessor :notification_builder_context
-              
-              before_validation do 
+
+              before_validation do
                 prepend_notification_builder
               end
 
               #
               # have to do this as event destroy, really_destroy! do not call before_validation callback
               #
-              before_destroy do 
+              before_destroy do
                 self.class._notification_builders.keys.each do |_callback|
                   unless respond_to?("_#{_callback}_create_notification".to_sym)
                     prepend_notification_builder
@@ -77,6 +77,9 @@ module Supports
             notify_each(opts)
           end
 
+          #
+          # validates options to make sure required keys is present
+          #
           def validates_receipt_types opts={}
             if opts[:mail].present?
               if !opts[:mail].is_a?(Hash) || opts[:mail][:option_email].nil?
