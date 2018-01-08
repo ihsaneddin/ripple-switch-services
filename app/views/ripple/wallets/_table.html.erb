@@ -3,7 +3,7 @@
     <%= content_tag :thead do %>
       <%= content_tag :tr do %>
         <% ["Sequence","Label", "Address", "Status", "Balance", "Pending Received", "Last Update", ""].each do |header| %>
-          <%= content_tag :th, header %>  
+          <%= content_tag :th, header %>
         <%- end %>
       <%- end %>
     <%- end %>
@@ -25,17 +25,17 @@
           <%= content_tag :td, wallet.pending_received_transactions_count, id: "td-#{wallet.address}-pending-received" %>
           <%= content_tag :td, time_ago_in_words(wallet.updated_at) %>
           <%= content_tag :td do %>
-            
+
             <% if wallet.deleted? %>
               <%= link_to restore_ripple_wallet_path(wallet, table: {
                   id: "table-container-for-#{controller_name}"
                 }), class: "btn btn-sm btn-warning", remote: true, title: "Restore this address", method: :put do %>
                   <%= content_tag :i, nil, class: 'fa fa-undo' %>
-              <%- end %> 
+              <%- end %>
             <%- end %>
 
             <% unless wallet.deleted? %>
-              <%= link_to ripple_wallet_path(wallet.id, 
+              <%= link_to ripple_wallet_path(wallet.id,
                 modal: {
                   id: "ripples-wallet-#{wallet.id}-qr",
                   title: "",
@@ -44,14 +44,14 @@
                 ), class: 'btn btn-info btn-sm', remote: true, title: "View QR code" do %>
                 <%= content_tag :i, "", class: 'fa fa-qrcode' %>
               <%- end%>
-              
+
               <%= link_to ripple_wallet_path(wallet.id,
                 modal: {
                   id: "ripples-wallet-#{wallet.id}",
                   title: "Wallet Info",
                   template: "ripple/wallets/show"
                 }
-                ), class: 'btn btn-sm btn-info remote-modal', remote: true, title: "View wallet details" do %> 
+                ), class: 'btn btn-sm btn-info remote-modal', remote: true, title: "View wallet details" do %>
                 <%= content_tag :i, "", class: 'fa fa-info' %>
               <%- end %>
 
@@ -68,20 +68,28 @@
                   table: {
                     id: "table-container-for-wallets"
                   }
-                ), class: 'btn btn-warning btn-sm remote-modal', remote: true, title: "Edit this ripple wallet label" do %> 
+                ), class: 'btn btn-warning btn-sm remote-modal', remote: true, title: "Edit this ripple wallet label" do %>
                 <%= content_tag :i, "", class: 'fa fa-edit' %>
               <%- end %>
-              
-              <%= link_to ripple_wallet_path(wallet.id, 
+
+              <%= link_to ripple_wallet_path(wallet.id,
                 table: {
                   id: "table-container-for-#{controller_name}"
                 }), remote: true, class: 'btn btn-sm btn-danger', method: :delete, title: "Archive the wallet", data: { confirm: "Are you sure?", title: "Alert" } do %>
                   <%= content_tag :i, "", class: "fa fa-trash" %>
               <%- end %>
+
+              <%= link_to secret_ripple_wallet_path(wallet.id,
+                table: {
+                  id: "table-container-for-#{controller_name}"
+                }), remote: true, class: 'btn btn-sm btn-default', method: :put, title: "Export secret", data: { confirm: "Are you sure?", title: "Alert" } do %>
+                  <%= content_tag :i, "", class: "fa fa-unlock-alt" %>
+              <%- end %>
+
             <%- end %>
 
             <% if wallet.validated? %>
-              <%= link_to new_ripple_wallet_transaction_path(wallet, 
+              <%= link_to new_ripple_wallet_transaction_path(wallet,
                     modal: {
                       id: "ripples-wallet-#{wallet.id}-new-transaction",
                       title: "New Transaction",
@@ -100,7 +108,7 @@
                   <%= content_tag :i, nil, class: "fa fa-minus" %>
 
               <%- end %>
-              
+
             <%- end %>
 
           <%- end %>

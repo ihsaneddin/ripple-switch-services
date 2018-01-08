@@ -40,6 +40,7 @@ Rails.application.routes.draw do
       member do
         put :active
         put :restore
+        put :secret
       end
       collection do
         unless Rails.env.production?

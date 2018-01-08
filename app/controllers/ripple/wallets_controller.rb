@@ -4,7 +4,7 @@ module Ripple
   class WalletsController < AccountController
 
     self.context_resource_class= "Ripples::Models::Wallet"
-    self.resource_actions = [:new, :create, :edit, :update, :show, :destroy, :active, :import_secret]
+    self.resource_actions = [:new, :create, :edit, :update, :show, :destroy, :active, :secret]
     use_resource!
 
     include Users::Helpers::SubscriptionRestriction::Controller
@@ -172,8 +172,33 @@ module Ripple
       end
     end
 
-    def import_secret
-      encrypted_request =
+    def secret
+      encrypted_request = @wallet.create_encrypted_request_for :secret
+      if encrypted_request.persisted?
+        message = "Instruction for exporting your address's secret is sent to your email."
+        respond_to do |f|
+          f.html{
+            flash[:notice]= message
+            redirect_back(fallback_location: root_path)
+          }
+          f.js{
+            params[:notification]= { message: message }
+            render_notification
+          }
+        end
+      else
+        message = "Failed!"
+        respond_to do |f|
+          f.html{
+            flash[:notice]= message
+            redirect_back(fallback_location: root_path)
+          }
+          f.js{
+            params[:notification]= { message: message, type: "error" }
+            render_notification
+          }
+        end
+      end
     end
 
     def wallet_params
